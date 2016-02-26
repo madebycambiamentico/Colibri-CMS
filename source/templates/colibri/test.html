@@ -1,0 +1,258 @@
+<html lang="it-IT">
+<head>
+<meta charset="utf-8">
+<style type="text/css">
+body{
+	background:#000;
+}
+canvas{
+	border: 1px solid #ccc;
+	margin:8px;
+	display:inline-block;
+}
+</style>
+</head>
+
+<body>
+<canvas id="load-canvas" width="120" height="120"></canvas>
+<canvas id="load-canvas-2" width="120" height="120"></canvas>
+<canvas id="load-canvas-3" width="120" height="120"></canvas>
+
+
+<script>
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+ 
+// requestAnimationFrame polyfill by Erik Möller
+// fixes from Paul Irish and Tino Zijdel
+ 
+(function() {
+	var lastTime = 0;
+	var vendors = ['ms', 'moz', 'webkit', 'o'];
+	for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+								   || window[vendors[x]+'CancelRequestAnimationFrame'];
+	}
+ 
+	if (!window.requestAnimationFrame)
+		window.requestAnimationFrame = function(callback, element) {
+			var currTime = new Date().getTime();
+			var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+			  timeToCall);
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+ 
+	if (!window.cancelAnimationFrame)
+		window.cancelAnimationFrame = function(id) {
+			clearTimeout(id);
+		};
+}());
+</script>
+
+
+
+<script>
+(function(){
+	var loading = false;
+	var bg = document.getElementById('load-canvas');
+	if ('getContext' in bg){
+		var ctx = bg.getContext('2d');
+		ctx.strokeStyle = '#ffffff';
+		ctx.lineCap = 'square';
+		ctx.lineWidth=4.0;
+		ctx.save();
+		
+		bg.onclick = function(){
+			loading = !loading;
+			if (loading) draw();
+		};
+		
+		function rads(deg){
+			return (deg-90)/180*Math.PI;
+		}
+		
+		//animation
+		var speed1, speed2, DT, a1, a2, invert, meetup, firstmeetup, steps;
+		function init(){
+			speed1 = 2;//degrees/DT
+			speed2 = 6;//degrees/DT > speed1
+			DT = 17;//ms
+			a1=0,a2=0;//degrees. a2 >= a1
+			invert = false;
+			meetup = (360)/(speed2-speed1);
+			firstmeetup = (360+a1-a2)/(speed2-speed1);
+			steps = firstmeetup;
+			draw();
+		}
+		function draw(){
+			if (steps<=0){
+				invert=!invert;
+				steps = meetup;
+				console.log('meetup')
+			}
+			if (invert){
+				a1 += speed2;
+				a2 += speed1;
+			}
+			else{
+				a1 += speed1;
+				a2 += speed2;
+			}
+			ctx.clearRect(0, 0, 240, 240);
+			ctx.beginPath();
+			ctx.arc(60, 60, 50, rads(a1), rads(a2), false);
+			ctx.stroke();
+			if (loading) setTimeout(draw,DT);
+			steps--;
+		}
+		init();
+	}
+})();
+</script>
+
+
+
+
+<script>
+(function(){
+	var loading = false;
+	var bg = document.getElementById('load-canvas-2');
+	if ('getContext' in bg){
+		var ctx = bg.getContext('2d');
+		ctx.strokeStyle = '#ffffff';
+		ctx.lineCap = 'square';
+		ctx.lineWidth=4.0;
+		ctx.save();
+		
+		bg.onclick = function(){
+			loading = !loading;
+			if (loading) draw();
+		};
+		
+		function rads(deg){
+			return (deg-90)/180*Math.PI;
+		}
+		
+		//animation
+		var initime, speed1, speed2, DT, a1, a2, invert, meetup, firstmeetup, steps;
+		function init(){
+			speed1 = 2;//degrees/DT
+			speed2 = 6;//degrees/DT > speed1
+			a1=0,a2=0;//degrees. a2 >= a1
+			invert = false;
+			meetup = (360)/(speed2-speed1);
+			firstmeetup = (360+a1-a2)/(speed2-speed1);
+			steps = firstmeetup;
+			initime = new Date();
+			draw();
+		}
+		function draw(){
+			if (steps<=0){
+				invert=!invert;
+				steps = meetup;
+				console.log('meetup')
+			}
+			if (invert){
+				a1 += speed2;
+				a2 += speed1;
+			}
+			else{
+				a1 += speed1;
+				a2 += speed2;
+			}
+			ctx.clearRect(0, 0, 240, 240);
+			ctx.beginPath();
+			ctx.arc(60, 60, 50, rads(a1), rads(a2), false);
+			ctx.stroke();
+			if (loading) window.requestAnimationFrame(draw);
+			steps--;
+		}
+		init();
+	}
+})();
+</script>
+
+
+
+
+<script>
+(function(){
+	var loading = true;
+	var bg = document.getElementById('load-canvas-3');
+	if ('getContext' in bg){
+		var ctx = bg.getContext('2d');
+		ctx.strokeStyle = '#ffffff';
+		ctx.lineCap = 'square';
+		ctx.lineWidth=4.0;
+		ctx.save();
+		
+		bg.onclick = function(){
+			loading = !loading;
+			if (loading){
+				init();
+			}
+		};
+		
+		function rads(deg){
+			return (deg-90)/180*Math.PI;
+		}
+		
+		//animation
+		var initime, time, speed1, speed2, DT, a1, a2, basea1, basea2, invert, meetup, firstmeetup, steps;
+			speed1 = 90/1000;//degrees/millisecond
+			speed2 = 360/1000;//degrees/second > speed1
+			a1=0; a2=0;//degrees. a2 >= a1
+			basea1=0; basea2=0;
+			invert = false;
+			meetup = (360)/(speed2-speed1);
+			firstmeetup = (360+a1-a2)/(speed2-speed1);
+			meettime = firstmeetup;//seconds
+		function draw(){
+			time = new Date();
+			dt = time - initime;
+			if (dt >= meettime){
+				if (invert){
+					basea1 += dt*speed2;
+					basea2 += dt*speed1;
+				}
+				else{
+					basea1 += dt*speed1;
+					basea2 += dt*speed2;
+				}
+				if (basea1 > basea2){
+					var temp = basea1;
+					basea1 = basea2;
+					basea2 = temp;
+				}
+				invert=!invert;
+				meettime = meetup;
+				initime = time;
+				dt=0;
+				console.log('meetup')
+			}
+			if (invert){
+				a1 = basea1 + dt*speed2;
+				a2 = basea2 + dt*speed1;
+			}
+			else{
+				a1 = basea1 + dt*speed1;
+				a2 = basea2 + dt*speed2;
+			}
+			ctx.clearRect(0, 0, 240, 240);
+			ctx.beginPath();
+			ctx.arc(60, 60, 50, rads(a1), rads(a2), false);
+			ctx.stroke();
+			if (loading) window.requestAnimationFrame(draw);
+			steps--;
+		}
+		//initialize animation
+		initime = new Date();
+		window.requestAnimationFrame(draw);
+	}
+})();
+</script>
+
+</body>

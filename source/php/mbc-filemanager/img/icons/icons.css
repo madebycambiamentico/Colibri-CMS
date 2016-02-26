@@ -1,0 +1,130 @@
+.icon{
+	background:#ccc;
+	/*(optional, >= 35x35)*/
+	width:122px;
+	height:91px;
+}
+
+.icon>*{
+	display:block;
+	width:122px;
+	height:91px;
+	background:#2d2d2d url(txt.png) no-repeat center;
+}
+
+/* folder */
+.icon.i-folder>*{
+	background:#eee url(folder.png) no-repeat center;
+}
+.icon.i-folderup>*{
+	background:#eee url(folder-up.png) no-repeat center;
+}
+
+/* all file icons */
+.icon.i-bmp>*,
+.icon.i-gif>*,
+.icon.i-jpg>*,
+.icon.i-jpeg>*,
+.icon.i-png>*,
+.icon.i-svg>*,
+.icon.i-tiff>*{
+	background:#70BA34 url(jpg.png) no-repeat center;
+	opacity:1;
+	visibility:visible;
+	transition:opacity 0.3s;
+}
+/* loading image */
+.icon.load>*{
+	opacity:0;
+	visibility:hidden;
+	transition:none;
+}
+
+.icon.i-ac3>*,
+.icon.i-aiff>*,
+.icon.i-m4a>*,
+.icon.i-mid>*,
+.icon.i-mp3>*,
+.icon.i-ogg>*,
+.icon.i-wav>*{
+	background:#BC36C5 url(mp3.png) no-repeat center;
+}
+.icon.i-avi>*,
+.icon.i-mov>*,
+.icon.i-mp4>*,
+.icon.i-mpeg>*,
+.icon.i-mpg>*,
+.icon.i-webm>*,
+.icon.i-wma>*{
+	background:#3d3d3d url(avi.png) no-repeat center;
+}
+.icon.i-7z>*,
+.icon.i-gz>*,
+.icon.i-rar>*,
+.icon.i-zip>*,
+.icon.i-tar>*{
+	background:#FFC92D url(zip.png) no-repeat center;
+}
+.icon.i-accdb>*,
+.icon.i-ade>*,
+.icon.i-adp>*,
+.icon.i-mdb>*{
+	background:#F33C00 url(mdb.png) no-repeat center;
+}
+.icon.i-sql>*,
+.icon.i-db>*,
+.icon.i-sqlite>*{
+	background:#aaa url(sql.png) no-repeat center;
+}
+.icon.i-csv>*,
+.icon.i-xls>*,
+.icon.i-xlsx>*{
+	background:#00742A url(xls.png) no-repeat center;
+}
+.icon.i-fla>*,
+.icon.i-flv>*{
+	background:#f00 url(flv.png) no-repeat center;
+}
+.icon.i-pdf>*{
+	background:#B30F0F url(pdf.png) no-repeat center;
+}
+.icon.i-doc>*,
+.icon.i-docx>*,
+.icon.i-rtf>*{
+	background:#2732A2 url(doc.png) no-repeat center;
+}
+.icon.i-css>*,
+.icon.i-js>*{
+	background:#F211AF url(css.png) no-repeat center;
+}
+.icon.i-odb>*,
+.icon.i-odf>*,
+.icon.i-odg>*,
+.icon.i-odp>*,
+.icon.i-ods>*,
+.icon.i-odt>*,
+.icon.i-otg>*,
+.icon.i-otp>*,
+.icon.i-ots>*,
+.icon.i-ott>*{
+	background:#6099ED url(odt.png) no-repeat center;
+}
+.icon.i-ppt>*,
+.icon.i-pptx>*{
+	background:#FF9205 url(ppt.png) no-repeat center;
+}
+.icon.i-html>*,
+.icon.i-xhtml>*,
+.icon.i-xml>*{
+	background:#2369D1 url(html.png) no-repeat center;
+}
+.icon.i-dmg>*,
+.icon.i-iso>*{
+	background:#666 url(iso.png) no-repeat center;
+}
+.icon.i-psd>*{
+	background:#5C51C8 url(psd.png) no-repeat center;
+}
+.icon.i-ai>*{
+	background:#AB721C url(ai.png) no-repeat center;
+}

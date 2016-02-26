@@ -1,0 +1,10 @@
+{
+	"name":				"Colibr\u00ec",
+	"author":			"Nereo Costacurta",
+	"version":			"1.0",
+	"folder":			"colibri",
+	"description":		"Simple lightweight and fast template made of boxes 300px wide, a bottom contact form and map",
+	"web":				["http:\/\/cambiamentico.altervista.org","MadeByCambiamentico"],
+	"updater":			false,
+	"screenshots":		5
+}

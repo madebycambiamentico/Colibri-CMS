@@ -1,0 +1,82 @@
+
+#pf-image{
+	position:relative;
+	margin:5px auto;
+	border-radius:50%;
+	background: #FFF none no-repeat scroll center center;
+	border: 1px solid #999;
+	box-shadow: 0 0 16px #aaa;
+}
+#pf-image._256{
+	width:256px;
+	height:256px;
+}
+#pf-image._128{
+	width:128px;
+	height:128px;
+}
+#pf-image b{
+	position:absolute;
+	display:block;
+	padding:21px;/*21+21+22 = 64*/
+	margin:-32px 0 0 -32px;
+	top:50%;
+	left:50%;
+	border-radius:50%;
+	background:#fff;
+	background:rgba(255,255,255,0.5);
+	box-shadow:0 0 8px rgba(0,0,0,0.5);
+	opacity:0;
+	transform:rotateZ(0deg);
+	transition:opacity 0.3s, transform 0.3s;
+}
+#pf-image:hover b{
+	opacity:1;
+	transform:rotateZ(-360deg);
+	transition:opacity 0.2s, transform 0.8s;
+}
+
+#my-dropzone{
+	position:relative;
+}
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+#onupload{
+	color:#000;
+}
+
+#passmeter{
+	max-width:398px;/* 400px */
+	margin-top:2px;
+	white-space: nowrap;
+	overflow: hidden;
+	background:#ddd;
+	border-bottom:1px solid #aaa;
+}
+#passmeter p{
+	box-sizing:border-box;
+	width:0%;
+	padding:0 5px;
+	height:15px;
+	line-height:15px;
+	color:#fff;
+	text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+	text-transform:uppercase;
+	font-size:12px;
+	font-weight:bold;
+	transition:width 0.1s, background 0.1s;
+}
+
+@media only screen and (max-width:980px){
+	#pf-image b{
+		opacity:1;
+		transform:rotateZ(0deg);
+		*transition:none;
+	}
+}

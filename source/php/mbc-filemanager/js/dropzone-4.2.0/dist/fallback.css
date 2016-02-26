@@ -1,0 +1,39 @@
+.fallback-progress{
+	width:100%;
+	position:absolute;
+	left:0;
+	top:0;
+	height:3px;
+	background:#D3DEE6;
+	opacity:0.25;
+	transition:opacity 0.3s;
+}
+.fallback-progress.uploading{
+	height: 10px;
+	opacity:1;
+}
+.fallback-bar{
+	width:0%;
+	height:100%;
+	background:#2495E9;
+}
+.fallback-progress.uploading .fallback-bar{
+	transition:width 0.1s;
+}
+.fallback-progress .fallback-perc{
+	display:none;
+}
+.fallback-progress.uploading .fallback-perc{
+	display:block;
+	position:absolute;
+	left:0;
+	top:0;
+	height:100%;
+	line-height:10px;
+	font-size:8px;
+	font-weight:bold;
+	padding:0 5px 0 2px;
+	background:#000;
+	color:#fff;
+	border-radius:0 4px 4px 0;
+}

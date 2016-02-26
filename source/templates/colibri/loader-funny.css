@@ -1,0 +1,25 @@
+#out-cone,
+#in-cone{
+	position:absolute;
+	left:50%;
+	top:50%;
+}
+
+#out-cone {
+	width: 0;
+	height: 0;
+	border-left: 70px solid transparent;
+	border-right: 70px solid transparent;
+	border-top: 100px solid red;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+}
+#in-cone {
+	width: 0;
+	height: 0;
+	border-left: 70px solid transparent;
+	border-right: 70px solid transparent;
+	border-top: 80px solid red;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+}

@@ -1,0 +1,122 @@
+/* toolbar header */
+header{
+	display:block;
+	position: absolute;
+	position: fixed;
+	z-index: 999;
+	width: 100%;
+	height:32px;
+}
+
+
+#manager-tools{
+	background:#fff;
+	height:32px;
+}
+
+#manager-tools .sicon,
+#searchbar .sicon{
+	padding:5px;
+	transition:background 0.2s;
+}
+#manager-tools .sicon:hover,
+#searchbar .sicon:hover{
+	background:#E1EDF3;
+}
+
+
+#searchbar{
+	position:absolute;
+	top:0;
+	right:0;
+}
+#search{
+	border:1px solid #ccc;
+	text-align:right;
+	box-shadow:0 0 3px #ccc inset;
+	width:100px;
+	padding:0 5px;
+	height:22px;
+	margin: 4px 0;
+	line-height:22px;
+	font-size:13px;
+	vertical-align:top;
+	transition:width 0.3s;
+}
+#search:focus{
+	width:180px;
+}
+/* all next .sicon are like this: */
+#search ~ .sicon{
+	vertical-align:top;
+}
+
+
+#filters{
+	display:none;
+	position:absolute;
+	z-index:1000;
+	right:0;
+	box-sizing:border-box;
+	padding:12px;
+	background:#fff;
+}
+#filters.active{
+	display:block;
+}
+#filters p{
+	vertical-align: text-bottom;
+	line-height:22px;
+	padding:2px 5px 0;
+}
+#filters p:hover{
+	background:#E1EDF3;
+}
+#filters input{
+	*display:none;
+	vertical-align:middle;
+}
+#filters label{
+	vertical-align:top;
+	cursor:pointer;
+}
+#filters label.desc{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+	text-transform: uppercase;
+	min-width:120px;
+	padding:0 5px;
+}
+
+
+/* file manager: give him some padding! */
+#manager_files{
+	padding:37px 5px 25px;/* top: 32 + 5; bottom: >= 25 (image lazy load) */
+}
+
+#manager_files.filtering figure{
+	display:none;
+}
+#manager_files.filtering figure.type-F,
+#manager_files.filtering figure.type-U,
+#manager_files.filtering.t-0 figure.type-0,
+#manager_files.filtering.t-1 figure.type-1,
+#manager_files.filtering.t-2 figure.type-2,
+#manager_files.filtering.t-3 figure.type-3,
+#manager_files.filtering.t-4 figure.type-4{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+}
+
+#manager_files.searching figure{
+	display:none!important;
+}
+#manager_files.searching figure.found,
+#manager_files.searching figure.type-F,
+#manager_files.searching figure.type-U{
+	display: inline-block!important;
+	*display:inline!important;
+	zoom:1;
+}

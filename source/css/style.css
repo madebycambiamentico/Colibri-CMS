@@ -1,0 +1,378 @@
+/* REQUIRE: php/mbc-filemanager/css/style.css */
+
+/* see as table... */
+#wrapper{
+	max-width: none;
+}
+#colibrì{
+	display:block;
+	background:#222 url(../img/logo/colibri-micro-white.png) no-repeat center;
+	height:100px;
+	position:relative;
+}
+#colibrì>code{
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	padding: 0 5px;
+	box-sizing: border-box;
+	bottom: 0px;
+	left: 0px;
+	line-height: 1;
+	font-size: 10px;
+	color:#888;
+}
+
+#wrapper>.menu{
+	position:absolute;
+	position:fixed;
+	-webkit-backface-visibility:hidden;
+	width: 210px;
+	height:100%;
+	z-index:90000;
+}
+
+#toolbar{
+	display:none;
+}
+
+#my-article{
+	display: table;
+	width: 100%;
+	border-collapse:collapse;
+}
+#my-article>.main{
+	display: table-cell;
+	vertical-align:top;
+	width: 68%;
+	padding: 8px 8px 25px 226px;
+}
+#my-article>.right{
+	display: table-cell;
+	vertical-align:top;
+	padding: 8px;
+}
+
+
+/* menu */
+
+#wrapper>.menu{
+	background:#222;
+	color:#fff;
+}
+#wrapper>.menu ul.sub-menu{
+	visibility:hidden;
+	position:absolute;
+	width:180px;
+	top:0;
+	left:100%;
+}
+body.ready #wrapper>.menu ul.sub-menu{
+	-webkit-transition:visibility 0.1s;
+	transition:visibility 0.1s;
+}
+#wrapper>.menu ul.sub-menu:before{
+	content:" ";
+	display:block;
+	position:absolute;
+	left:-13px;
+	top:9px;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 10px 13px 10px 0;
+	border-color: transparent #434343 transparent transparent;
+}
+#wrapper>.menu>li{
+	line-height:30px;
+	position:relative;
+	background:#222;
+}
+#wrapper>.menu ul.sub-menu li{
+	padding-left:13px;
+	background:#434343;
+}
+#wrapper>.menu>li:hover ul.sub-menu{
+	visibility:visible;
+	-webkit-transition:none;
+	transition:none;
+}
+#wrapper>.menu a{
+	display:block;
+	padding:3px 8px 3px 0;
+	color:#fff;
+	font-size:14px;
+}
+#wrapper>.menu li:hover{
+	background:#555;
+	color:#4EC7FF;
+}
+#wrapper>.menu li:hover>a{
+	color:#4EC7FF;
+}
+#wrapper>.menu ul.sub-menu li:hover{
+	background:#434343;
+}
+#wrapper>.menu .sicon{
+	vertical-align: top;
+	padding:4px 8px 4px 4px;
+}
+
+
+.content h1{
+	color:#444;
+	font-size:30px;
+	font-weight:normal;
+	padding: 5px 0 20px
+}
+.content h3{
+	color:#444;
+	font-size:20px;
+	font-weight:normal;
+	padding: 10px 0;
+	text-transform:capitalize;
+}
+.content h4{
+	color:#444;
+	font-size:13px;
+	font-weight:700;
+	padding: 10px 0 5px;
+}
+
+
+/* editor.php */
+#art-thumb-table{
+	display:table;
+	position:relative;
+	width:100%;
+}
+#art-thumb-table>div{
+	display: table-cell;
+	vertical-align: middle;
+	height: 91px;
+	padding: 0 8px 0 16px;
+}
+#art-thumb-table>.image{
+	display:table-cell;
+	width:122px;
+	height:91px;
+	background:#ccc no-repeat center;
+	padding: 0;
+}
+
+
+/* articles.php */
+.art-cont{
+	display:table;
+	width:100%;
+}
+.art-img-cont{
+	display:table-cell;
+	vertical-align:top;
+	width:122px;
+	padding:8px 0;
+}
+.art-img{
+	display:block;
+	width:112px;
+	height:81px;
+	padding:5px;
+	background:#ccc no-repeat center;
+}
+.art-props{
+	display:table-cell;
+	vertical-align:top;
+	padding:0 8px;
+}
+.art-type{
+	color: #347FAE;
+	font-size: smaller;
+	font-weight: normal;
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+}
+.art-desc,
+.art-desc a{
+	color:inherit;
+}
+.art-desc a b.dots{
+	color:#347FAE;
+}
+
+#all-articles.filtering .art-cont{
+	display:none;
+}
+#all-articles.filtering .art-cont.show{
+	display:table;
+}
+
+
+/* albums.php */
+#last-images{
+	line-height:0;
+	text-align:center;
+}
+#last-images img{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+	width:122px;
+	height:91px;
+	margin:3px;
+}
+
+
+/* icon + description/link
+album functions for example */
+
+.tools p{
+	line-height:22px;
+}
+.tools p input{
+	position:absolute;
+	visibility:hidden;
+}
+.tools p label,
+.tools p a{
+	color:#666;
+	display:inline-block;
+	*display:inline;
+	zoom:1;
+	cursor:pointer;
+	padding:4px
+}
+.tools p label:hover,
+.tools p a:hover{
+	color:#000;
+}
+.tools p .sicon{
+	vertical-align: top;
+}
+.tools.upp{
+	text-transform:capitalize;
+}
+
+.search-icon{
+	margin: -1px 0;
+}
+
+
+
+.show-on-cell{
+	display:none;
+}
+
+
+
+@media only screen and (max-width:980px){
+	#my-article{
+		display: block;
+		width: auto;
+	}
+	#my-article>.main{
+		display: block;
+		width: auto;
+		padding-bottom:8px;
+	}
+	#my-article>.right{
+		display: block;
+		width: auto;
+		padding: 8px 8px 8px 226px;
+	}
+	.hide-on-cell{
+		display:none!important;
+	}
+	.show-on-cell{
+		display:block;
+	}
+}
+
+
+@media only screen and (max-width:640px){
+	#wrapper{
+		padding-top:45px;
+	}
+	#toolbar{
+		display:block;
+		position:absolute;
+		position:fixed;
+		-webkit-backface-visibility:hidden;
+		background:#222;
+		height:45px;
+		width: 100%;
+		top: 0;
+		left: 0;
+		line-height: 45px;
+		z-index:90000;
+		text-align:right;
+	}
+	#colibrì-icon{
+		display:block;
+		position:absolute;
+		top:0;left:0;
+		background:url(../img/logo/colibri-icon-white.png) no-repeat center;
+		height:45px;
+		width:75px;
+	}
+	#toolbar .sicon{
+		padding:11px;
+	}
+	#toolbar #menu-toggle{
+		padding:11px 15px;
+		background:#181818;
+	}
+	#wrapper>.menu{
+		width: 100%;
+		height:auto;
+		top:44px;
+		visibility:hidden;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		max-height: 80%;
+	}
+	#wrapper>.menu.open{
+		visibility:visible;
+	}
+	#wrapper>.menu a{
+		padding:5px 8px 5px 0;
+	}
+	#wrapper>.menu .sub-menu{
+		display:none;
+	}
+	#colibrì{
+		display:none;
+	}
+	#my-article>.main,
+	#my-article>.right{
+		padding: 8px;
+	}
+}
+
+
+@media only screen and (max-width:480px){
+	.content h1,
+	.content h3,
+	.content h4{
+		text-align:center;
+	}
+	#art-thumb-table>div>p{
+		position: absolute;
+		left: 0;
+		width: 95%;
+		text-align: right;
+		top: 32px;
+	}
+	#art-thumb-table input{
+		opacity: 0.7;
+	}
+	.art-cont,
+	.art-img-cont,
+	.art-props{
+		display:block;
+	}
+	.art-img-cont{
+		margin:0 auto;
+	}
+}

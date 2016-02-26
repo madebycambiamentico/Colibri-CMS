@@ -1,0 +1,859 @@
+/* reset */
+*{margin:0;padding:0;text-decoration:none;}
+
+/* general style */
+body{
+	font: 16px/1.4 'open sans',helvetica,arial,sans-serif;
+	padding:0 0 520px;/* set background a map to show at the end */
+	background:#0e0e0e url(img/map-1366.png) no-repeat center bottom;
+	/* bkg fixed is too buggy today, i cannot use it... */
+	/*background-attachment:fixed;*/
+	position: relative;/* for map marker placing */
+}
+h1 {
+	font-size: 40px;
+	font-weight: 100;
+	text-transform: capitalize;
+	padding: 40px 0 30px;
+	color: #222;
+}
+h2 {
+	font-size: 32px;
+	font-weight: 100;
+	padding: 32px 0 22px;
+	color: #222;
+}
+h3 {
+	font-size: 22px;
+	font-weight: 500;
+	padding: 22px 0 12px;
+	color: #222;
+}
+p{
+	padding:10px 0;
+}
+#main-article ul,
+.article .desc ul,
+#main-article ol,
+.article .desc ol{
+	padding-left: 25px;
+}
+
+/* page style */
+#wrapper{
+	background:#eee;
+	padding:0 0 100px;
+}
+
+/* menu */
+#menu{
+	display:table;
+	border-collapse:collapse;
+	width:100%;
+	background:#eee;
+	border-bottom: 5px solid #c00;
+	box-shadow: 0 0 30px rgba(0,0,0,0.6);
+	position: relative;
+	z-index: 10;
+}
+#logo,
+#menus{
+	display:table-cell;
+	vertical-align:middle;
+}
+#logo{
+	width:180px;/* 140+2*20 */
+}
+#logo .logo{
+	display:block;
+	position:absolute;
+	top:0; left:0;
+	z-index:10;
+	width:140px;
+	height:140px;
+	background:#c00 url(img/logo.png) no-repeat center;
+	margin:20px;
+}
+#menus{
+	list-style:none;
+	text-align:right;
+	padding:0 10px;
+	position:relative;
+	line-height:0;
+}
+#menus li,
+#menus li>a{
+	display:inline-block;
+	*display:inline;
+	zoom:1;
+}
+#menus>li{
+	padding: 12px 0;
+}
+#menus li>a{
+	position:relative;
+	color: #444;
+	font-size: 13px;
+	font-weight: 300;
+	padding: 5px 10px;
+	text-transform: uppercase;
+	border-left: 1px solid #ccc;
+	line-height: 15px;
+}
+#menus>li>a:hover{
+	color: #c00;
+}
+#menus>li>a::before{
+	content:" ";
+	position:absolute;
+	bottom:0;
+	left:50%;
+	margin:0 0 -12px -5px;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 10px 10px 10px;
+	border-color: transparent transparent #c00 transparent;
+	visibility:hidden;
+}
+#menus>li.single>a::before{
+	display:none;
+}
+#menus>li:hover>a::before{
+	visibility:visible;
+}
+/* sub-menus */
+#menus li ul{
+	display:block;
+	position:absolute;
+	z-index:20;
+	right:0;
+	width:100%;
+	margin-top:12px;
+	padding:15px 0;
+	background:#c00;
+	visibility:hidden;
+}
+#menus li ul li>a{
+	color:#fff;
+	border: none;
+}
+#menus li ul li>a:hover{
+	color:#FFD37B;
+}
+#menus li:hover ul{
+	visibility:visible;
+}
+
+/* big banner */
+#image-spacer{
+	height:100px;
+}
+.image-main{
+	position:relative;
+	z-index:0;
+	background:#fff no-repeat center;
+	background-size:cover;
+	max-height:420px;
+	overflow:hidden;
+}
+.image-main.video{
+	max-height:600px;
+}
+.image-sizer{
+	position:relative;
+	width:100%;
+	padding-bottom:35%;
+}
+.image-sizer.web{
+	background:url(img/rete.png);
+}
+.image-sizer.iframe{
+	padding-bottom:56.25%;/* 560 x 315 */
+	overflow:hidden;
+}
+.image-main iframe,
+#YTPlayer{
+	position:absolute;
+	top: 0;
+	/* if I add bottom:0 the player will be centered... but so the ads!!! so don't do it */
+	/*bottom:0;*/
+	left: 0;
+	right:0;
+	width:100%!important;
+	height:100%!important;
+	border:none;
+	overflow:hidden;
+	/* too much performance hit on large screen */
+	/*-webkit-filter: grayscale(80%);
+	-moz-filter:    grayscale(80%);
+	-ms-filter:     grayscale(80%);
+	-o-filter:      grayscale(80%);
+	filter:         grayscale(80%);*/
+}
+.image-iframe-web,
+#image-YT-loader{
+	position:absolute;
+	top: 0;
+	left: 0;
+	width:100%;
+	height:100%;
+	background:url(img/rete.png);
+}
+#image-YT-loader{
+	background:#000;
+	-webkit-transition:opacity 0.5s, visibility 0.5s;
+	transition:opacity 0.5s, visibility 0.5s;
+}
+#image-YT-loader.hidden{
+	opacity:0;
+	visibility:hidden;
+}
+#load-canvas,
+#image-YT-loader .logo{
+	width:120px;
+	height:120px;
+	position:absolute;
+	top:50%;
+	margin-top:-60px;
+	left:50%;
+	margin-left:-60px;
+}
+#image-YT-loader .logo{
+	background:url(img/colibriw.png) no-repeat center;
+}
+
+/* content */
+#articles{
+	color:#1d1d1d;
+}
+#articles .inside{
+	width:90%;
+	max-width:1200px;
+	margin: 0 auto;
+}
+#main-article a{
+	color:#c00;
+}
+#main-article a:hover{
+	color:#900;
+}
+/* prevent image overflow.
+image ratio should be added server-side to make image responsive.
+an example is:
+* for pure images:
+	width:custompercentage!customwidth,
+	height:auto;
+	max-width:realwidth|percentageratio,
+	max-height:realheight|percentageratio
+* for containers: you need
+		a parent container with:
+	position:relative,
+	width:targetwidth
+		AND a child container with:
+	height:0;
+	padding-bottom:percentageratio^-1
+	overflow:hidden; (optional)
+		AND the image into the child container with:
+	position:absolute;
+	height:100%;
+	width:100%;
+*/
+.imgfix img,
+.imgfix figure{
+	height:auto!important;
+	max-width:100%;
+}
+/* general boxes style */
+.article-cont{
+	line-height:0;
+	padding-top:100px;
+	text-align:center;
+}
+.article-cont .article{
+	display:inline-block;
+	*display:inline;
+	zoom:1;
+	line-height:1.4;
+	width:320px;
+	margin:5px;
+	vertical-align:top;
+}
+.article .image{
+	overflow:hidden;
+}
+.article .desc{
+	text-align:left;
+}
+.article .desc h2{
+	font-size:28px;
+}
+.article .desc *::-moz-selection{
+	background:#c00;
+	color:#fff;
+}
+.article .desc *::selection{
+	background:#c00;
+	color:#fff;
+}
+.article .image,
+.article .image>a,
+.article .image>p{
+	width:320px;
+	height:320px;
+	background:#666 no-repeat center;
+}
+.article .image>a,
+.article .image>p{
+	display:block;
+	-webkit-transform:scale(1);
+	transform:scale(1);
+	-webkit-transition:transform 0.4s;
+	transition:transform 0.4s;
+}
+.article:hover .image>a,
+.article:hover .image>p{
+	-webkit-transform:scale(1.15);
+	transform:scale(1.15);
+}
+/* link finale rosso... */
+.article .sub-art-goto{
+	margin:10px 0 0;
+	text-align:center;
+	background: #c00;
+}
+.article .sub-art-goto a{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+	color:#fff;
+	background: url(img/link.png) no-repeat 7px center;
+	padding: 10px 20px 10px 42px;
+	font-size: 15px;
+	text-transform: uppercase;
+}
+.article .sub-art-goto:hover{
+	background-color: #a00;
+}
+.article .sub-art-goto:active{
+	background-color: #800;
+}
+.article .subs-art-goto{
+	text-align:center;
+	background: #333;
+}
+.article .subs-art-goto a{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+	color:#fff;
+	padding: 8px 20px;
+	font-size: 13px;
+}
+.article .subs-art-goto:hover{
+	background-color: #222;
+}
+.article .subs-art-goto:active{
+	background-color: #444;
+}
+
+
+/* news */
+#news{
+	background:#1d1d1d;
+	padding-bottom:100px;
+}
+#news .article .desc h3{
+	color:#FFD18C;
+	text-transform:uppercase;
+}
+#news .article{
+	background:#333;
+	color:#eee;
+}
+#news .article .desc{
+	padding:20px;
+	font-size:smaller;
+}
+#news .desc *::-moz-selection{
+	background:#FFD18C;
+	color:#000;
+}
+#news .desc *::selection{
+	background:#FFD18C;
+	color:#000;
+}
+#news .article .image,
+#news .article .image>a{
+	height:200px;
+	background-color:#111;
+}
+
+
+/* links */
+#links{
+	background:#1d1d1d;
+	padding-bottom:100px;
+}
+#links .article{
+	background:#333;
+	color:#eee;
+}
+#links .article .desc{
+	padding:20px;
+	font-size:smaller;
+}
+#links .desc *::-moz-selection{
+	background:#FFD18C;
+	color:#000;
+}
+#links .desc *::selection{
+	background:#FFD18C;
+	color:#000;
+}
+#links .article .desc h3{
+	color:#FFD18C;
+	text-transform:uppercase;
+}
+#links .article .image,
+#links .article .image>a{
+	height:200px;
+	background-color:#111;
+}
+#links a{
+	color:#ccc;
+	font-variant:small-caps;
+}
+#links a.jumplink{
+	display:block;
+	width:40px;
+	height:40px;
+	margin:0 auto;
+	background:url(img/link.png) no-repeat center;
+	-webkit-transform:scale(1);
+	transform:scale(1);
+	-webkit-transition:transform 0.1s;
+	transition:transform 0.1s;
+}
+#links a.jumplink:hover{
+	-webkit-transform:scale(0.9);
+	transform:scale(0.9);
+}
+
+
+/* quotes */
+#quotator{
+	padding:200px 0;
+	background:#ddd;
+	color:#000;
+	text-align:center;
+}
+#quotator .logo{
+	background:#333 url(img/logo.png) no-repeat center;
+	width:140px;
+	height:140px;
+	margin:20px auto;
+	/* android doesn't understand 50% in border radius... */
+	-webkit-border-radius:76px;
+	border-radius:50%;
+	box-shadow:0 0 10px #888;
+}
+#quotator p{
+	padding:0;
+	margin:10px;
+}
+#quotator q{
+	word-spacing:2px;
+	font-size:20px;
+	font-style:italic;
+}
+#quotator .desc{
+	font-size:13px;
+}
+
+
+/* contact form */
+#contactform{
+	position:relative;
+	background:#FF9115;
+	padding:100px 16px 40px;
+	color:#fff;
+}
+#contactform h2{
+	max-width:1024px;
+	margin:0 auto;
+	color:#fff;
+}
+#contactform h3{
+	color:#fff;
+}
+#fluidform{
+	display:table;
+	border-collapse:collapse;
+	width:100%;
+	max-width:1024px;
+	margin:0 auto;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+#fluidform form,
+#fluidinfo{
+	display:table-cell;
+	vertical-align:top;
+}
+#fluidform form{
+	/*min-width:310px;*/
+	width:50%;
+}
+#contactform ul{
+	list-style:none;
+	padding-right:40px;
+}
+#contactform li{
+	padding-bottom:20px;
+}
+#contactform label{
+	display:none;
+}
+#contactform input, select, textarea{
+	font-family: inherit;
+}
+#contactform input[type=text],
+#contactform select,
+#contactform textarea{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	border:none;
+	border-bottom:1px solid #aaa;
+	background-color: #FFD379;
+	box-shadow: 2px 2px 3px rgba(0,0,0,0.3) inset;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+#contactform textarea{
+	height: 180px;
+	resize: vertical;
+}
+#contactform input[type=text]:hover,
+#contactform select:hover,
+#contactform textarea:hover{
+	background:#FFE3AB;
+}
+#contactform input[type=text]:focus,
+#contactform select:focus,
+#contactform textarea:focus{
+	border-bottom-color:#c00;
+}
+#fluidinfo{
+	text-align:center;
+	text-shadow:1px 1px 1px #874700;
+}
+#info{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+	text-align:left;
+	font-weight:bold;
+	letter-spacing:1px;
+	font:14px/1.2 'open sans',impact,helvetica,arial,sans-serif;
+}
+/* buttons */
+#contactform .btn{
+	position:relative;
+	display: block;
+	width:100%;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+	margin:10px auto;
+	cursor: pointer;
+	text-decoration:none;
+	text-align: center;
+	font-size: 18px;
+	text-transform:uppercase;
+	padding:12px 20px;
+	color: #333;
+	text-shadow: 0px 1px 1px #fff;
+	background-color: #f0f0f0;
+	background-image: linear-gradient(to bottom, #FFF, #E6E6E6);
+	border: 1px solid #B3B3B3;
+	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset, 0px 1px 2px rgba(0, 0, 0, 0.05);
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	user-select:none;
+}
+#contactform .btn.red{
+	color: #fff;
+	text-shadow: 0px 1px 1px #900;
+	background: #c00;
+	border: none;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+#contactform .btn:hover{
+	background-color: #f9f9f9;
+	background-image: linear-gradient(to bottom, #FFF, #f0f0f0);
+	border-color: #93A9CF;
+}
+#contactform .btn:active{
+	top:1px;
+	background-color: #ddd;
+	background-image: linear-gradient(to bottom, #D9E0E4, #eee);
+	border-color: #919FB6;
+}
+#contactform .btn.red:hover{
+	background: #a00;
+}
+#contactform .btn.red:active{
+	background: #800;
+}
+#contactform .confirm{
+	font-size:smaller;
+}
+.g-recaptcha div,
+.g-recaptcha iframe{
+	margin: 0 auto!important;
+	max-width:100%!important;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+
+
+/* ending map */
+#seemap{
+	text-align:center;
+	font-size:24px;
+	color:#222;
+	padding:70px 10px;
+	background:url(img/mapmarker-64.png) no-repeat center bottom;
+}
+#mapmark{
+	position:absolute;
+	width:64px;
+	height:64px;
+	background:url(img/mapmarker.png) no-repeat center;
+	bottom:270px;
+	left:50%;
+	margin-left: -50px;
+	z-index:-1;
+}
+
+
+/* powered by */
+#powered{
+	background:#1D1D1D;
+	color:#aaa;
+	font-size:10px;
+	text-align:center;
+	padding:16px;
+}
+#powered .logo,
+#powered .mbc,
+#powered .actions a{
+	display: inline-block;
+	*display:inline;
+	zoom:1;
+	vertical-align:middle;
+}
+#powered .logo{
+	width:50px;
+	height:50px;
+	background:#eee url(img/colibri.png) no-repeat center;
+	-webkit-border-radius:25px;
+	border-radius:50%;
+	margin:5px;
+}
+#powered .mbc{
+	text-align:left;
+}
+#powered .mbc b{
+	font-weight:bold;
+	color:#fff;
+}
+#powered .mbc a{
+	color:#666;
+}
+#powered .actions{
+	padding: 10px 0px 0px;
+}
+#powered .actions a{
+	color:#fff;
+	background:#111;
+	padding:5px 10px;
+	margin:0 5px;
+}
+#powered .actions a:hover{
+	background:#265BB7;
+}
+#powered .actions a:active{
+	background:#000;
+}
+
+
+/* tablets? */
+@media only screen and (max-width:800px){
+	body{
+		background-image:url(img/map-800.png)
+	}
+	#menus li{
+		display:block;
+		position:relative;
+	}
+	#menus>li{
+		padding: 5px 32px 5px 0;/*was 12*/
+	}
+	#menus li>a{
+		border:none;
+	}
+	#menus>li>i{
+		display:block;
+		position:absolute;
+		width:20px;
+		height:20px;
+		top:50%;
+		right:0px;
+		margin-top:-10px;
+		background:url(img/more.png) repeat 20px center;
+		cursor:pointer;
+	}
+	#menus>li>i:hover,
+	#menus>li>i:active,
+	#menus>li.open>i{
+		background:url(img/more.png) repeat 0 center;
+	}
+	#menus>li>a::before{
+		margin:0 0 -5px -5px;
+	}
+	#menus li ul{
+		width:90%;
+		margin:5px 5% 0 5%;
+		padding:18px 0;
+	}
+	#menus li.open ul,
+	#menus>li.open>a::before{
+		visibility:visible;
+	}
+	#menus li ul li{
+		line-height:2;
+	}
+	#sub-articles .article{
+		width:290px;
+		margin:30px 8px 50px;
+	}
+	#sub-articles .image,
+	#sub-articles .image>a{
+		width:290px;
+		height:290px;
+	}
+	#fluidform,
+	#fluidform form,
+	#fluidinfo{
+		display:block;
+		width:auto;
+		max-width:none;
+		padding:0;
+	}
+	#contactform h2{
+		text-align:center;
+	}
+	#fluidform form{
+		max-width:400px;
+		margin:0 auto;
+	}
+	#fluidform form ul{
+		padding:0;
+	}
+	#fluidinfo{
+		background:none;
+	}
+}
+
+
+/* mobiles? */
+@media only screen and (max-width:520px){
+	body{
+		background-image:url(img/map-520.png)
+	}
+	#wrapper{
+		padding-bottom:30px;
+	}
+	.image-web{
+		padding-bottom:50%;
+	}
+	#menu,
+	#logo,
+	#menus{
+		display:block;
+		width:auto;
+	}
+	#menus>li{
+		padding-right:0;
+	}
+	#logo{
+		padding:20px 0;
+	}
+	#logo .logo{
+		position:static;
+		margin:0 auto;
+	}
+	#menus{
+		text-align:center;
+	}
+	#articles #sub-articles{
+		width:auto;
+	}
+	.article-cont{
+		padding-top:50px
+	}
+	.article-cont .article{
+		width:290px;
+		max-width:100%;
+		margin:30px 0 50px;
+	}
+	.article-cont .image,
+	.article-cont .image>a{
+		width:290px;
+		height:290px;
+	}
+	#news{
+		padding-bottom:50px;
+	}
+	#news .article .image,
+	#news .article .image>a{
+		height:190px;
+	}
+	#links{
+		padding-bottom:50px;
+	}
+	#links .article .image,
+	#links .article .image>a{
+		height:190px;
+	}
+	
+	#quotator{
+		padding:100px 0;
+	}
+	
+	#contactform{
+		padding-left:0;
+		padding-right:0;
+	}
+	#contactform input[type=text],
+	#contactform select,
+	#contactform textarea{
+		display:block;
+		width:90%;
+		margin:0 auto;
+		max-width:400px;
+	}
+	#contactform .confirm,
+	#contactform .btn{
+		width:90%;
+		margin:0 auto;
+	}
+}

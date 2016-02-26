@@ -1,0 +1,167 @@
+<!doctype html>
+
+<html lang="it-IT">
+<head>
+	<meta charset="utf-8">
+
+	<title>map</title>
+	<meta name="description" content="">
+	<meta name="author" content="Costacurta Nereo">
+
+	<link rel="stylesheet" href="css/style.css?v=1.0">
+	<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+body{
+	background:#ddd;
+}
+ul{
+	display:block;
+	position:absolute;
+	background:#eee;
+	width:160px;
+	font-size:13px;
+	transform:translateZ(0);
+}
+ul.close{
+	overflow-y:hidden;
+	height:32px;
+}
+ul li{
+	list-style:none;
+	display:block;
+	visibility:visible;
+	padding:5px;
+	border-bottom:1px solid #fff;
+}
+ul span{
+	display:inline-block;
+	font-size:8px;
+	color:#666;
+	text-transform:uppercase;
+}
+ul.close li{
+	visibility:hidden;
+}
+ul li.title{
+	cursor:pointer;
+	visibility:visible!important;
+	background:#fff;
+	border:1px solid #ccc;
+	height:20px;
+	line-height:20px;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	user-select:none;
+}
+	</style>
+</head>
+
+<body>
+
+<ul class="table" id="link_album_immagini" style="top:25px; left:25px;">
+	<li class="title">link_album_immagini</li>
+	<li><i>idalbum</i> <span>integer</span></li>
+	<li><i>idimage</i> <span>integer</span></li>
+</ul>
+
+<ul class="table" id="immagini_albums" style="top:25px; left:200px;">
+	<li class="title">immagini_albums <span></span></li>
+	<li><b>id</b> <span>integer</span></li>
+	<li>nome <span>varchar(100)</span></li>
+</ul>
+
+<ul class="table" id="immagini" style="top:120px; left:200px;">
+	<li class="title">immagini <span></span></li>
+	<li><b>id</b> <span>integer</span></li>
+	<li>src <span>text</span></li>
+	<li>desc <span>varchar(200)</span></li>
+	<li>data <span>datetime (text)</span></li>
+	<li>width <span>integer</span></li>
+	<li>height <span>integer</span></li>
+</ul>
+
+<ul class="table" id="articoli" style="top:25px; left:375px;">
+	<li class="title">articoli <span></span></li>
+	<li><b>id</b> <span>integer</span></li>
+	<li>titolo <span>varchar(50)</span></li>
+	<li>corpo <span>text</span></li>
+	<li>inbreve <span>text</span></li>
+	<li>remaplink <span>text</span></li>
+	<li>data <span>datetime (text)</span></li>
+	<li>dataedit <span>datetime (text)</span></li>
+	<li>isindex <span>bool</span></li>
+	<li>isinmenu <span>bool</span></li>
+	<li><i>idtype</i> <span>integer</span></li>
+	<li><i>idarticolo</i> <span>integer</span></li>
+	<li><i>idalbum</i> <span>integer</span></li>
+	<li><i>idimage</i> <span>integer</span></li>
+	<li>isgarbage <span>bool</span></li>
+</ul>
+
+<ul class="table" id="articoli_types" style="top:25px; left:550px;">
+	<li class="title">articoli_types <span></span></li>
+	<li><b>id</b> <span>integer</span></li>
+	<li>protected <span>bool</span></li>
+	<li>nome <span>text</span></li>
+	<li>remapprefix <span>varchar(30)</span></li>
+</ul>
+
+<ul class="table" id="utenti" style="top:25px; left:725px;">
+	<li class="title">utenti <span></span></li>
+	<li><b>id</b> <span>integer</span></li>
+	<li>class <span>integer</span></li>
+	<li>nome <span>varchar(100)</span></li>
+	<li>email <span>text</span></li>
+	<li>datacreaz <span>datetime (text)</span></li>
+	<li>hasimage <span>bool</span></li>
+	<li>salt <span>char(128)</span></li>
+	<li>pass <span>char(128)</span></li>
+	<li>passhint <span>text</span></li>
+</ul>
+
+<!--[if lte IE 8]><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><![endif]--><!--[if gt IE 8]><!--><script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script><!--<![endif]-->
+<script>
+$.fn.movable = function(){
+	var inipos,origin;
+	return this.on('mousedown',function(e){
+		var table = $(this).parents('.table');
+		origin = {left:table.css('left'), top:table.css('top')}
+			origin.top = Number(origin.top.replace('px',""));
+			origin.left = Number(origin.left.replace('px',""));
+		inipos = {x:e.pageX, y:e.pageY};
+		$(window).one('mouseup',function(){
+			$(this).off('mousemove.movingtables')
+		}).on('mousemove.movingtables',function(e){
+			table.css({top:(origin.top + e.pageY-inipos.y)+'px', left:(origin.left + e.pageX-inipos.x)+'px'})
+		})
+	})
+}
+$('ul.table .title').movable().dblclick(function(){
+	$(this).parents('.table').toggleClass('close');
+});
+function makeArrow(da, a){
+
+}
+/*var swg = '<svg style="width:300px;height:300px;position:absolute;">\
+<defs>\
+	<marker id="arrow" markerWidth="13" markerHeight="13" refx="2" refy="6" orient="auto">\
+		<path d="M2,1 L2,10 L10,6 L2,2" style="fill:red;" />\
+	</marker>\
+</defs>\
+<path d="M 30 150 L 100 50"\
+			style="stroke:red; stroke-width: 1.25px; fill: none;\
+			marker-end: url(#arrow);"\
+/>\
+<path d="M 0 0 L 70 70"\
+			style="stroke:red; stroke-width: 1.25px; fill: none;\
+			marker-end: url(#arrow);"\
+/>\
+</svg>';*/
+//$('body').append(swg);
+</script>
+</body>
+
+</html>
