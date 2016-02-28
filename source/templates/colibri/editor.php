@@ -199,28 +199,43 @@ here the colibrì background image
 		
 		<div id="youtubes" class="choicer"></div>
 		
+		
+	</div>
+
+	
+	<div class="content-wide _withbottom dark">
+		<div class="center follows">
+			<h4>Follow me</h4>
+			<div class="moon-icons">
+			<a id="ico-gp" href="https://plus.google.com/+NereoCostacurta" target="_blank">&#xe902;</a><!--
+			--><a id="ico-fb" href="https://www.facebook.com/n.costacurta" target="_blank">&#xe903;</a><!--
+			--><a id="ico-in" href="https://www.linkedin.com/in/nereocostacurta" target="_blank">&#xe906;</a>
+			</div>
+		</div>
 	</div>
 </div>
 
 
 <div id="yt-bkg">
-	<form id="form-yt">
+	<form id="form-yt" autocomplete="off">
 		<h4>YouTube Video</h4>
-		<input type="hidden" name="article_id" value="">
-		<input type="hidden" name="video_id" value="">
-		<input type="hidden" name="video_w" value="560">
-		<input type="hidden" name="video_h" value="315">
+		<input type="hidden" name="article_id" data-default="" value="">
+		<input type="hidden" name="video_id" data-default="" value="">
+		<input type="hidden" name="video_w" data-default="560" value="560">
+		<input type="hidden" name="video_h" data-default="315" value="315">
 		<p>Inserisci il codice di incorporamento <b>iframe</b> di YouTube (lo trovi nelle opzioni di condivisione video)</p>
 		<textarea placeholder='&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEOID" frameborder="0" allowfullscreen>&lt;/iframe>'></textarea>
 		<table>
-			<tr><th>pagina:</th><td id="s_article_title">qui ci va il titolo</td></tr>
+			<tr><th>pagina:</th><td id="s_article_title"></td></tr>
 			<tr><th>video id:</th><td id="s_video_id"></td></tr>
-			<tr><th>width:</th><td id="s_video_w"></td></tr>
-			<tr><th>height:</th><td id="s_video_h"></td></tr>
-			<tr><th>start at:</th><td class="numbers"><input type="text" name="video_start" value="0"> seconds</td></tr>
-			<tr><th>end at:</th><td class="numbers"><input type="text" name="video_end" value=""> seconds</td></tr>
+			<tr><th>larghezza:</th><td id="s_video_w"></td></tr>
+			<tr><th>altezza:</th><td id="s_video_h"></td></tr>
+			<tr><th>inizio:</th><td class="numbers"><input type="text" name="video_start" value="0"> seconds</td></tr>
+			<tr><th>fine:</th><td class="numbers"><input type="text" name="video_end" value=""> seconds</td></tr>
 		</table>
 		<div class="center">
+			<br>
+			<span class="nobutton nb-x" id="clear-yt">Cancella proprietà</span><br>
 			<input class="button" type="submit" value="Salva modifiche">
 		</div>
 	</form>

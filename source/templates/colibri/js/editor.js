@@ -140,10 +140,16 @@ $('#form-logo, #form-map').submit(function (e) {
 var $youtubes = $('#youtubes');
 var $youtube_editor = $('#yt-bkg');
 var $youtube_form = $('#yt-bkg form');
+$youtube_form.on('reset',function(){
+	//input hidden are not resetted by "reset"!!!
+	$(this).find('input[type=hidden]').each(function(){
+		$(this).val($(this).data('default')).change();
+	});
+})
 function createPageVideo(obj){
-	var page = $('<ul class="choice _x4">')
+	var page = $('<ul class="choice _x4" id="article-'+obj.pageid+'">');
 		var image = $('<li class="center">');
-			var img = $('<div class="image" id="article-img-'+obj.pageid+'">');
+			var img = $('<div class="image moon-video">');
 		var buttons = $('<li class="center">');
 			var video = $('<a class="button" id="article-video-'+obj.pageid+'">Video</a>');
 		var content = $('<li>');
@@ -157,7 +163,7 @@ function createPageVideo(obj){
 		//update editor properties
 		$youtube_form.trigger('reset');
 		$youtube_editor.addClass('active');
-		$youtube_editor.find('input[name="article_id"]').val(data.pageid);
+		$youtube_form.find('input[name="article_id"]').val(data.pageid);
 		$('#s_article_title').text(data.title);
 		// video properties
 		if (!data.videoid) return false;
@@ -228,8 +234,7 @@ $(function(){
 	$('#yt-bkg').click(function(e){
 		if (e.target == this){
 			$(this).removeClass('active');
-			$('#form-yt').trigger('reset');
-			$('#form-yt input[type=hidden]').change();
+			$youtube_form.trigger('reset');
 		}
 	});
 	
@@ -244,7 +249,19 @@ $(function(){
 				console.log(json);
 				if (json.error) return alert("Errore:\n"+json.error);
 				//update VIDEO button data.
-				//todo
+				var id = json.article_id;
+				var data = $('#article-video-'+id).data('article');
+				delete(json.error);
+				delete(json.article_id);
+				$.each(json,function(k,v){
+					data[k.replace('_','')] = v;
+				});
+				if (json.video_id)
+					$('#article-'+id).addClass('hasvideo moon-video');
+				else
+					$('#article-'+id).removeClass('hasvideo moon-video');
+				//close;
+				$youtube_editor.click();
 			})
 			.fail(function(e){
 				console.log(e)
@@ -260,7 +277,6 @@ $(function(){
 		var str = this.value;
 		if (!str){
 			$('#form-yt').trigger('reset');
-			$('#form-yt input[type=hidden]').change();
 			return false;
 		}
 		// video properties
@@ -282,6 +298,13 @@ $(function(){
 		$.each(p,function(k,v){
 			$('#form-yt input[name=video_'+k+']').val(v).change();
 		});
+	});
+	
+	$('#clear-yt').click(function(){
+		var article = $youtube_form.find('input[name="article_id"]'),
+			id = article.val();
+		$youtube_form.trigger('reset');
+		article.val(id);
 	});
 });
 

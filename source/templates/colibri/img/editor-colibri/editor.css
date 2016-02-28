@@ -17,6 +17,55 @@ input,textarea,select{
 	font:inherit;
 }
 
+
+@font-face {
+	font-family: 'icomoon';
+	src: url('fonts/icomoon.eot?ldftgn');
+	src: url('fonts/icomoon.eot?ldftgn#iefix') format('embedded-opentype'),
+		url('fonts/icomoon.ttf?ldftgn') format('truetype'),
+		url('fonts/icomoon.woff?ldftgn') format('woff'),
+		url('fonts/icomoon.svg?ldftgn#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="moon-"], [class*=" moon-"] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'icomoon' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.moon-x:before {
+	content: "\e900";
+}
+.moon-v:before {
+	content: "\e901";
+}
+.moon-gplus:before {
+	content: "\e902";
+}
+.moon-fb:before {
+	content: "\e903";
+}
+.moon-twitter:before {
+	content: "\e904";
+}
+.moon-yt:before {
+	content: "\e905";
+}
+.moon-in:before {
+	content: "\e906";
+}
+
+
+
 #colibrì{
 	position:relative;
 	width:100%;
@@ -205,11 +254,40 @@ ul.choice._x1{
 	text-transform: uppercase;
 	-webkit-border-radius:4px;
 	border-radius: 4px;
-	margin: 20px 0px;
+	margin: 18px 0px;
 	cursor:pointer;
 }
 .button:hover{
 	background:rgb(9, 152, 61);
+}
+.nobutton{
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	padding: 7px 10px;
+	color: #666;
+	text-decoration: none;
+	text-transform: uppercase !important;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+	cursor: pointer;
+	border: 1px solid #888;
+	font-size: 0.8em;
+}
+.nobutton:hover{
+	background:#eee;
+	color:#444;
+	border-color:#666;
+}
+.nobutton::before{
+	padding-right:8px;
+}
+.nb-x::before{
+	content: "\e900";
+	font-family: 'icomoon' !important;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
 }
 #logo-square,
 #logo-circle{
@@ -302,15 +380,23 @@ ul.choice._x1{
 	position:relative;
 }
 #youtubes .hasvideo .image::after{
-	content:" ";
+	content:"\e905";
 	position:absolute;
-	top:0;
+	/*top:0;
 	right:0;
 	width: 0;
 	height: 0;
 	border-style: solid;
 	border-width: 0 20px 20px 0;
-	border-color: transparent rgb(34, 128, 68) transparent transparent;
+	border-color: transparent rgb(34, 128, 68) transparent transparent;*/
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	text-align:center;
+	font-size: 30px;
+	line-height: 91px;
+	color: #228044;
 }
 /* editor video */
 #yt-bkg{
@@ -385,6 +471,40 @@ ul.choice._x1{
 	box-sizing:border-box;
 }
 
+
+
+/* follow */
+.follows a{
+	font-size: 1.5em;
+	padding:3px 6px;
+	color:#bbb;
+	transition:color 150ms;
+}
+.follows h4{
+	padding: 40px 0;
+	position:relative;
+}
+.follows h4:before{
+	display: block;
+	content: " ";
+	position: absolute;
+	height: 1px;
+	background: #111;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	max-width: 300px;
+}
+#ico-gp:hover{
+	color:#ff3030;
+}
+#ico-fb:hover{
+	color:#306dff;
+}
+#ico-in:hover{
+	color:#3099ff;
+}
 
 
 @media only screen and (min-width:1367px){

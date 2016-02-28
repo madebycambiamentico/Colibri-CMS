@@ -11,19 +11,19 @@
 **/
 
 //control variables
-if (!isset($page)){
+if (!isset($page,$video)){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	die;
 }
 
 //in future: get values from sqlite
 $YTIframe = [
-	'width' => 560,
-	'height' => 315,
-	'id' => "v10PDyCbwWY",
+	'width' => $video['videow'],
+	'height' => $video['videoh'],
+	'id' => $video['videoid'],
 	'params' => [
-		'start' => 37,
-		'end' => 67,
+		'start' => $video['videostart'],
+		'end' => $video['videoend'],
 		'autoplay' => 1
 	]
 ];
