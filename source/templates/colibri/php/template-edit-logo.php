@@ -1,17 +1,15 @@
 <?php
-//header( "refresh:3;url=../editor.php" );
-
-if (!isset($_POST['markx'],$_POST['marky']))
-	die("Variabili errate");
+header('Content-Type: application/json');
 
 require_once "../../../config.php";
-require_once "../../../".$CONFIG['database']['dir']."functions.inc.php"; closeConnection();
+require_once "../../../".$CONFIG['database']['dir']."functions.inc.php";
+closeConnection();
 
 //control login
 require_once "../../../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1);
+allowOnlyUntilUserClass(1,true);
 
 
 function check_and_create_path($path){
@@ -36,6 +34,7 @@ function createThumbnail($source, $path, $filename, $MOParams){
 }
 
 
+//response keeper - NEEDED
 $response = [];
 
 
@@ -45,42 +44,12 @@ $response = [];
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	include "template-edit-logo.inc.php";
-	
-	include "template-edit-map.inc.php";
-	
-	//----------------------------------------------------- MARKER
-	$markx = intval($_POST['markx'],10);
-	$marky = intval($_POST['marky'],10);
-	//queue update css...
-	$cssupdates['marker'] = [
-		'x' => $markx,
-		'y' => $marky
-	];
-	//----------------------------------------------------- FINE MARKER
-	
-	//update ini & css
-	include "template-edit-props.inc.php";
-	$propupdate = new COLIBRI_TEMPLATE_EDIT('template.ini');
-	
-	if ($propupdate->updateini($cssupdates))
-		$response[] = "File INI aggiornato.";
-	else
-		$response[] = "Nessun aggiornamento al file INI.";
-	
-	if ($propupdate->updatecss())
-		$response[] = "File CSS aggiornato.";
-	else
-		$response[] = "Nessun aggiornamento al file CSS.";
-}
 else
 	die('Variabili errate');
 
 
-exit(implode("<br>",$response));
+jsonSuccess($response);
 
 ?>

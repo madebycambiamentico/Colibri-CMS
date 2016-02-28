@@ -1,17 +1,15 @@
 <?php
-//header( "refresh:3;url=../editor.php" );
-
-if (!isset($_POST['markx'],$_POST['marky']))
-	die("Variabili errate");
+header('Content-Type: application/json');
 
 require_once "../../../config.php";
-require_once "../../../".$CONFIG['database']['dir']."functions.inc.php"; closeConnection();
+require_once "../../../".$CONFIG['database']['dir']."functions.inc.php";
+closeConnection();
 
 //control login
 require_once "../../../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1);
+allowOnlyUntilUserClass(1,true);
 
 
 function check_and_create_path($path){
@@ -36,6 +34,7 @@ function createThumbnail($source, $path, $filename, $MOParams){
 }
 
 
+//response keeper - NEEDED
 $response = [];
 
 
@@ -45,12 +44,8 @@ $response = [];
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
-
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-	include "template-edit-logo.inc.php";
-	
+	$cssupdates = [];
 	include "template-edit-map.inc.php";
 	
 	//----------------------------------------------------- MARKER
@@ -80,7 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 else
 	die('Variabili errate');
 
+$response['prop'] = $cssupdates;
 
-exit(implode("<br>",$response));
+jsonSuccess($response);
 
 ?>

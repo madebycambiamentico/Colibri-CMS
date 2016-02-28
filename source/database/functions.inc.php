@@ -53,6 +53,7 @@ function goToPage($path='/'){
 
 //move user to home if not allowed in, clear session for not logged in, allow for $maxuserclass.
 //if $maxuserclass == 0 then everybody logged is allowed (no class check)
+//$maxuserclass = 1 => only admin allowed
 function allowOnlyUntilUserClass(
 	$maxuserclass=0,
 	$jsonError=false,
