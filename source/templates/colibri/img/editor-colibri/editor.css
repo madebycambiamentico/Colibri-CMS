@@ -380,8 +380,9 @@ ul.choice._x1{
 	position:relative;
 }
 #youtubes .hasvideo .image::after{
-	content:"\e905";
+	content:"\e901";
 	position:absolute;
+	/* top-right triangle? */
 	/*top:0;
 	right:0;
 	width: 0;
@@ -389,14 +390,21 @@ ul.choice._x1{
 	border-style: solid;
 	border-width: 0 20px 20px 0;
 	border-color: transparent rgb(34, 128, 68) transparent transparent;*/
-	top:0;
-	left:0;
-	width: 100%;
-	height: 100%;
-	text-align:center;
+	top: 0;
+	left: 0;
+	width: 60px;
+	height: 60px;
+	text-align: center;
 	font-size: 30px;
-	line-height: 91px;
-	color: #228044;
+	line-height: 60px;
+	color: #FFF;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	border: 1px solid #fff;
+	-webkit-border-radius: 60px;
+	border-radius: 50%;
+	background: rgba(255, 0, 0, 0.5);
 }
 /* editor video */
 #yt-bkg{

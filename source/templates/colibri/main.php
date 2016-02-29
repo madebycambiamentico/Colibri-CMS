@@ -165,7 +165,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 <?php
 	LINK::script('js/main.min.js?v=1.0');
 	
-	if (!$page['src'] && isset($YTIframeJsParams))
+	if (isset($YTIframeJsParams))
 		LINK::script('_YTiframe.js.php?'.$YTIframeJsParams);
 ?>
 

@@ -195,6 +195,9 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 	LINK::script('plugins/autoadapt-mosaic-grid/autoadapt-2.3.min.js');
 	LINK::script('plugins/simplelightbox/simplelightbox.min.js');
 	LINK::script('js/main.min.js?v=1.0');
+	
+	if (isset($YTIframeJsParams))
+		LINK::script('_YTiframe.js.php?'.$YTIframeJsParams);
 ?>
 
 <script>
