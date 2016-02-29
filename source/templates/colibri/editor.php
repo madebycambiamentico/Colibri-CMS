@@ -13,10 +13,12 @@
 require_once "../../config.php";
 require_once "../../".$CONFIG['database']['dir']."functions.inc.php";
 
-//control login
+//control login - uncomment to hide this page from public
+/*
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
 allowOnlyUntilUserClass(1);
+*/
 
 include "php/link.class.php";
 include "php/ini.class.php";
@@ -35,8 +37,7 @@ $ini = INI_FILE::iread('php/template.ini',true);
 	<meta name="description" content="Colibrì template editor">
 	<meta name="author" content="Costacurta Nereo">
 
-	<link type="text/css" rel="stylesheet" href="editor.css">
-	<link type="text/css" rel="stylesheet" href="<?php echo LINK::file('php/mbc-filemanager/css/inputs.css?v=1.0') ?>">
+	<link type="text/css" rel="stylesheet" href="img/editor-colibri/editor.css">
 	
 	<style type="text/css">
 	/* custom map height + map marker position */
@@ -65,91 +66,175 @@ $ini = INI_FILE::iread('php/template.ini',true);
 
 <body>
 
+<!--
+here the colibrì background image
+2:1 fino a 512px
+512x512 fino a 320px
+320x480 per schermi più piccoli
+-->
+<div id="colibrì">
+	<div class="noise">
+		<!-- title -->
+		<div class="titles">
+			<div class="titles-table">
+			<div class="titles-cell">
+				<div class="titles-position">
+					<h1>Colibrì Template</h1>
+					<h2>Custom Editor</h2>
+				</div>
+			</div>
+			</div>
+		</div>
+		
+		<!-- menu -->
+		<div id="menu">
+			<a class="logo" href="http://colibricms.altervista.org/"></a><!--
+			--><!--a class="item" href="http://cambiamentico.altervista.org/">MadeByCambiamentico</a--><!--
+			--><a class="item" href="<?php echo LINK::file('bacheca') ?>">Bacheca</a><!--
+			--><a class="item" href="<?php echo LINK::file('options') ?>">Gestione sito</a>
+		</div>
+		
+		<!-- menu for mobiles -->
+		<div id="menu-mobile">
+			<div class="content">
+				<a class="logo" href="http://colibricms.altervista.org/"></a><!--
+				--><!--a class="item" href="http://cambiamentico.altervista.org/">MadeByCambiamentico</a--><!--
+				--><a href="<?php echo LINK::file('bacheca') ?>">Bacheca</a><!--
+				--><a href="<?php echo LINK::file('options') ?>">Gestione sito</a>
+			</div>
+		</div>
+		<div id="open-menu"><a></a></div>
+	</div>
+</div>
+
+
 
 
 <div id="wrapper">
+	<p class="photocourtesy">Photo curtesy of <a href="http://www.patriciaisbellphotography.com" target="_blank">Patricia Isbell</a></p>
 
-<form action="php/template-edit.php" method="POST" enctype="multipart/form-data">
-
-<div class="inputs ultra center">
-	<h1><span id="colibrì">Colibrì</span> <i>Template Editor</i></h1>
-</div>
-
-<br>
-
-<div class="inputs ultra">
-	<h3>Logo</h3>
-	<p><label for="file_logo" id="logo"></label>Dimensioni massime: 140&times;140 px.<br>Immagini di dimensioni maggiori verranno ridimensionate.<br>Formato preferenziale: <i>PNG</i></p>
-	<p><label class="ifile"><b class="btn">Scegli logo</b><input type="file" id="file_logo" name="logo" accept="image/*"><span class="file"></span></label><br>
-		<label><b class="btn red">Salva modifiche</b><input type="submit" value="Salva modifiche"></label></p>
-</div>
-<div class="fixfloat"></div>
-
-<br>
-
-<div id="powered">
-	<div class="logo"></div>
-	<div class="mbc">
-		<b>Powered By <span>Colibrì</span></b><br>
-		<i>Fast and Reliable CMS ever <a href="http://cambiamentico.altervista.org/">MadeByCambiamentico</a></i><br>
-		<i>Colbrì Theme &copy;2016</i> by Nereo Costacurta<br>
+	<div class="content _withbottom">
+	
+		<h3>Logo</h3>
+		
+		<form id="form-logo" class="center choicer" action="php/template-edit-logo.php" method="POST" enctype="multipart/form-data">
+			
+			<!-- logo + instructions -->
+			<ul class="choice _x1 _max420">
+				<li class="center">
+					<label for="file-logo" id="logo-square"></label><!--
+					--><label for="file-logo" id="logo-circle"></label>
+				</li>
+				<li>
+					<h4>Edita logo</h4>
+					<div class="center">
+					<input type="hidden" value="test" name="test">
+					<label class="button">Scegli logo<input type="file" name="logo" id="file-logo" class="hidden-input" accept="image/*"></label>
+					</div>
+					<p>Selezionare il nuovo logo del sito.
+					Le dimensioni massime consentite sono <code>140px &times; 140px</code>.
+					L'immagine verrà eventualmente ridimensionata e convertita in formato <code>png</code></p>
+				</li>
+			</ul>
+			
+		</form>
 	</div>
-	<div class="actions">
-		<a href="<?php echo LINK::file('bacheca') ?>">Bacheca</a><!--
-	--><a href="<?php echo LINK::file('options') ?>">Gestione sito</a>
+	
+	
+	<div class="content _withbottom">
+	
+		<h3>Mappa</h3>
+		
+		<form id="form-map" class="center choicer"
+			action="php/template-edit-map.php"
+			method="POST"
+			enctype="multipart/form-data">
+			
+			<!-- mappa + istruzioni -->
+			<ul class="choice _x2">
+				<li>
+					<h4>Edita mappa</h4>
+					<div class="center">
+						<label class="button">Scegli mappa<input type="file" name="map" id="file-map" class="hidden-input" accept="image/*"></label>
+					</div>
+					<p>Selezionare la nuova immagine per la mappa.
+					Le dimensioni minime consigliate sono <code>1366px &times; 520px</code>. Sono ammesse anche dimensioni minori, a scapito della qualità visiva.
+					L'immagine verrà automaticamente ridimensionata nei seguenti formati:
+						<br><code>1366px &times; 520px</code>
+						<br><code>800px &times; 520px</code>
+						<br><code>520px &times; 520px</code>
+					</p>
+				</li>
+			</ul><!--
+				
+				istruzioni x marker
+			--><ul class="choice _x2">
+				<li>
+					<h4>Edita marker</h4>
+					<div class="center">
+						<input type="hidden" id="markx" name="markx" value="<?php echo $ini['custom']['mark_x'] ?>">
+						<input type="hidden" id="marky" name="marky" value="<?php echo $ini['custom']['mark_y'] ?>">
+						<input type="submit" class="button" value="Applica modifiche">
+					</div>
+					<p>Seleziona la nuova posizione del marker dalla mappa qui sotto riportata.
+					Si consiglia di rimanere all'interno dell'area tratteggiata per contenere sempre il marker visibile in ogni dimensione dello schermo.</p>
+				</li>
+			</ul>
+			
+		</form>
+	</div>
+	
+	<div class="content-wide">
+		<!-- edit marker on big map -->
+		<div id="map">
+			<div id="mapmark"></div>
+			<div id="cell"></div>
+		</div>
+	</div>
+
+	
+	<div class="content-wide _withbottom dark">
+	
+		<h3><span class="ytlogo">Youtube Video</span></h3>
+		
+		<div id="youtubes" class="choicer"></div>
+		
 	</div>
 </div>
 
-<div class="inputs ultra" id="yellow">
-	<h3>Mappa</h3>
-	<p>Dimensioni consigliate: 1366&times;520 px.<br>Immagini di dimensioni minori potrebbero non avere un effetto estetico accettabile.<br>Formato preferenziale: <i>PNG o JPG</i></p>
-	<p><label class="ifile"><b class="btn">Scegli mappa</b><input type="file" name="map" accept="image/*"><span class="file"></span></label><br>
-		<label><b class="btn red">Salva modifiche</b><input type="submit" value="Salva modifiche"></label></p>
-	<br>
-	<br>
-	<div class="clicca">Clicca sull'immagine per cambiare posizione al <i>marker</i></div>
-	<div id="map">
-		<div id="mapmark"></div>
-		<div id="cell"></div>
-		<input type="hidden" id="markx" name="markx" value="<?php echo $ini['custom']['mark_x'] ?>">
-		<input type="hidden" id="marky" name="marky" value="<?php echo $ini['custom']['mark_y'] ?>">
-	</div>
+
+<div id="yt-bkg">
+	<form id="form-yt">
+		<h4>YouTube Video</h4>
+		<input type="hidden" name="article_id" value="">
+		<input type="hidden" name="video_id" value="">
+		<input type="hidden" name="video_w" value="560">
+		<input type="hidden" name="video_h" value="315">
+		<p>Inserisci il codice di incorporamento <b>iframe</b> di YouTube (lo trovi nelle opzioni di condivisione video)</p>
+		<textarea placeholder='&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEOID" frameborder="0" allowfullscreen>&lt;/iframe>'></textarea>
+		<table>
+			<tr><th>pagina:</th><td id="s_article_title">qui ci va il titolo</td></tr>
+			<tr><th>video id:</th><td id="s_video_id"></td></tr>
+			<tr><th>width:</th><td id="s_video_w"></td></tr>
+			<tr><th>height:</th><td id="s_video_h"></td></tr>
+			<tr><th>start at:</th><td class="numbers"><input type="text" name="video_start" value="0"> seconds</td></tr>
+			<tr><th>end at:</th><td class="numbers"><input type="text" name="video_end" value=""> seconds</td></tr>
+		</table>
+		<div class="center">
+			<input class="button" type="submit" value="Salva modifiche">
+		</div>
+	</form>
 </div>
 
-<div id="mysavebutton" class="inputs ultra center">
-	<label><b class="btn red">Salva modifiche</b><input type="submit" value="Salva modifiche"></label>
-</div>
-
-</form>
-
-</div>
 
 
 
 
 
-<?php LINK::getJQuery() ?>
-
-<script>
-$("#map").click(function(e){
-   var parentOffset = $(this).offset(); 
-   var relX = e.pageX - parentOffset.left;
-   var relY = e.pageY - parentOffset.top;
-	var w = $(this).width();
-	var h = $(this).height();
-	var mark_x = Math.ceil(relX-w/2-32);
-	var mark_y = Math.ceil(h-relY-16);
-	$('#mapmark').css({
-		marginLeft:mark_x+'px',
-		bottom:mark_y+'px'
-	});
-	$('#markx').val(mark_x);
-	$('#marky').val(mark_y);
-});
-$('input[type=file]').change(function(){
-	$(this).next('span').text(this.value);
-});
-</script>
+<?php
+	LINK::getJQuery();
+	LINK::script('js/editor.js');
+?>
 
 </body>
 </html>

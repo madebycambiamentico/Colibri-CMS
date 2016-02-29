@@ -17,7 +17,7 @@ if (isset($_FILES['map'])){
 	//----------- multiple files -----------
 	//something went wrong with <form> upload
 	if (is_array($_FILES['map']['name'])){
-		die("File multipli non consentiti");
+		jsonError("File multipli non consentiti");
 		goto end_map_upload;
 	}
 	
@@ -27,29 +27,29 @@ if (isset($_FILES['map'])){
 	//errors log...
 	if ($_FILES['map']['error'] !== UPLOAD_ERR_OK){
 		include_once "../../../php/mbc-filemanager/classes/uploadexception.class.php";
-		die($UploadExceptionErrors[ $_FILES['map']['error'] ]);
+		jsonError($UploadExceptionErrors[ $_FILES['map']['error'] ]);
 	}
 	
 	// if file not uploaded then skip it
 	if ( !is_uploaded_file($_FILES['map']['tmp_name']) )
-		die("File wasn't uploaded.".$_FILES['map']['tmp_name']);
+		jsonError("File wasn't uploaded.".$_FILES['map']['tmp_name']);
 	
 	//max 5 Mb
 	if ($_FILES['map']['size'] > 5e6)
-		die("Il file è troppo grande. Puoi caricare al massimo 5 Mb!");
+		jsonError("Il file è troppo grande. Puoi caricare al massimo 5 Mb!");
 	
 	
 	
 	$ext = mb_strtolower(pathinfo($_FILES['map']['name'], PATHINFO_EXTENSION));
 	if (!in_array($ext,['jpg','jpeg','png','gif','bmp']))
-		die("Tipo di file non permesso.");
+		jsonError("Tipo di file non permesso.");
 	
 	
 	$user_path = '../img/';
 	$user_filename = 'map';//add 1366, 800, 520*
 	
 	if (!check_and_create_path($user_path))
-		die("Impossibile creare cartella per il file");
+		jsonError("Impossibile creare cartella per il file");
 	
 	$temp_file = $user_path . mt_rand().'.'.$ext;
 	
@@ -70,7 +70,7 @@ if (isset($_FILES['map'])){
 				'w' => $imgsize[0],
 				'h' => $fileheight,
 				'resize' => 'crop',
-				'quality' => $ext == 'png' ? 20 : 95
+				'quality' => $ext == 'png' ? 50 : 90
 			]);
 			//if w > 800 px create 800 and 520 sizes
 			if ($imgsize[0]>800){
@@ -80,14 +80,14 @@ if (isset($_FILES['map'])){
 					'w' => $sizes[1],
 					'h' => $fileheight,
 					'resize' => 'crop',
-					'quality' => $ext == 'png' ? 20 : 95
+					'quality' => $ext == 'png' ? 40 : 86
 				]);
 				createThumbnail($temp_file, $user_path, $user_filename.'-'.$sizes[2].'.'.$ext,
 				[
 					'w' => $sizes[2],
 					'h' => $fileheight,
 					'resize' => 'crop',
-					'quality' => $ext == 'png' ? 20 : 95
+					'quality' => $ext == 'png' ? 20 : 80
 				]);
 			}
 			//if 800 > w > 520 px create 520 sizes
@@ -104,26 +104,26 @@ if (isset($_FILES['map'])){
 			
 			unlink($temp_file);
 			
+			//--------------------------------------------
 			//queue update css...
 			$cssupdates['map'] = [
-				'maps' => [
-					$sizes[0] => $filemediaquery[0],
-					$sizes[1] => $filemediaquery[1],
-					$sizes[2] => $filemediaquery[2]
-				],
+				'map_'.$sizes[0] => $filemediaquery[0],
+				'map_'.$sizes[1] => $filemediaquery[1],
+				'map_'.$sizes[2] => $filemediaquery[2],
 				'height' => $fileheight,
 				'ext' => $ext
 			];
+			//--------------------------------------------
 			
 			$response[] = "Mappa aggiornata";
 		}
 		else{
 			unlink($temp_file);
-			die('File non permesso');
+			jsonError('File non permesso');
 		}
 	}
 	else
-		die('Impossibile spostare il file.');
+		jsonError('Impossibile spostare il file.');
 }
 else
 	$response[] = "Nessuna nuova mappa caricata.";

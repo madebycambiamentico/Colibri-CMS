@@ -17,7 +17,7 @@ if (isset($_FILES['logo'])){
 	//----------- multiple files -----------
 	//something went wrong with <form> upload
 	if (is_array($_FILES['logo']['name'])){
-		die("File multipli non consentiti");
+		$response[] = "File multipli non consentiti";
 		goto end_logo_upload;
 	}
 	
@@ -27,29 +27,29 @@ if (isset($_FILES['logo'])){
 	//errors log...
 	if ($_FILES['logo']['error'] !== UPLOAD_ERR_OK){
 		include_once "../../../php/mbc-filemanager/classes/uploadexception.class.php";
-		die($UploadExceptionErrors[ $_FILES['logo']['error'] ]);
+		jsonError($UploadExceptionErrors[ $_FILES['logo']['error'] ]);
 	}
 	
 	// if file not uploaded then skip it
 	if ( !is_uploaded_file($_FILES['logo']['tmp_name']) )
-		die("File wasn't uploaded.".$_FILES['logo']['tmp_name']);
+		jsonError("File wasn't uploaded.".$_FILES['logo']['tmp_name']);
 	
 	//max 5 Mb
 	if ($_FILES['logo']['size'] > 5e6)
-		die("Il file è troppo grande. Puoi caricare al massimo 5 Mb!");
+		jsonError("Il file è troppo grande. Puoi caricare al massimo 5 Mb!");
 	
 	
 	
 	$ext = mb_strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
 	if (!in_array($ext,['jpg','jpeg','png','gif','bmp']))
-		die("Tipo di file non permesso.");
+		jsonError("Tipo di file non permesso.");
 	
 	
 	$user_path = '../img/';
-	$user_filename = 'logo.png';//add 256, 128, 64, 32  +  .png
+	$user_filename = 'logo.png';
 	
 	if (!check_and_create_path($user_path))
-		die("Impossibile creare cartella per il file");
+		jsonError("Impossibile creare cartella per il file");
 	
 	
 	$temp_file = $user_path . mt_rand().'.'.$ext;
@@ -80,7 +80,7 @@ if (isset($_FILES['logo'])){
 					[
 						'w' => 140,
 						'h' => 140,
-						'resize' => 'auto',
+						'resize' => 'crop',
 						'quality' => 20
 					]);
 			}
@@ -89,11 +89,11 @@ if (isset($_FILES['logo'])){
 		}
 		else{
 			unlink($temp_file);
-			die('File non permesso');
+			jsonError('File non permesso');
 		}
 	}
 	else
-		die('Impossibile spostare il file.');
+		jsonError('Impossibile spostare il file.');
 }
 else
 	$response[] = "Nessun nuovo logo caricato.";
