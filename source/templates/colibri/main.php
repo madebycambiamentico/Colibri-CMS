@@ -76,11 +76,21 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 	
 		<!-- main image -->
 		<?php
-			if ($page['src']){
+			//search for videos
+			$video = null;
+			if ($pageid){
+				$pdostat = $pdo->query("SELECT * FROM youtube WHERE idarticolo={$pageid}",PDO::FETCH_ASSOC);
+				$video = $pdostat->fetch();
+			}
+			//print header...
+			if ($video){
+				include TEMPLATES::custom($web['template'],'_YTiframe.php');
+			}
+			elseif ($page['src']){
 				echo '<div class="image-main"><div class="image-sizer web"></div></div>';
 			}
 			else{
-				include TEMPLATES::custom($web['template'],'_YTiframe.php');
+				echo '<div id="image-spacer"></div>';
 			}
 		?>
 		
@@ -155,7 +165,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 <?php
 	LINK::script('js/main.min.js?v=1.0');
 	
-	if (!$page['src'] && isset($YTIframeJsParams))
+	if (isset($YTIframeJsParams))
 		LINK::script('_YTiframe.js.php?'.$YTIframeJsParams);
 ?>
 

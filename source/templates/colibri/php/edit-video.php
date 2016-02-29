@@ -34,7 +34,7 @@ else{
 	$pdostat = $pdo->query("SELECT id FROM youtube WHERE idarticolo={$id} LIMIT 1",PDO::FETCH_ASSOC) or jsonError("Impossibile eseguire controllo video [query]");
 	if ($res = $pdostat->fetch()){
 		//update
-		$videoid = $res['id'];
+		$idvideo = $res['id'];
 		$pdostat->closeCursor();
 		$query = [];
 		$params = [];
@@ -44,8 +44,7 @@ else{
 				$params[] = $v;
 			}
 		}
-		$query = "UPDATE youtube SET (".implode(",",$query).") WHERE videoid={$videoid}";
-		die ($query);
+		$query = "UPDATE youtube SET ".implode(",",$query)." WHERE id={$idvideo}";
 		$pdostat = $pdo->prepare($query) or jsonError("Impossibile aggiornare video [prepare]");
 		if (!$pdostat->execute($params)) jsonError('Errore durante aggiornamento video [execute]');
 		if (!$pdostat->rowCount()) jsonError('Nessun video da aggiornare');
@@ -63,7 +62,6 @@ else{
 			}
 		}
 		$query = "INSERT INTO youtube (".$query."idarticolo) VALUES (".str_repeat("?,",count($params))."{$id})";
-		die ($query);
 		$pdostat = $pdo->prepare($query) or jsonError("Impossibile inserire video [prepare]");
 		if (!$pdostat->execute($params)) jsonError('Errore durante inserimento video [execute]');
 		if (!$pdo->lastInsertId()) jsonError('Nessun inserimento effettuato (0)"');

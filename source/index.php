@@ -170,7 +170,7 @@ define('ISINDEX',true);
 
 //search website properties
 $pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
-if (!$web = $pdostat->fetch(PDO::FETCH_ASSOC))
+if (!$web = $pdostat->fetch())
 	noPageFound('Nessuna pagina trovata');
 $pdostat->closeCursor();
 $templatepath = TEMPLATES::path($web['template']);
@@ -178,7 +178,11 @@ $templatepath = TEMPLATES::path($web['template']);
 //search for index page
 //(?)else fill with dummy empty array(?)
 $pdostat = ARTQUERY::query('index',[true]);
-if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC)){
+if ($page = $pdostat->fetch()){
+	$pdostat->closeCursor();
+	$pageid = $page['id'];
+}
+else{
 	$page = [
 		'remaplink' => '',
 		'src' => null,

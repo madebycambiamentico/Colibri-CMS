@@ -17,7 +17,6 @@ if (!isset($_GET)){
 }
 if (!isset(
 		$_GET['width'],
-		$_GET['width'],
 		$_GET['height'],
 		$_GET['id'],
 		$_GET['params'])

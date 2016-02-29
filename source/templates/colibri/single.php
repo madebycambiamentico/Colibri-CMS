@@ -86,7 +86,17 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 	
 		<!-- main image -->
 		<?php
-			if ($page['src']){
+			//search for videos
+			$video = null;
+			if ($pageid){
+				$pdostat = $pdo->query("SELECT * FROM youtube WHERE idarticolo={$pageid}",PDO::FETCH_ASSOC);
+				$video = $pdostat->fetch();
+			}
+			//print header...
+			if ($video){
+				include TEMPLATES::custom($web['template'],'_YTiframe.php');
+			}
+			elseif ($page['src']){
 				echo '<div class="image-main"><div class="image-sizer web"></div></div>';
 			}
 			else{
@@ -185,6 +195,9 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 	LINK::script('plugins/autoadapt-mosaic-grid/autoadapt-2.3.min.js');
 	LINK::script('plugins/simplelightbox/simplelightbox.min.js');
 	LINK::script('js/main.min.js?v=1.0');
+	
+	if (isset($YTIframeJsParams))
+		LINK::script('_YTiframe.js.php?'.$YTIframeJsParams);
 ?>
 
 <script>
