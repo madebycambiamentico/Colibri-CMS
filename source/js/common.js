@@ -81,12 +81,40 @@ function updateView(jid,waitresizeevent){
 //TODO:
 //request filterig to iframe as javascript searchtool callback, istead of loading new page every time (if iframe has ALL)
 var RFM = false;
+var FMP = {
+	ismobile : false,
+	wname : 'COLIBR&Igrave; File Manager',
+	wpop : null
+};
 //filtertype: image, media, all...
 function openFM(filtertype){
-	$('#file-manager').modalbox('on');
-	if (RFM !== filtertype){
-		RFM = filtertype;
-		$('#file-manager iframe')[0].src = 'php/mbc-filemanager/?filter='+filtertype;
+	if (FMP.ismobile || $(window).width() < 1024){
+		//mobile: problems with iframes!!!
+		FMP.ismobile = true; //cache mobile behavior (consistent in future actions)
+		var src = 'php/mbc-filemanager/';
+		if (RFM !== filtertype){
+			RFM = filtertype;
+			var src = 'php/mbc-filemanager/?filter='+filtertype;
+			//filter type changed: [reload page / open new page] AND focus
+			if(FMP.wpop && !FMP.wpop.closed)
+				FMP.wpop.location.assign(src)
+			else
+				FMP.wpop = window.open(src, FMP.wname);
+		}
+		else{
+			//no filter changed: [open new page] OR focus
+			if(!FMP.wpop || FMP.wpop.closed)
+				FMP.wpop = window.open(src, FMP.wname);
+		}
+		FMP.wpop.focus();
+	}
+	else{
+		//PC: 
+		$('#file-manager').modalbox('on');
+		if (RFM !== filtertype){
+			RFM = filtertype;
+			$('#file-manager iframe')[0].src = 'php/mbc-filemanager/?filter='+filtertype;
+		}
 	}
 }
 

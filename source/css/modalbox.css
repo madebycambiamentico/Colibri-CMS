@@ -88,6 +88,10 @@ body.modalbox-blocked{
 	padding: 0;
 	overflow: hidden!important;
 }
+.iframe-holder{
+	-webkit-overflow-scrolling: touch;
+	overflow-y: scroll;
+}
 .popup-cont.full .popup iframe{
 	border: none;
 	width: 100%;
@@ -95,8 +99,7 @@ body.modalbox-blocked{
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	padding-top: 31px;
-	overflow-y: auto!important;
-	-webkit-overflow-scrolling: touch!important;
+	overflow-y: auto;
 }
 .popup-cont .pop-x{
 	position:absolute;

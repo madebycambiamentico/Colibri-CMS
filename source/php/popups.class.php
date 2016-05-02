@@ -54,7 +54,7 @@ class Popups {
 ?>
 <div class="popup-cont full" id="file-manager">
 	<h4>File Manager</h4>
-	<div class="popup overthrow">
+	<div class="popup overthrow iframe-holder">
 		<iframe></iframe>
 	</div>
 </div>
