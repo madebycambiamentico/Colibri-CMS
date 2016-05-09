@@ -13,10 +13,10 @@ function noPageFound($str='Questa pagina non esiste.'){
 	
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	echo $str;
-		/*echo '<br>a)<pre>'.print_r($requestedURL,true).'</pre>';
+		echo '<br>a)<pre>'.print_r($requestedURL,true).'</pre>';
 		echo 'b)<pre>'.print_r($pathPieces,true).'</pre>';
 		global $CONFIG; echo 'c)<pre>'.print_r($CONFIG['database'],true).'</pre>';
-		echo 'd)<pre>'.print_r($_SERVER,true).'</pre>';*/
+		echo 'd)<pre>'.print_r($_SERVER,true).'</pre>';
 	die;
 }
 

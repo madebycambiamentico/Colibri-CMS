@@ -29,11 +29,11 @@ if (!isset(
 $titolo		= trim($_POST['title']);
 $map			= trim($_POST['map']);
 $corpo		= trim($_POST['content']);
+	//if (!$corpo) $corpo = '&nbsp;' //allow empty content, substitute with blank space
 $type			= intval($_POST['type'],10);
 if (empty($_POST['title']) ||
 	empty($_POST['type']) ||
-	empty($_POST['map']) ||
-	empty($_POST['content'])
+	empty($_POST['map'])
 	) jsonError("Controlla di aver correttamente assegnato titolo e contenuto");
 
 //controllo variabili opzionali
