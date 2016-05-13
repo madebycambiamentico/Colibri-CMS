@@ -7,3 +7,12 @@ It features a custom file manager, simple and clean administration UI, and, most
 It is in its early development, so some features are not yet implemented. One day they will be!
 
 website: http://colibricms.altervista.org/
+
+# Roadmap
+- multilanguage admin interface
+- multilanguage support for generated web-pages
+- wiki
+- clean scripts
+- tests
+- automatized site setup
+- modular admin software, so themes can dynamically change editor contents without open a dedicated administration page
