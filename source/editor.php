@@ -157,8 +157,39 @@ if (isset($_GET['q'])){
 			<div class="inputs maxi aligned">
 				<h4>Proprietà articolo</h4>
 				<input type="hidden" name="wasindex" value="<?php echo ($id ? ($ARTICLE['isindex'] ? 1 : 0) : 0) ?>">
+				<input type="hidden" name="wasindexlang" value="<?php echo ($id ? ($ARTICLE['isindexlang'] ? 1 : 0) : 0) ?>">
 				<p><label><input type="checkbox" name="isindex" value="1" <?php echo ($id ? ($ARTICLE['isindex'] ? 'checked' : '') : '') ?>> Pagina iniziale del sito</label><br>
 				<label><input type="checkbox" name="isinmenu" value="1" <?php echo ($id ? ($ARTICLE['isinmenu'] ? 'checked' : '') : '') ?>> Mostra nel menu</label></p>
+				
+				<h4>Gestione lingue</h4>
+				<p>
+				<label><input type="checkbox" name="isindexlang" value="1" <?php echo ($id ? ($ARTICLE['isindexlang'] ? 'checked' : '') : '') ?>>
+				Pagina iniziale del sito per la lingua selezionata</label>
+				<select name="lang"><?php
+					$langs = [
+						'sigla' => ['it','en','de','fr'],
+						'estesa' => ['italiano','english','deutsch','française']
+					];
+					foreach ($langs['sigla'] as $o => $opt)
+						echo "<option value='{$opt}' ".($id ? ($ARTICLE['lang']==$opt ? 'selected' : '') : '').">{$langs['estesa'][$o]} ({$opt})</option>";
+				?></select>
+				</p>
+				<p>
+				Articolo originale:<br>
+				<select id="art-parentlang" name="parentlang">
+					<option value="0">Nessuno</option><?php
+
+$temp = [];
+if ($id) $temp[] = $ARTICLE['lang'];
+if ($pdostat = $pdo->prepare("SELECT id,titolo FROM articoli WHERE (idarticololang IS NULL OR idarticololang = id)".($id ? " AND (lang != ? OR id = {$id})" : ''))){
+	if ($pdostat->execute($temp)){
+		while ($r = $pdostat->fetch(PDO::FETCH_ASSOC)){
+			echo '<option value="'.$r["id"].'"'.($id && $ARTICLE['idarticololang'] == $r["id"] ? ' selected' : '').'>'.htmlentities($r["titolo"],ENT_NOQUOTES).'</option>';
+		}
+	}
+}
+				?></select>
+				</p>
 				
 				<h4>Smart-Links all'articolo</h4>
 				<input id="art-smart-1" name="map" value="<?php echo ($id ? htmlentities($ARTICLE['remaplink'],ENT_QUOTES) : '') ?>" type="text" class="ronly" readonly>

@@ -28,8 +28,11 @@ $.fn.quickEdit = function(){
 		//console.log(props);
 		$('#eart-id').val(id);
 		$('#eart-wasindex').val(props.idx);
-		$('#eart-isindex').prop('checked',props.idx);
+		$('#eart-wasindexlang').val(props.idxl);
 		$('#eart-isinmenu').prop('checked',props.mnu);
+		$('#eart-isindex').prop('checked',props.idx);
+		$('#eart-isindexlang').prop('checked',props.idxl);
+		$('#eart-lang').val(props.lang);
 		$('#eart-image').val(props.img);
 		$('#eart-title').val( $($('#art-'+id+' .art-props h4').contents()[0]).text().trim() ).change();
 		$('#eart-desc').val( $('#art-'+id+' .art-desc').text() );
@@ -51,7 +54,9 @@ function saveArctic(){
 			$('#art-'+json.id+' input.quick-mod').data({
 				idx : json.idx,
 				mnu : json.mnu,
-				img : json.img
+				img : json.img,
+				idxl: json.idxl,
+				lang: json.lang
 			});
 			//update image
 			if (!json.img) $('#art-'+json.id+' label.art-img').css('background-image',"");

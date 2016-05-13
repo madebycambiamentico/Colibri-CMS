@@ -19,11 +19,15 @@ if (!isset(
 		$_POST['parent'],
 		$_POST['content'],
 		$_POST['description'],
-		$_POST['wasindex'])
+		$_POST['wasindex'],
+		$_POST['wasindexlang'],
+		$_POST['lang'],
+		$_POST['parentlang'])
 	){
 		//echo '<pre>'.print_r($_POST,true).'</pre>';
 		jsonError('Variabili errate');
 	}
+
 
 //controllo variabili !== empty
 $titolo		= trim($_POST['title']);
@@ -36,14 +40,19 @@ if (empty($_POST['title']) ||
 	empty($_POST['map'])
 	) jsonError("Controlla di aver correttamente assegnato titolo e contenuto");
 
+	
 //controllo variabili opzionali
 $id			= intval($_POST['id'],10);
 $idparent	= intval($_POST['parent'],10);
 	if (!$idparent) $idparent = 'NULL';
 $wasindex	= intval($_POST['wasindex'],10);
+$wasindexlang = intval($_POST['wasindexlang'],10);
 $desc			= preg_replace("/\s+/"," ",trim($_POST['description']));
 $image		= trim($_POST['image']);
-
+$lang			= trim($_POST['lang']);
+	if (strlen($lang) > 2) $lang = '';
+$idparentlang = intval($_POST['parentlang'],10);
+	if (!$idparentlang) $idparentlang = 'NULL';
 
 
 //controllo checkbox
@@ -51,12 +60,9 @@ $idalbum		= isset($_POST['album']) ? intval($_POST['album'],10) : 'NULL';
 	if (!$idalbum) $idalbum = 'NULL';
 $isinmenu	= isset($_POST['isinmenu']) ? 1 : 0;
 $isindex		= isset($_POST['isindex']) ? 1 : 0;
+$isindexlang = isset($_POST['isindexlang']) ? 1 : 0;
 
-if ($isindex && !$wasindex){
-	//remove previous isindex to prevent conflicts
-	$pdores = $pdo->query("UPDATE articoli SET isindex=0 WHERE isindex") or jsonError('Errore durante modifica articoli in conflitto [query]');
-	$pdores->closeCursor();
-}
+
 
 
 //control if remaplink not in use: get current id (if exists)
@@ -73,20 +79,35 @@ if (!$pdostat->execute([$map])) jsonError('Errore durante controllo articolo [ex
 if ($r = $pdostat->fetch(PDO::FETCH_ASSOC)) $idwithmap = $r['id'];
 
 
+
+//controllo conflitti INDEX
+//remove previous isindex (and/or isindexlang) to prevent conflicts
+if ( ($isindex && !$wasindex) ){
+	$pdores = $pdo->query("UPDATE articoli SET isindex = 0 WHERE isindex") or jsonError('Errore durante modifica articoli in conflitto [query]');
+	$pdores->closeCursor();
+}
+if ( ($isindexlang && !$wasindexlang) ){
+	$pdostat = $pdo->prepare("UPDATE articoli SET isindexlang = 0 WHERE isindexlang AND lang = ?") or jsonError('Errore durante modifica articoli in conflitto [prepare]');
+	if (!$pdostat->execute([$lang])) jsonError('Errore durante modifica articoli in conflitto [execute]');
+}
+
+
 $userid = $_SESSION['uid'];
 
 
 if ($id){
+	// -------------------------- UPDATE --------------------------
 	if ($idwithmap && $idwithmap!=$id)
 		jsonError("Questo articolo esiste già: cambia il titolo.");
 	
 	//preparazione parametri + query
-	$params = [$titolo, $corpo, $desc, $map];
+	$params = [$titolo, $corpo, $desc, $map, $lang];
 	$query = "UPDATE articoli SET
-		titolo = ?, corpo = ?, inbreve = ?, remaplink = ?,
+		titolo = ?, corpo = ?, inbreve = ?, remaplink = ?, lang = ?,
 		ideditor = {$userid},
 		dataedit = CURRENT_TIMESTAMP, isindex = {$isindex}, isinmenu = {$isinmenu},
-		idtype = {$type}, idarticolo = {$idparent}, idalbum = {$idalbum}";
+		idtype = {$type}, idarticolo = {$idparent}, idalbum = {$idalbum},
+		isindexlang = {$isindexlang}, idarticololang = {$idparentlang}";
 	if (!empty($image)){
 		$query .= ", idimage = (SELECT id FROM immagini WHERE src = ? LIMIT 1)";
 		$params[] = $image;
@@ -100,18 +121,19 @@ if ($id){
 	jsonSuccess(["success" => "update", 'id' => intval($id,10)]);
 }
 else{
+	// -------------------------- INSERT --------------------------
 	if ($idwithmap)
 		jsonError("Questo articolo esiste già: cambia il titolo.");
 	
 	//preparazione parametri + query
-	$params = [$titolo, $corpo, $desc, $map];
+	$params = [$titolo, $corpo, $desc, $map, $lang];
 	if (!empty($image)){
 		$params[] = $image;
 	}
 	$query = "INSERT INTO articoli
-		(titolo, corpo, inbreve, remaplink, idowner, ideditor, isindex, isinmenu, idtype, idarticolo, idalbum".
+		(titolo, corpo, inbreve, remaplink, lang, idowner, ideditor, isindex, isinmenu, idtype, idarticolo, idalbum, isindexlang, idarticololang".
 			(empty($image) ? '' : ', idimage').")
-		VALUES(?, ?, ?, ?, {$userid}, {$userid}, {$isindex}, {$isinmenu}, {$type}, {$idparent}, {$idalbum}".
+		VALUES(?, ?, ?, ?, ?, {$userid}, {$userid}, {$isindex}, {$isinmenu}, {$type}, {$idparent}, {$idalbum}, {$isindexlang}, {$idparentlang}".
 			(empty($image) ? '' : ", (SELECT id FROM immagini WHERE src = ? LIMIT 1)").")";
 	//exit($query);
 	//INSERT

@@ -16,7 +16,9 @@ if (!isset(
 		$_POST['image'],
 		$_POST['map'],
 		$_POST['description'],
-		$_POST['wasindex'])
+		$_POST['wasindex'],
+		$_POST['wasindexlang'],
+		$_POST['lang'])
 	){
 		//echo '<pre>'.print_r($_POST,true).'</pre>';
 		jsonError('Variabili errate');
@@ -30,6 +32,7 @@ $map			= trim($_POST['map']);
 if (empty($_POST['title']) ||
 	empty($_POST['map'])
 	) jsonError("Controlla di aver correttamente assegnato titolo e contenuto");
+$lang			= trim($_POST['lang']);
 
 //controllo variabili opzionali
 $wasindex	= intval($_POST['wasindex'],10);
@@ -39,6 +42,7 @@ $image		= trim($_POST['image']);
 //controllo checkbox
 $isinmenu	= isset($_POST['isinmenu']) ? 1 : 0;
 $isindex		= isset($_POST['isindex']) ? 1 : 0;
+$isindexlang	= isset($_POST['isindexlang']) ? 1 : 0;
 
 
 if ($isindex && !$wasindex){
@@ -52,11 +56,12 @@ $userid = $_SESSION['uid'];
 
 
 //preparazione parametri + query
-$params = [$titolo, $desc, $map];
+$params = [$titolo, $desc, $map, $lang];
 $query = "UPDATE articoli SET
-	titolo = ?, inbreve = ?, remaplink = ?,
+	titolo = ?, inbreve = ?, remaplink = ?, lang = ?,
 	ideditor = {$userid},
-	dataedit = CURRENT_TIMESTAMP, isindex = {$isindex}, isinmenu = {$isinmenu}";
+	dataedit = CURRENT_TIMESTAMP,
+	isindex = {$isindex}, isinmenu = {$isinmenu}, isindexlang = {$isindexlang}";
 if (!empty($image)){
 	$query .= ", idimage = (SELECT id FROM immagini WHERE src = ? LIMIT 1)";
 	$params[] = $image;
@@ -77,6 +82,8 @@ jsonSuccess([
 	'desc' => $params[1],
 	'img' => $image,
 	'idx' => $isindex,
-	'mnu' => $isinmenu
+	'mnu' => $isinmenu,
+	'idxl' => $isindexlang,
+	'lang' => $lang
 ]);
 ?>
