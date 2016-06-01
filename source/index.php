@@ -11,7 +11,7 @@ require_once "php/templates.class.php";
 
 //--------------------------------------------------------
 function STOPFORDEBUG($die=true){
-	global $requestedURL, $pathPieces, $mylang;
+	global $requestedURL, $pathPieces, $mylang, $CONFIG;
 	
 	echo 'LANG : '.$mylang;
 	
@@ -19,7 +19,7 @@ function STOPFORDEBUG($die=true){
 	
 	echo '<br>b) $pathPieces:<pre>'.print_r($pathPieces,true).'</pre>';
 	
-	global $CONFIG; echo '<br>c) $CONFIG["database"]:<pre>'.print_r($CONFIG['database'],true).'</pre>';
+	echo '<br>c) $CONFIG["database"]:<pre>'.print_r($CONFIG['database'],true).'</pre>';
 	
 	echo '<br>d) $_SERVER:<pre>'.print_r($_SERVER,true).'</pre>';
 	
@@ -32,12 +32,15 @@ function noPageFound($str='Questa pagina non esiste.'){
 	
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	echo $str;
-	STOPFORDEBUG(false);
+	//STOPFORDEBUG(false);
 	die;
 }
 
-
-$known_langs = ['it','en','de','fr']; //should be fetched from database...
+//-----------------------------------
+//should be fetched from database...
+$known_langs = ['it','en','de','fr'];
+//can contain 2-letters or 5-letters (e.g.: "en", "en-UK")
+//-----------------------------------
 
 function setPreferredLanguage($lang='it'){
 	setcookie('lang', $lang, time()+(86400*7), "/", "", false, false); // 86400 = 1 day, for all domain directory, no domain restriction, no SSL, js can edit
@@ -208,6 +211,7 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		//strict map + full image
 		$map = $fixPathPieces[0] . (isset($fixPathPieces[1]) ? '/'.$fixPathPieces[1] : '');
 		
+		anchor_bymap:
 		$pdostat = ARTQUERY::query('byMap', [false, true, $mylang], [$map]);
 		if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
 			noPageFound('Nessuna pagina trovata [cod 005]');
@@ -268,8 +272,21 @@ if ($page = $pdostat->fetch()){
 	$pdostat->closeCursor();
 	$pageid = $page['id'];
 }
+elseif ($mylang){
+	//fallback to standard index if not available in that language
+	$pdostat = ARTQUERY::query('index',[true]);
+	if ($page = $pdostat->fetch()){
+		$pdostat->closeCursor();
+		$pageid = $page['id'];
+		$mylang = $page['lang'];
+		setPreferredLanguage($mylang);
+	}
+	else{
+		noPageFound('Pagina index mancante! [cod 007/lang]');
+	}
+}
 else{
-	noPageFound('Pagina index mancante! [cod 007');
+	noPageFound('Pagina index mancante! [cod 007/no-lang]');
 }
 $pdostat->closeCursor();
 require TEMPLATES::main($web['template']);

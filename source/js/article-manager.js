@@ -141,6 +141,8 @@ $(function(){
 		.always(function(){
 			//unlock form...
 			BUSY.end();
+			//TODO: update sitemap
+			$.get('sitemap-generator-generic.php').always(function(e){console.log(e)});
 		});
 	});
 });

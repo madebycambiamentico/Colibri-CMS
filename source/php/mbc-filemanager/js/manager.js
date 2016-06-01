@@ -459,6 +459,8 @@ function deleteFiles(aFiles){
 			});
 			alert(fail)
 		}
+		//call sitemap generator
+		$.get('../../sitemap-generator-generic.php').always(function(e){console.log(e)});
 	})
 	.error(function(e){
 		console.log(e);
@@ -505,6 +507,8 @@ function editFile(pf,gi,fi){
 			}
 			//close modal box
 			$('#edit-files').modalbox();
+			//call sitemap generator
+			$.get('../../sitemap-generator-generic.php').always(function(e){console.log(e)});
 		})
 		.fail(function(e) {
 			console.log(e);
