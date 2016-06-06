@@ -28,11 +28,13 @@ if (!isset($_POST['rcptc']['k'], $_POST['rcptc']['s']))
 	jsonError('Variabili reCAPTCHA mancanti');
 
 $query = "UPDATE sito SET
-autore=?, titolo=?, descr=?, motto=?, info=?, email=?";
+autore=?, titolo=?, descr=?, motto=?, info=?, email=?, multilanguage=?";
 $params = [];
+
 
 //id of current saved properties
 $id = intval($_POST['id'],10);
+
 
 //common properties
 $prop = [
@@ -44,6 +46,7 @@ $prop = [
 ];
 foreach($prop as $p){ $params[] = $p; }
 
+
 //email
 $email = trim($_POST['email']);
 if ($email!==''){
@@ -54,6 +57,11 @@ if ($email!==''){
 	$email = $ENCRYPTER->encrypt($email);
 }
 $params[] = $email;
+
+
+//is multilanguage?
+$params[] = isset($_POST['multilang']) ? 1 : 0;
+
 
 //recaptcha keys
 $recaptcha = [
@@ -75,14 +83,16 @@ elseif (empty($recaptcha['k'])){
 }
 //(else do not update keys)
 
-$query .= " WHERE id={$id}";
 
+
+
+$query .= " WHERE id={$id}";
 
 
 //run edit
 $pdostat = $pdo->prepare($query) or jsonError('Errore durante modifica sito [prepare]');
 if (!$pdostat->execute($params)) jsonError('Errore durante modifica sito [execute]');
-if (!$pdostat->rowCount()) jsonError('Nessun sito da ripristinare');
+if (!$pdostat->rowCount()) jsonError('Database corrotto: nessun dato da aggiornare');
 jsonSuccess();
 
 

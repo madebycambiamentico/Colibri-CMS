@@ -28,8 +28,6 @@ function STOPFORDEBUG($die=true){
 //--------------------------------------------------------
 
 function noPageFound($str='Questa pagina non esiste.'){
-	global $requestedURL, $pathPieces;
-	
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	echo $str;
 	//STOPFORDEBUG(false);
@@ -106,7 +104,10 @@ $mylang			= detectPreferredLanguage();
 if (isset($_SERVER['REDIRECT_URL'])){
 	
 	fix_script_url();
-	$requestedURL = str_ireplace($CONFIG['mbc_cms_dir'],"",$_SERVER['SCRIPT_URL']);
+	if ($CONFIG['mbc_cms_dir']==='/')
+		$requestedURL = substr($_SERVER['SCRIPT_URL'],1);
+	else
+		$requestedURL = str_ireplace($CONFIG['mbc_cms_dir'],"",$_SERVER['SCRIPT_URL']);
 	$pathPieces = explode("/",$requestedURL);
 	
 	//STOPFORDEBUG(false);
@@ -211,10 +212,9 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		//strict map + full image
 		$map = $fixPathPieces[0] . (isset($fixPathPieces[1]) ? '/'.$fixPathPieces[1] : '');
 		
-		anchor_bymap:
 		$pdostat = ARTQUERY::query('byMap', [false, true, $mylang], [$map]);
 		if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
-			noPageFound('Nessuna pagina trovata [cod 005]');
+			noPageFound('Nessuna pagina trovata [cod 005] ('.$map.')/'.$mylang);
 		$pdostat->closeCursor();
 		$pageid = $page['id'];
 		
