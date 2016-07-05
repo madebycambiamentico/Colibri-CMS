@@ -1,4 +1,13 @@
 <?php
+/**
+ * @author: nereo costacurta
+ *
+ * @project: colibrì CMS | madebycambiamentico
+ * @description: default login page
+ *
+ * @license: GPLv3
+ * @copyright: (C)2016 nereo costacurta
+ */
 
 require_once "config.php";
 require_once $CONFIG['database']['dir']."functions.inc.php";
@@ -26,65 +35,19 @@ $Colibrì = new Colibri();
 	<meta name="description" content="">
 	<meta name="author" content="Costacurta Nereo">
 
-	<link rel="stylesheet" href="<?php $Colibrì->link("php/mbc-filemanager/css/inputs.css?v=1.1") ?>">
-	<link rel="stylesheet" href="<?php $Colibrì->link("php/mbc-filemanager/css/style.css?v=1.1") ?>">
-	<style type="text/css">
-		body{
-			display:table;
-			width:100%;
-			height: 100%;
-			background:#2d2d2d;
-		}
-		#wwrapper{
-			display:table-cell;
-			height:100%;
-			width:100%;
-			vertical-align:middle;
-		}
-		#my-login{
-			display:block;
-			position:relative;
-			margin:0 auto;
-			padding:160px 30px 30px 30px;
-			background:#fff url(img/logo/colibri-mini-black.png) no-repeat center 30px;
-			width:300px;
-			border-radius:5px;
-			box-shadow:0 0 12px #000;
-		}
-		.red{
-			font-size:13px;
-			color:#c00;
-			text-align:center;
-		}
-		
-		@media only screen and (max-width:480px),
-				only screen and (max-height:480px){
-			body,
-			#wwrapper,
-			#my-login{
-				display:block;
-				width: auto;
-				background:#fff;
-			}
-			#my-login{
-				border-radius:0;
-				padding:90px 16px 16px 16px;
-				background:#fff url(img/logo/colibri-micro-black.png) no-repeat center 16px;
-				box-shadow:none;
-			}
-		}
-	</style>
+	<link rel="stylesheet" href="<?php $Colibrì->link("php/mbc-filemanager/css/inputs.min.css") ?>">
+	<link rel="stylesheet" href="<?php $Colibrì->link("css/login.min.css") ?>">
 </head>
 
 
 
 <body>
 
-<div id="wwrapper">
+<div id="wrapper">
 
 <form id="my-login">
 
-	<div id="loader done"></div>
+	<div id="loader" class="done"></div>
 	
 	<div class="inputs">
 		<?php if (isset($_GET['logout'])): ?>
@@ -117,80 +80,7 @@ $Colibrì = new Colibri();
 <script src="js/jsSHA-2.0.2/src/sha512.js"></script>
 
 <!-- main script -->
-<script>
-function checkform(onsuccess){
-	//control name
-	var name = $('#my-name').val().trim();
-	if (name == ''){
-		alert("Inserire il nome!");
-		return false;
-	}
-	//control password
-	var pass = $('#my-password').val().trim();
-	if (pass.length<4){
-		alert("La password è troppo corta!");
-		return false;
-	}
-	//generate hashed password
-	var shaObj = new jsSHA("SHA-512", 'TEXT');
-	shaObj.update(pass);
-	$('#my-hashed-pass').val( shaObj.getHash("HEX") ); //128 CHAR
-	//callback on success
-	if ($.isFunction(onsuccess)) onsuccess();
-	return true;
-}
-
-var LOGGING = false;
-
-function log(){
-	//prevent multiple login
-	if (LOGGING){
-		console.log("already logging in!");
-		return false;
-	}
-	else LOGGING = true;
-	//show loader
-	console.log('l false')
-	$('#loader').addClass('load');
-	//send post request
-	if ( !checkform(function(){
-		console.log('l false')
-		$.post('database/login.php',$('#my-login').serialize(),null,'json')
-			.success(function(json){
-				console.log(json);
-				if (json.error !== false) return alert("ERRORE\n"+json.error);
-				else location.assign('./bacheca.php');
-			})
-			.error(function(e){
-				alert('Ooops!')
-				console.log(e)
-			})
-			.always(function(){
-				LOGGING = false;
-				$('#loader').removeClass('load');
-			})
-	}) ){
-		LOGGING = false;
-		$('#loader').removeClass('load');
-	}
-}
-
-$(function(){
-	$('#my-login').submit(function(e){
-		e.preventDefault();
-	});
-	
-	$('#my-login input').keypress(function(e){
-		if (e.which == 13){
-			log()
-			return false;    //<---- Add this line
-		}
-	});
-	
-	$('#send-me').click(log);
-});
-
-</script>
+<script src="js/login.min.js"></script>
 
 </body>
 </html>

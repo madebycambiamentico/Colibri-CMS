@@ -118,6 +118,23 @@ if ($id){
 	$pdostat = $pdo->prepare($query) or jsonError('Errore durante aggiornamento articolo [prepare]');
 	if (!$pdostat->execute($params)) jsonError('Errore durante aggiornamento articolo [execute]');
 	if (!$pdostat->rowCount()) jsonError('Nessun articolo da aggiornare');
+	
+	//rimozione articoli correlati
+	if (!empty($_POST['removelinkedart'])){
+		if (is_array($_POST['removelinkedart'])){
+			$count = count($_POST['removelinkedart']);
+			if ($count > 1){
+				$query = "UPDATE articoli SET idarticolo = NULL WHERE id IN (".str_repeat("?,", $count-1)."?)";
+			}
+			else{
+				$query = "UPDATE articoli SET idarticolo = NULL WHERE id=?";
+			}
+			$pdostat = $pdo->prepare($query) or jsonError('Errore durante rimozione sub-articoli [prepare]');
+			if (!$pdostat->execute($_POST['removelinkedart'])) jsonError('Errore durante rimozione sub-articoli [execute]');
+			if (!$pdostat->rowCount()) jsonError('Nessun sub-articolo da rimuovere');
+		}
+	}
+	
 	jsonSuccess(["success" => "update", 'id' => intval($id,10)]);
 }
 else{

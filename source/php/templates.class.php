@@ -75,10 +75,15 @@ class TEMPLATES{
 		return $template;
 	}
 	
-	static function custom($tmplt='colibri',$file='noop'){
+	static function custom($tmplt='colibri',$file='noop',$skipdeath=false){
 		$template = self::cpath($tmplt).$file;
 		if (!is_file($template)){
-			trigger_error("custom template file '{$file}' not found", E_USER_ERROR);
+			if ($skipdeath){
+				return false;
+			}
+			else{
+				trigger_error("custom template file '{$file}' not found", E_USER_ERROR);
+			}
 		}
 		return $template;
 	}

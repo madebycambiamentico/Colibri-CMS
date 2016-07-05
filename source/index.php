@@ -29,9 +29,13 @@ function STOPFORDEBUG($die=true){
 
 function noPageFound($str='Questa pagina non esiste.'){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-	echo $str;
 	//STOPFORDEBUG(false);
-	die;
+	global $CONFIG,$web,$templatepath;
+	if ($not_found_page = TEMPLATES::custom($web['template'],'not-found.php',true)){
+		include $not_found_page;
+		die('<!-- ERROR: '.htmlentities($str).' -->');
+	}
+	die($str);
 }
 
 //-----------------------------------
@@ -232,24 +236,38 @@ if (isset($_SERVER['REDIRECT_URL'])){
 anchor_main:
 
 
-//--------------------
+//search website properties
+$pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
+if (!$web = $pdostat->fetch())
+	noPageFound('Database corrotto [cod 006]');
+$pdostat->closeCursor();
+$templatepath = TEMPLATES::path($web['template']);
+
+
+//---------------------
 //required translation:
-//if index with "translate" GET request, then redirect to translated page (if exists)
+//---------------------
+//if index with "translate" GET request, then redirect to translated page (if exists), or redirect to home in other case.
 if ($mylang && isset($_GET['translate'])){
 	$translate = intval($_GET['translate'],10);
 	$pdores = $pdo->query("SELECT isindex, isindexlang, remaplink FROM articoli WHERE lang='{$mylang}' AND idarticololang={$translate} LIMIT 1",PDO::FETCH_ASSOC) or
-		noPageFound('No translation available for this page [cod 002]');
+		noPageFound('Error querying translated page [cod 002]');
+	//-------------------------
+	//translated page available
 	if ($r = $pdores->fetch()){
 		//for mapped pages (no index) reload page...
 		if (!($r['isindex'] || $r['isindexlang'])){
 			header('Location: '.$CONFIG['mbc_cms_dir'].$r['remaplink']);
 			exit;
 		}
-		//if this is an index page, then do not reload locations
+		//if this is an index page, then do not reload locations (it is already doing this in this very script :) )
 	}
+	//-----------------------------
+	//translated page not available
 	else{
-		header('Location: '.$CONFIG['mbc_cms_dir']);
-		exit;
+		/*header('Location: '.$CONFIG['mbc_cms_dir']);
+		exit;*/
+		noPageFound('Nessuna traduzione di pagina trovata [cod 002/2]');
 	}
 }
 
@@ -257,13 +275,6 @@ if ($mylang && isset($_GET['translate'])){
 
 
 define('ISINDEX',true);
-
-//search website properties
-$pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
-if (!$web = $pdostat->fetch())
-	noPageFound('Database corrotto [cod 006]');
-$pdostat->closeCursor();
-$templatepath = TEMPLATES::path($web['template']);
 
 //search for index page
 //(?)else fill with dummy empty array(?)

@@ -22,14 +22,14 @@ allowOnlyUntilUserClass(0);
 	<meta name="author" content="Costacurta Nereo">
 	
 	<!-- general styles -->
-	<link rel="stylesheet" href="css/icons.css?v=1.0">
-	<link rel="stylesheet" href="css/sicons.custom.css?v=1.0">
-	<link rel="stylesheet" href="css/toolbar.css?v=1.0">
-	<link rel="stylesheet" href="css/inputs.css?v=1.0">
-	<link rel="stylesheet" href="css/style.css?v=1.0">
+	<link rel="stylesheet" href="css/icons.min.css">
+	<link rel="stylesheet" href="css/sicons.custom.min.css">
+	<link rel="stylesheet" href="css/toolbar.min.css">
+	<link rel="stylesheet" href="css/inputs.min.css">
+	<link rel="stylesheet" href="css/style.min.css">
 	
 	<!-- plugins -->
-	<link rel="stylesheet" href="../../css/modalbox.css?v=1.0">
+	<link rel="stylesheet" href="../../css/modalbox.min.css">
 	<link rel="stylesheet" href="js/mediaelement-2.19.0/build/mediaelementplayer.min.css"/>
 	<link rel="stylesheet" type="text/css" href="js/dropzone-4.2.0/dist/min/dropzone.min.css">
 	

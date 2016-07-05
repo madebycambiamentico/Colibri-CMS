@@ -26,7 +26,6 @@ $Pop = new Popups();
 	<?php $Colibrì->getBaseCss() ?>
 
 	<style type="text/css">
-
 	</style>
 </head>
 
@@ -223,18 +222,18 @@ if ($pdores = $pdo->query("SELECT id,titolo FROM articoli WHERE idtype = 1 AND i
 			
 				<?php if ($id): ?>
 				<h4>Sub-Articoli correlati</h4>
-				<p>Seleziona per rimuovere dipendenza</p><?php
+				<p>Seleziona per rimuovere dipendenza</p><div id="all_sub_arts"><?php
 
 if ($pdores = $pdo->query("SELECT id,titolo FROM articoli WHERE idarticolo = {$id}", PDO::FETCH_ASSOC)){
 	$hasdenpendecies = false;
 	foreach ($pdores as $r){
 		$hasdenpendecies = true;
-		echo '<label><input type="checkbox" name="removelinkedart[]" value="'.$r["id"].'"> '.htmlentities($r["titolo"],ENT_NOQUOTES).'</label>';
+		echo '<p><label><input type="checkbox" name="removelinkedart[]" value="'.$r["id"].'"> '.htmlentities($r["titolo"],ENT_NOQUOTES).'</label></p>';
 	}
 	$pdores->closeCursor();
 	if (!$hasdenpendecies) echo '<p><b>(nessun articolo correlato a questa pagina)</b></p>';
 }
-				endif; ?>
+				endif; ?></div>
 			</div>
 			
 			<div class="inputs center hide-on-cell">

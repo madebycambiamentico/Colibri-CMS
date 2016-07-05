@@ -173,7 +173,7 @@ var smartlink = {
 		return smartlink.update($('#eart-title').val());
 	},
 	update: function(title){
-		title = removeDiacritics(title).replace(/\s+/g,'-').replace(/[?:;"#\\\/]/g,"").toLowerCase();
+		title = removeDiacritics(title).replace(/\s+|['"]+/g,'-').replace(/[?:;"#\\\/]/g,"").toLowerCase();
 		$('#eart-smart-1').val(smartlink.prefix+title);
 		return smartlink;
 	}

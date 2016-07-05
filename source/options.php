@@ -147,13 +147,6 @@ if (!$web) die("Void properties!</body>");
 		<div class="right">
 		
 			<div class="inputs maxi aligned">
-				<h4>Opzioni internazionali</h4>
-				<p><label><input name="multilang" value="1" type="checkbox" <?php if ($web['multilanguage']) echo 'checked'; ?>> Abilita sito multilingua</label></p>
-				<p>Il sito verrà servito coi diversi linguaggi. &Egrave; necessario creare versioni multiple dello stesso post, con titoli diversi, e assegnare il post "originale".</p>
-				<!-- TODO: add selection for known languages, select primary language... -->
-			</div>
-		
-			<div class="inputs maxi aligned">
 				<h4>Email amministratore</h4>
 				<p>Inserire l'email attraverso la quale verrai contattato dal sito.</p>
 				<p>Questa mail non sarà direttamente visibile nel sito, ma nascosta lato server.</p>
