@@ -3,81 +3,87 @@
 class ARTQUERY{
 	//type: 0 = query, 1 = prepare
 	
-	static function byId($id=0, $fullimage=false){
+	static function byId($id=0, $fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
-			"immagini.width, immagini.height, immagini.src, immagini.descr" :
-			"immagini.src";
+			"b.width, b.height, b.src, b.descr" :
+			"b.src";
+		$lang_filter = $lang ? " AND lang = '{$lang}'" : '';
 		return [
-			'query' => "SELECT articoli.*, {$imageselect} FROM articoli
-		LEFT JOIN immagini ON articoli.idimage = immagini.id
-		WHERE articoli.id = {$id} AND NOT articoli.isgarbage",
+			'query' => "SELECT a.*, {$imageselect} FROM articoli a
+		LEFT JOIN immagini b ON a.idimage = b.id
+		WHERE a.id = {$id} AND NOT a.isgarbage {$lang_filter}",
 			'type' => 0 //query
 		];
 	}
 	
-	static function byMap($costraindate=false, $fullimage=false){
+	static function byMap($costraindate=false, $fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
-			"immagini.width, immagini.height, immagini.src, immagini.descr" :
-			"immagini.src";
+			"B.width, B.height, B.src, B.descr" :
+			"B.src";
 		return [
-			'query' => "SELECT articoli.*, {$imageselect} FROM articoli
-		LEFT JOIN immagini ON articoli.idimage = immagini.id
-		WHERE articoli.remaplink = ? ".
-			($costraindate ? "AND (articoli.data LIKE ? OR articoli.dataedit LIKE ?) " : "").
-			"AND NOT articoli.isgarbage
+			'query' => "SELECT A.*, {$imageselect} FROM articoli A
+		LEFT JOIN immagini B ON A.idimage = B.id
+		WHERE A.remaplink = ? ".
+			($costraindate ? "AND (A.data LIKE ? OR A.dataedit LIKE ?) " : "").
+			($lang ? " AND A.lang = '{$lang}' " : '').
+			"AND NOT A.isgarbage
 		LIMIT 1",
 			'type' => 1 //prepared
 		];
 	}
 	
-	static function byTitle($fullimage=false){
+	static function byTitle($fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
-			"immagini.width, immagini.height, immagini.src, immagini.descr" :
-			"immagini.src";
+			"B.width, B.height, B.src, B.descr" :
+			"B.src";
+		$lang_filter = $lang ? " AND A.lang = '{$lang}'" : '';
 		return [
-			'query' => "SELECT articoli.*, {$imageselect} FROM articoli
-		LEFT JOIN immagini ON articoli.idimage = immagini.id
-		WHERE articoli.titolo = ? AND NOT articoli.isgarbage
+			'query' => "SELECT A.*, {$imageselect} FROM articoli A
+		LEFT JOIN immagini B ON A.idimage = B.id
+		WHERE A.titolo = ? AND NOT A.isgarbage {$lang_filter}
 		LIMIT 1",
 			'type' => 1 //prepared
 		];
 	}
 	
-	static function byType($type=1, $limit=3, $fullimage=false){
+	static function byType($type=1, $limit=3, $fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
-			"immagini.width, immagini.height, immagini.src, immagini.descr" :
-			"immagini.src";
+			"B.width, B.height, B.src, B.descr" :
+			"B.src";
+		$lang_filter = $lang ? " AND A.lang = '{$lang}'" : '';
 		return [
-			'query' => "SELECT articoli.*, {$imageselect} FROM articoli
-		LEFT JOIN immagini ON articoli.idimage = immagini.id
-		WHERE articoli.idtype = {$type} AND NOT articoli.isgarbage
-		ORDER BY articoli.dataedit DESC".
+			'query' => "SELECT A.*, {$imageselect} FROM articoli A
+		LEFT JOIN immagini B ON A.idimage = B.id
+		WHERE A.idtype = {$type} AND NOT A.isgarbage {$lang_filter}
+		ORDER BY A.dataedit DESC".
 		($limit ? " LIMIT {$limit}" : ''),
 			'type' => 0 //query
 		];
 	}
 	
-	static function byDate($fullimage=false){
+	static function byDate($fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
-			"immagini.width, immagini.height, immagini.src, immagini.descr" :
-			"immagini.src";
+			"B.width, B.height, B.src, B.descr" :
+			"B.src";
+		$lang_filter = $lang ? " AND A.lang = '{$lang}'" : '';
 		return [
-			'query' => "SELECT articoli.*, {$imageselect} FROM articoli
-		LEFT JOIN immagini ON articoli.idimage = immagini.id
-		WHERE (articoli.data LIKE ? OR articoli.dataedit LIKE ?) AND NOT articoli.isgarbage
+			'query' => "SELECT A.*, {$imageselect} FROM articoli A
+		LEFT JOIN immagini B ON A.idimage = immagini.id
+		WHERE (A.data LIKE ? OR A.dataedit LIKE ?) AND NOT A.isgarbage {$lang_filter}
 		LIMIT 1",
 			'type' => 1 //prepared
 		];
 	}
 	
-	static function subArt($parentid=1, $type=1, $limit=3, $fullimage=false){
+	static function subArt($parentid=1, $type=1, $limit=3, $fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
 			"B.width, B.height, B.src, B.descr" :
 			"B.src";
+		$lang_filter = $lang ? " AND A.lang = '{$lang}'" : '';
 		return [
 			'query' => "SELECT A.remaplink, A.titolo, A.inbreve, {$imageselect} FROM articoli A
 		LEFT JOIN immagini B ON A.idimage = B.id
-		WHERE A.idtype = {$type} AND A.idarticolo = {$parentid} AND NOT A.isgarbage
+		WHERE A.idtype = {$type} AND A.idarticolo = {$parentid} AND NOT A.isgarbage {$lang_filter}
 		ORDER BY A.dataedit DESC".
 		($limit ? " LIMIT {$limit}" : ''),
 			'type' => 0 //query
@@ -96,45 +102,81 @@ class ARTQUERY{
 		];
 	}
 	
-	static function menu(){
-		return [
-			'query' => "SELECT * FROM view_menu",
-			'type' => 0 //query
-		];
+	static function menu($lang=''){
+		if (!$lang){
+			return [
+				'query' => "SELECT * FROM view_menu",
+				'type' => 0 //query
+			];
+		}
+		else{
+			return [
+				'query' => "SELECT a.id as 'parentid', b.id,b.remaplink,b.titolo FROM articoli a
+			INNER JOIN articoli b ON b.idarticolo = a.id OR (b.idarticolo IS NULL AND b.id = a.id)
+			WHERE a.isinmenu AND NOT a.isgarbage AND NOT b.isgarbage AND a.idarticolo IS NULL
+				AND a.lang='{$lang}' AND b.lang='{$lang}'
+			ORDER BY parentid DESC, b.idarticolo ASC",
+				'type' => 0 //query
+			];
+		}
 	}
 	
-	static function subMainArts(){
-		return [
-			'query' => "SELECT * FROM view_all_main_sub_art",
-			'type' => 0 //query
-		];
+	static function subMainArts($lang=''){
+		if (!$lang){
+			return [
+				'query' => "SELECT * FROM view_all_main_sub_art",
+				'type' => 0 //query
+			];
+		}
+		else{
+			return [
+				'query' => "SELECT a.id as 'parentid', b.id,b.remaplink,b.titolo FROM articoli a
+			INNER JOIN articoli b ON b.idarticolo = a.id
+			WHERE a.idtype = 1 AND NOT a.isgarbage AND NOT b.isgarbage AND a.idarticolo IS NULL AND b.idtype = 1
+				AND a.lang={$lang} AND b.lang='{$lang}'
+			ORDER BY a.id DESC, b.id ASC",
+				'type' => 0 //query
+			];
+		}
 	}
 	
 	static function mainArts($limit=0, $fullimage=false){
 		$imageselect = $fullimage ?
 			"b.width, b.height, b.src, b.descr" :
 			"b.src";
+		$lang_filter = $lang ? " AND a.lang = '{$lang}'" : '';
 		return [
 			'query' => "SELECT a.*, {$imageselect} FROM articoli a
 		LEFT JOIN immagini b ON a.idimage = b.id
-		WHERE a.idtype = 1 AND NOT a.isgarbage AND a.idarticolo IS NULL AND NOT a.isindex
+		WHERE a.idtype = 1 AND NOT a.isgarbage AND a.idarticolo IS NULL AND NOT a.isindex {$lang_filter}
 		ORDER BY a.id DESC".
 		($limit ? " LIMIT {$limit}" : ''),
 			'type' => 0 //query
 		];
 	}
 	
-	static function index($fullimage=false){
+	static function index($fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
 			"b.width, b.height, b.src, b.descr" :
 			"b.src";
-		return [
-			'query' => "SELECT a.*, {$imageselect} FROM articoli a
-		LEFT JOIN immagini b ON a.idimage = b.id
-		WHERE a.isindex AND NOT a.isgarbage
-		ORDER BY a.dataedit DESC LIMIT 1",
-			'type' => 0 //query
-		];
+		if (!$lang){
+			return [
+				'query' => "SELECT a.*, {$imageselect} FROM articoli a
+			LEFT JOIN immagini b ON a.idimage = b.id
+			WHERE a.isindex AND NOT a.isgarbage
+			ORDER BY a.dataedit DESC LIMIT 1",
+				'type' => 0 //query
+			];
+		}
+		else{
+			return [
+				'query' => "SELECT a.*, {$imageselect} FROM articoli a
+			LEFT JOIN immagini b ON a.idimage = b.id
+			WHERE a.isindexlang AND a.lang='{$lang}' AND NOT a.isgarbage
+			ORDER BY a.dataedit DESC LIMIT 1",
+				'type' => 0 //query
+			];
+		}
 	}
 	
 	

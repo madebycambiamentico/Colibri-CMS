@@ -42,7 +42,7 @@ if (!in_array($info['extension'],$CONFIG['allowed_ext']['img']))
 $pdostat = $pdo->prepare("SELECT descr FROM immagini WHERE src = ? LIMIT 1") or jsonError('Errore durante ricerca immagine '.$fixedname.' [prepare]');
 if (!$pdostat->execute([ $u_subdir.$fixedname ])) jsonError('Errore durante ricerca immagine '.$fixedname.' [execute]');
 if ($r = $pdostat->fetch())
-	jsonSuccess(['id' => 0, 'desc' => $r['desc']]);
+	jsonSuccess(['id' => 0, 'desc' => $r['descr']]);
 else
 	jsonError("Couldn't find file in database.");
 ?>

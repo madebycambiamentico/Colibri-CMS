@@ -76,7 +76,8 @@ function createThumbnail($source, $filename, $CT, $subdir=""){
 	global $CONFIG;
 	$magicianObj = new imageLib($source);
 	//rezized image...
-	$magicianObj->resizeImage($CT['sizes'][0], $CT['sizes'][1], $CT['resize'], true);//true -> sharpening
+	if ($CT['sizes'][0]>0 && $CT['sizes'][1]>0)
+		$magicianObj->resizeImage($CT['sizes'][0], $CT['sizes'][1], $CT['resize'], true);//true -> sharpening
 	//apply filters...
 	foreach ($CT['filters'] as $filter){
 		//complex filters... TODO. for now only non-argumented filters

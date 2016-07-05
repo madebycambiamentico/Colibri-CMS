@@ -23,7 +23,7 @@ $Colibrì = new Colibri();
 	<meta name="author" content="Costacurta Nereo">
 	
 	<?php $Colibrì->getBaseCss() ?>
-	<link rel="stylesheet" href="<?php $Colibrì->link("css/profile.css?v=1.1") ?>">
+	<link rel="stylesheet" href="<?php $Colibrì->link("css/profile.min.css") ?>">
 
 	<style type="text/css">
 	</style>

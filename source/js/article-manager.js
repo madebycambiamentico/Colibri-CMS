@@ -51,7 +51,7 @@
 		selector: 'textarea.tiny-area',
 		/*theme: "modern",
 		skin: 'light',*/
-		plugins: ['autolink link image lists hr preview code fullscreen insertdatetime media colorpicker textcolor autoresize table contextmenu filemanager'],
+		plugins: ['autolink link image lists hr code fullscreen insertdatetime media colorpicker textcolor autoresize table contextmenu filemanager'],//preview
 		menu: {
 			//file: {title: 'File', items: 'newdocument'},
 			//edit: {title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall'},
@@ -63,7 +63,7 @@
 		},
 		toolbar: [
 			'insertfile undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent',
-			'forecolor backcolor link unlink | image media manager | code preview' //fullscreen
+			'forecolor backcolor link unlink | image media manager | code' //fullscreen preview
 		],
 		autoresize_max_height: 320,
 		file_picker_callback: tinyMCEFileManager
@@ -85,7 +85,7 @@ $(function(){
 			return smartlink.update($('#art-title').val());
 		},
 		update: function(title){
-			title = removeDiacritics(title).replace(/\s+/g,'-').replace(/[?:;"#\\\/]/g,"").toLowerCase();
+			title = removeDiacritics(title).replace(/\s+|['"]+/g,'-').replace(/[?:;"#\\\/]/g,"").toLowerCase();
 			$('#art-smart-1').val(smartlink.prefix+title);
 			$('#art-smart-2').val(smartlink.date+smartlink.prefix+title);
 			return smartlink;
@@ -128,9 +128,19 @@ $(function(){
 			if (json.error) return alert("ERRORE:\n"+json.error);
 			if (json.success == 'insert'){
 				$('#art-id').val(json.id);
+				//update options in "articolo originale"
+				$('#art-parentlang option:first-child').after('<option value="'+json.id+'">'+printText($('#art-title').val())+'</option>');
 				alert('Nuovo articolo inserito con successo!')
 			}
 			else if (json.success == 'update'){
+				//delete "sub-articoli correlati"
+				//TODO
+				$('#all_sub_arts input:checked').each(function(){
+					$(this).parent(/*label*/).parent(/*p*/).remove();
+				});
+				if (!$('#all_sub_arts input').length){
+					$('#all_sub_arts').append("<p><b>(nessun articolo correlato a questa pagina)</b></p>");
+				}
 				alert('Aggiornamento completato con successo!')
 			}
 		})
@@ -141,6 +151,8 @@ $(function(){
 		.always(function(){
 			//unlock form...
 			BUSY.end();
+			//update sitemap
+			$.get('sitemap-generator-generic.php').always(function(e){console.log(e)});
 		});
 	});
 });

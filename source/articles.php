@@ -45,6 +45,7 @@ $Pop = new Popups();
 		<h5></h5>
 		<input type="hidden" id="eart-id" name="id" value="">
 		<input type="hidden" id="eart-wasindex" name="wasindex" value="0">
+		<input type="hidden" id="eart-wasindexlang" name="wasindexlang" value="0">
 		
 		<ul class="inputs list">
 			<li>Titolo</li>
@@ -58,6 +59,21 @@ $Pop = new Popups();
 			<p>
 				<label><input id="eart-isindex" type="checkbox" name="isindex" value="1"> Pagina iniziale del sito</label><br>
 				<label><input id="eart-isinmenu" type="checkbox" name="isinmenu" value="1"> Mostra nel menu</label>
+			</p>
+		</div>
+		
+		<div class="inputs">
+			<p>
+				<select id="eart-lang" name="lang"><?php
+					$langs = [
+						'sigla' => ['it','en','de','fr'],
+						'estesa' => ['italiano','english','deutsch','française']
+					];
+					foreach ($langs['sigla'] as $o => $opt)
+						echo "<option value='{$opt}'>{$langs['estesa'][$o]} ({$opt})</option>";
+				?></select><br>
+				<label><input id="eart-isindexlang" type="checkbox" name="isindexlang" value="1">
+				Pagina iniziale del sito per la lingua selezionata</label><br>
 			</p>
 		</div>
 		
@@ -198,7 +214,11 @@ if ($pdores = $pdo->query($query, PDO::FETCH_ASSOC)){
 		<div class="inputs maxi aligned tools">
 			<p>
 				<label><b class="sicon"><i class="pen"></i></b>
-				<input type='checkbox' class="quick-mod" value="<?php echo $r['id'] ?>" data-t="<?php echo $r['idtype'] ?>" data-img="<?php echo ($r['src'] ? htmlentities($r['src'],ENT_QUOTES) : ''); ?>" data-idx="<?php echo $r['isindex'] ?>" data-mnu="<?php echo $r['isinmenu'] ?>">
+				<input type='checkbox' class="quick-mod" value="<?php echo $r['id'] ?>"
+					<?php echo "data-t='{$r['idtype']}' data-img='".
+							($r['src'] ? htmlentities($r['src'],ENT_QUOTES) : '').
+							"' data-mnu='{$r['isinmenu']}' data-idx='{$r['isindex']}' data-idxl='{$r['isindexlang']}' data-lang='{$r['lang']}'";
+					?>>
 				Modifica veloce</label>
 				
 				<a href="./editor.php?q=<?php echo $r['id'] ?>"><b class="sicon"><i class="pencil"></i></b>

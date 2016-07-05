@@ -73,7 +73,7 @@ class SessionManager {
 	 * @link http://webmaster.info.aol.com/proxyinfo.html
 	 * @var array
 	 */
-	protected $aolProxies = array('195.93.', '205.188', '198.81.', '207.200', '202.67.', '64.12.9');
+	protected static $aolProxies = array('195.93.', '205.188', '198.81.', '207.200', '202.67.', '64.12.9');
 	/**
 	 * This function starts, validates and secures a session.
 	 *
@@ -164,7 +164,7 @@ class SessionManager {
 		$remoteIpHeader = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
 		$remoteIpSegment = substr($remoteIpHeader, 0, 7);
 		if($_SESSION['IPaddress'] != $remoteIpHeader
-			&& !(in_array($sessionIpSegment, $this->aolProxies) && in_array($remoteIpSegment, $this->aolProxies))) {
+			&& !(in_array($sessionIpSegment, $self::aolProxies) && in_array($remoteIpSegment, $self::aolProxies))) {
 			return false;
 		}
 		if( $_SESSION['userAgent'] != $_SERVER['HTTP_USER_AGENT'])

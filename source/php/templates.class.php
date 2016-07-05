@@ -1,5 +1,39 @@
 <?php
 
+/*
+
+this class includes template for:
+- single article
+- multiple article (search results)
+- main page (index)
+
+------------------------------------------------------------
+for SINGLE the script search for this files, in order:
+	- "for_id_XXX.php"	: customized page for article with id XXX. XXX = integer
+	- "single_YYY.php"	: customized page for YYY types. YYY = integer
+	- "single.php"			: generic page for any type of article.
+	- otherwise fails
+
+for MULTIPLE the script search for this files, in order:
+	- "multi_YYY.php"		: customized page for YYY types. YYY = integer
+	- "multi.php"			: generic page for any type of article.
+	- otherwise fails
+
+for MAIN the files parsed are:
+	- main.php
+	- otherwise fails
+
+------------------------------------------------------------
+TODO: YYY (type) should be STRING istead of INTEGER,
+according to "articoli_types.remapprefix" field on database.
+e.g.:
+	- "single_1.php" should become "single_.php"
+	- "single_2.php" should become "single_news.php"
+	- "single_3.php" should become "single_links.php"
+	- etc.
+
+*/
+
 class TEMPLATES{
 	
 	//for single pages
@@ -41,10 +75,15 @@ class TEMPLATES{
 		return $template;
 	}
 	
-	static function custom($tmplt='colibri',$file='noop'){
+	static function custom($tmplt='colibri',$file='noop',$skipdeath=false){
 		$template = self::cpath($tmplt).$file;
 		if (!is_file($template)){
-			trigger_error("custom template file '{$file}' not found", E_USER_ERROR);
+			if ($skipdeath){
+				return false;
+			}
+			else{
+				trigger_error("custom template file '{$file}' not found", E_USER_ERROR);
+			}
 		}
 		return $template;
 	}
