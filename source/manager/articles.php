@@ -1,7 +1,14 @@
 <?php
 
-require_once "config.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
+/*
+ * @author Nereo Costacurta
+ *
+ * @require: /index.php (this is not a standalone page!)
+ *
+ * @license GPLv3
+ * @copyright: (C)2016 nereo costacurta
+**/
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
 
 //control login
 $SessionManager = new SessionManager();
@@ -170,7 +177,7 @@ $query .= ' WHERE '.implode(' AND ',$addtoquery)." ORDER BY articoli.dataedit DE
 			
 			<div class="inputs maxi aligned tools">
 				<?php if (!isset($_GET['garbage'])): ?>
-				<p><a href="./editor.php?q=new"><b class="sicon"><i class="add"></i></b>
+				<p><a href="./editor?q=new"><b class="sicon"><i class="add"></i></b>
 					Aggiungi nuovo articolo</a></p>
 				<?php endif; ?>
 				<p><input type='checkbox' id="sel-all" value="select">
@@ -184,7 +191,7 @@ $query .= ' WHERE '.implode(' AND ',$addtoquery)." ORDER BY articoli.dataedit DE
 					Cancella articoli selezionati</label></p>
 				<?php if (!isset($_GET['garbage'])){ ?>
 				<br>
-				<p><a href="./articles.php?garbage"><b class="sicon"><i class="trash"></i></b>
+				<p><a href="./articles?garbage"><b class="sicon"><i class="trash"></i></b>
 					Apri il cestino</a></p>
 				<?php } else { ?>
 				<p><input type='checkbox' id="resurr-all" value="resurr">
@@ -221,7 +228,7 @@ if ($pdores = $pdo->query($query, PDO::FETCH_ASSOC)){
 					?>>
 				Modifica veloce</label>
 				
-				<a href="./editor.php?q=<?php echo $r['id'] ?>"><b class="sicon"><i class="pencil"></i></b>
+				<a href="./editor?q=<?php echo $r['id'] ?>"><b class="sicon"><i class="pencil"></i></b>
 				Modifica</a>
 				
 				<?php if (isset($_GET['garbage'])): ?>
@@ -253,10 +260,10 @@ if ($pdores = $pdo->query($query, PDO::FETCH_ASSOC)){
 			<div class="inputs maxi aligned tools upp">
 				<?php
 				foreach($TYPES as $id => $t){
-					echo '<p><a href="./articles.php?q='.$id.'"><b class="sicon"><i class="marker"></i></b> '.htmlentities($t['n']).'</a></p>';
+					echo '<p><a href="./articles?q='.$id.'"><b class="sicon"><i class="marker"></i></b> '.htmlentities($t['n']).'</a></p>';
 				}
 				if (!isset($_GET['garbage']))
-					echo '<p><a href="./articles.php?garbage"><b class="sicon"><i class="marker"></i></b> nel cestino</a></p>'
+					echo '<p><a href="./articles?garbage"><b class="sicon"><i class="marker"></i></b> nel cestino</a></p>'
 				?>
 			</div>
 			

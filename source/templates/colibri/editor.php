@@ -4,11 +4,17 @@
  * @template Colibrì 2016 v.1.0 -- template editor
  * @author Nereo Costacurta
  *
- * @require: /index.php (this is not a standalone page!)
+ * @require: this is a standalone page!
  *
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
+
+//-------------------------------------------------------------------------
+// !!! WARNING !!!
+// $CONFIG['mbc_cms_dir'] nor $CONFIG['database']['path'] cannot be used!!!
+// see comment in config.php
+//-------------------------------------------------------------------------
 
 require_once "../../config.php";
 require_once "../../".$CONFIG['database']['dir']."functions.inc.php";

@@ -20,6 +20,11 @@ function STOPFORDEBUG($die=true){
 	echo '<br>b) $pathPieces:<pre>'.print_r($pathPieces,true).'</pre>';
 	
 	echo '<br>c) $CONFIG["database"]:<pre>'.print_r($CONFIG['database'],true).'</pre>';
+	echo '<br>c) $CONFIG[...]:<pre>'.
+		'domain: '.print_r($CONFIG['domain'],true).'<br>'.
+		'mbc_cms_dir: '.print_r($CONFIG['mbc_cms_dir'],true).'<br>'.
+		'c_dir: '.print_r($CONFIG['c_dir'],true).
+	'</pre>';
 	
 	echo '<br>d) $_SERVER:<pre>'.print_r($_SERVER,true).'</pre>';
 	
@@ -41,7 +46,7 @@ function noPageFound($str='Questa pagina non esiste.'){
 //-----------------------------------
 //should be fetched from database...
 $known_langs = ['it','en','de','fr'];
-//can contain 2-letters or 5-letters (e.g.: "en", "en-UK")
+//should contain 2-letters or 5-letters (e.g.: "en", "en-UK")
 //-----------------------------------
 
 function setPreferredLanguage($lang='it'){
@@ -70,28 +75,6 @@ function detectPreferredLanguage(){
 }
 
 
-function fix_script_url(){
-	$script_url = NULL;
-	//to do:
-	//what order? SCRIPT_URL, REQUEST_URI, REDIRECT_URL?
-	//to be determined... not entirely sure
-	//and by the way: SCRIPT_URL is what I think it is?
-	
-	if (!empty($_SERVER['SCRIPT_URL']))   
-		$script_url = $_SERVER['SCRIPT_URL'];
-	elseif (!empty($_SERVER['REQUEST_URI'])) {
-		$p = parse_url($_SERVER['REQUEST_URI']);
-		$script_url = $p['path'];
-	}
-	elseif (!empty($_SERVER['REDIRECT_URL'])) 
-		$script_url = $_SERVER['REDIRECT_URL'];
-	else
-		die('Cannot determine $_SERVER["SCRIPT_URL"].');
-
-	$_SERVER['SCRIPT_URL'] = $script_url;
-	return $script_url;
-}
-
 
 //global variables
 $pageid			= null;
@@ -107,44 +90,44 @@ $mylang			= detectPreferredLanguage();
 //***************************************
 if (isset($_SERVER['REDIRECT_URL'])){
 	
-	fix_script_url();
 	if ($CONFIG['mbc_cms_dir']==='/')
 		$requestedURL = substr($_SERVER['SCRIPT_URL'],1);
 	else
 		$requestedURL = str_ireplace($CONFIG['mbc_cms_dir'],"",$_SERVER['SCRIPT_URL']);
 	$pathPieces = explode("/",$requestedURL);
 	
-	//STOPFORDEBUG(false);
+	//STOPFORDEBUG();
 	
 	//------------------------ default pages / manager ------------------------
 	//should be translated if any other language is used
 	switch ($pathPieces[0]){
-		case '': goto anchor_main; break;
+		case '':
+			goto anchor_main; break;
 		case 'signin':
 		case 'iscriviti':
 			exit("Questa operazione non &egrave; abilitata."); break;
 		case 'login':
 		case 'accedi':
-			include('login.php'); exit; break;
-		case 'nuovo-articolo':
-		case 'new-article':
+			include('manager/login.php'); exit; break;
 		case 'nuovo':
 		case 'new':
 		case 'editor':
-			include('editor.php'); exit; break;
+			include('manager/editor.php'); exit; break;
 		case 'albums':
-			include('albums.php'); exit; break;
+			include('manager/albums.php'); exit; break;
+		case 'opzioni':
 		case 'options':
-			include('options.php'); exit; break;
+			include('manager/options.php'); exit; break;
 		case 'profile':
 		case 'profilo':
-			include('profile.php'); exit; break;
+			include('manager/profile.php'); exit; break;
 		case 'articles':
 		case 'articoli':
-			include('articles.php'); exit; break;
+			include('manager/articles.php'); exit; break;
 		case 'dashboard':
 		case 'bacheca':
-			include('bacheca.php'); exit; break;
+			include('manager/bacheca.php'); exit; break;
+		//default: continue script :)
 	}
 	
 	$fixPathPieces = [];

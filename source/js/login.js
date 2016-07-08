@@ -54,14 +54,13 @@ function log(){
 				else location.assign('./bacheca');
 			})
 			.error(function(e){
-				alert('Ooops!')
-				console.log(e)
-			})
-			.always(function(){
-				LOGGING = false;
+				alert('Ooops!');
 				$loader.addClass('done');
+				LOGGING = false;
+				console.log(e);
 			})
 	}) ){
+		//check form failed!!!
 		LOGGING = false;
 		$loader.addClass('done');
 	}

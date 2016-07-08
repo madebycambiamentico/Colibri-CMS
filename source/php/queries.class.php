@@ -140,7 +140,7 @@ class ARTQUERY{
 		}
 	}
 	
-	static function mainArts($limit=0, $fullimage=false){
+	static function mainArts($limit=0, $fullimage=false, $lang=''){
 		$imageselect = $fullimage ?
 			"b.width, b.height, b.src, b.descr" :
 			"b.src";

@@ -2,7 +2,7 @@
 
 
 class Colibri {
-	protected $version = "0.2&beta;m";
+	protected $version = "0.2.1&beta;m";
 
 	public static function link($rpath='', $echo=true){
 		global $CONFIG;

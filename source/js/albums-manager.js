@@ -96,7 +96,7 @@ $.fn.deleteAlbum = function(){
 	});
 }
 function deleteAlbum(id){
-	if (!confirm("Vuoi veramente cancellare l'album\n"+$('#album-'+id).data('title')+"?\nNon sarà più disponibile per nessun articolo precedentemente collegato.")) return false;
+	if (!confirm("Vuoi veramente cancellare l'album\n"+$('#album-'+id).data('t')+"?\nNon sarà più disponibile per nessun articolo precedentemente collegato.")) return false;
 	//lock form...
 	BUSY.start();
 	$.ajax({

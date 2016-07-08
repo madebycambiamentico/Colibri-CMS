@@ -20,7 +20,7 @@ if (!isset($web)){
 <div id="contactform">
 	<h2>Contacts</h2>
 	<div id="fluidform">
-		<form data-action="<?php echo LINK::file('contact-admin.php') ?>" action="<?php echo $templatepath.'nojs-contact.php' ?>" method="POST">
+		<form data-action="<?php echo LINK::file('manager/contact-admin.php') ?>" action="<?php echo $templatepath.'nojs-contact.php' ?>" method="POST">
 			<ul>
 				<li>
 					<label for="cf-subject">Subject: </label><input id="cf-subject" type="text" name="subject" placeholder="Subject">

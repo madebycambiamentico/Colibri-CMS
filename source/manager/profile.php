@@ -1,7 +1,14 @@
 <?php
 
-require_once "config.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
+/*
+ * @author Nereo Costacurta
+ *
+ * @require: /index.php (this is not a standalone page!)
+ *
+ * @license GPLv3
+ * @copyright: (C)2016 nereo costacurta
+**/
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
 
 //control login
 $SessionManager = new SessionManager();

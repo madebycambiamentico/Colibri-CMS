@@ -1,16 +1,14 @@
 <?php
-/**
- * @author: nereo costacurta
- *
- * @project: colibrì CMS | madebycambiamentico
- * @description: default login page
- *
- * @license: GPLv3
- * @copyright: (C)2016 nereo costacurta
- */
 
-require_once "config.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
+/*
+ * @author Nereo Costacurta
+ *
+ * @require: /index.php (this is not a standalone page!)
+ *
+ * @license GPLv3
+ * @copyright: (C)2016 nereo costacurta
+**/
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
 
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
