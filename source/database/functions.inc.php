@@ -1,12 +1,12 @@
 <?php
 
 /**
- * setup rewrite rules
- *
- * @require config.php loaded
- */
+* setup rewrite rules
+*
+* @require config.php loaded
+**/
 if (!isset($CONFIG)){
-	require_once '../config.php';
+	require_once __DIR__ . '/../config.php';
 }
 
 
@@ -24,7 +24,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 *
 * @param		(int)(optional)
 * @return bool | int
-*/
+**/
 function isLoggedIn($maxuserclass=0){
 	if (!$maxuserclass)
 		return isset($_SESSION['uid']) ? $_SESSION['uclass'] : false;
@@ -39,7 +39,7 @@ function logout($get='',$stopScript=true){
 	global $SessionManager, $CONFIG;
 	$SessionManager->regenerateSession();
 	session_destroy();
-	if ($stopScript) goToPage( $CONFIG['mbc_cms_dir'].'login.php'.($get !== '' ? '?'.$get : '') );
+	if ($stopScript) goToPage( $CONFIG['mbc_cms_dir'].'login'.($get !== '' ? '?'.$get : '') );
 }
 
 //go to login page, set custom GET
@@ -51,27 +51,35 @@ function goToPage($path='/'){
 	die();
 }
 
-//move user to home if not allowed in, clear session for not logged in, allow for $maxuserclass.
-//if $maxuserclass == 0 then everybody logged is allowed (no class check)
-//$maxuserclass = 1 => only admin allowed
-function allowOnlyUntilUserClass(
-	$maxuserclass=0,
+
+/**
+* move user to home if not allowed in, clear session for not logged in, allow for class > $min_user_class.
+* classes are as follow:
+* (2)  is the most important user (webmaster)
+* (1)  is the admin
+* (0)  is the guest
+* (-1) is a not-already-accepted user
+**/
+function allow_user_from_class(
+	$min_user_class=0,
 	$jsonError=false,
 	$errorNOLOG="La sessione è scaduta. Effettua nuovamente l'accesso.",
 	$errorLOG="Non possiedi i privilegi necessari per effettuare questa operazione."
 ){
 	if ($jsonError){
-		if (!isLoggedIn())
+		if (false === isLoggedIn())
 			jsonErrorLogout($errorNOLOG);
-		if ($maxuserclass > $_SESSION['uclass'] && $maxuserclass > 0)
+		if ($_SESSION['uclass'] < $min_user_class)
 			jsonError($errorLOG);
 	}
 	else{
 		global $CONFIG;
-		if (!isLoggedIn())
+		if (false === isLoggedIn())
+			//clear session
 			logout();
-		if ($maxuserclass > $_SESSION['uclass'] && $maxuserclass > 0)
-			goToPage( $CONFIG['mbc_cms_dir'].'bacheca.php' );
+		if ($_SESSION['uclass'] < $min_user_class)
+			//istead of blocking page, the not-allowed user is redirected to dashboard
+			goToPage( $CONFIG['mbc_cms_dir'].'bacheca' );
 	}
 }
 

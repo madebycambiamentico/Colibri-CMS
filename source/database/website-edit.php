@@ -7,7 +7,7 @@ require_once "functions.inc.php";
 require_once "../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1,true);
+allow_user_from_class(1,true);
 
 
 
@@ -20,15 +20,21 @@ if (!isset(
 	$_POST['quote'],
 	$_POST['info'],
 	$_POST['email'],
-	$_POST['rcptc']
+	$_POST['rcptc'],
+	$_POST['delivery']
 	))
 	jsonError('Variabili errate');
 
 if (!isset($_POST['rcptc']['k'], $_POST['rcptc']['s']))
 	jsonError('Variabili reCAPTCHA mancanti');
 
+if (!isset($_POST['delivery']['n'], $_POST['delivery']['t']))
+	jsonError('Variabili gestione mail mancanti');
+
 $query = "UPDATE sito SET
-autore=?, titolo=?, descr=?, motto=?, info=?, email=?";
+	autore=?, titolo=?, descr=?, motto=?, info=?,
+	delivery_quantity=?, delivery_delay=?,
+	email=?";
 $params = [];
 
 //id of current saved properties
@@ -36,34 +42,35 @@ $id = intval($_POST['id'],10);
 
 //common properties
 $prop = [
-	'a' => preg_replace('/\s+/',' ',trim($_POST['author'])),
-	't' => preg_replace('/\s+/',' ',trim($_POST['title'])),
-	'd' => preg_replace('/\s+/',' ',trim($_POST['descr'])),
-	'q' => preg_replace('/\s+/',' ',trim($_POST['quote'])),
-	'i' => trim($_POST['info'])
+	preg_replace('/\s+/',' ',trim($_POST['author'])),
+	preg_replace('/\s+/',' ',trim($_POST['title'])),
+	preg_replace('/\s+/',' ',trim($_POST['descr'])),
+	preg_replace('/\s+/',' ',trim($_POST['quote'])),
+	trim($_POST['info']),
+	max(0,intval($_POST['delivery']['n'],10)),
+	min(3600,max(0,intval($_POST['delivery']['t'],10)))
 ];
 foreach($prop as $p){ $params[] = $p; }
+unset($prop);
+
+require_once "../php/encrypter.class.php";
+	$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 //email
 $email = trim($_POST['email']);
 if ($email!==''){
 	if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
 		jsonError('e-mail non accettabile');
-	require_once "../php/encrypter.class.php";
-	$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
 	$email = $ENCRYPTER->encrypt($email);
 }
 $params[] = $email;
 
 //recaptcha keys
 $recaptcha = [
-	'k' => trim($_POST['rcptc']['k']),		//public key
+	'k' => trim($_POST['rcptc']['k']),	//public key
 	's' => trim($_POST['rcptc']['s'])	//private key
 ];
 if (!empty($recaptcha['k']) && !empty($recaptcha['s'])){
-	require_once "../php/encrypter.class.php";
-	$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
-	$recaptcha['s'] = $ENCRYPTER->encrypt($recaptcha['s']);
 	$query .= ", recaptcha_key=?, recaptcha_secret=?";
 	$params[] = $recaptcha['k'];
 	$params[] = $recaptcha['s'];

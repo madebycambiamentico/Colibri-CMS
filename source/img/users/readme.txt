@@ -1,0 +1,2 @@
+this folder contains public user profile photo: squares of 256, 128, 64 and 32 px.
+For distribution and test purpose, the user 1 has already his photo (which is the same as default user). Can be erased.

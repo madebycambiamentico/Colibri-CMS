@@ -8,7 +8,7 @@ require_once "../../../".$CONFIG['database']['dir']."functions.inc.php";
 require_once "../../../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1,true);
+allow_user_from_class(1,true);
 
 if (!isset(
 	$_POST['video_id'],

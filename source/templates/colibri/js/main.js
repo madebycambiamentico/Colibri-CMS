@@ -43,24 +43,27 @@ $(function(){
 			subject = form['subject'].value.trim(),
 			phone = form['phone'].value.trim(),
 			message = form['message'].value.trim();
-		if (!message) return failsend("Type the message before send it.");
-		if (!email && !phone) return failsend("You need to fill at least one of this fileds: email or phone number");
+		if (!message) return failsend("Scrivi il messaggio prima di inviare la mail!");
+		if (!email && !phone) return failsend("E' necessario riempire almeno uno di questi campi:\n- telefono\n- email");
 		if (email){
 			if (!/[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i.test(email)){
-				if (!confirm("The email could be invalid. Proceed anyway?")) return failsend();
+				if (!confirm("L'email immessa non sembra essere valida, continuare lo stesso?")) return failsend();
 			}
 		}
 		//send request
-		$.post($(form).data('action'), {email: email, subject: subject, phone: phone, message: message}, null, 'json')
+		$.post($(form).data('action'), $(form).serialize(), null, 'json')
 			.success(function(json){
-				if (json.error != false) return alert("ERRORE:\n"+json.error);
-				form['subject'].value = form['message'].value = '';
-				//block further submit:
-				alert("Your message has been sent. Thank you!");
+				if (json.error != false){
+					if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+					return alert("ERRORE:\n"+json.error);
+				}
+				form.reset();
+				alert("Il messaggio è stato spedito.\nGrazie! :)");
+				//block further submit: TODO...
 			})
 			.error(function(e){
 				console.log(e);
-				alert('Oooops!');
+				alert('Oooops! Non siamo riusciti a spedire il messaggio... prova più tardi.');
 			})
 			.always(function(){
 				//unlock form

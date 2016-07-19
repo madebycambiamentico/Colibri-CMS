@@ -53,7 +53,7 @@ class Setup {
 	public function get_permission_rules_db() {
 		$rules = "Order Deny,Allow\n" .
 					"Deny from all\n" .
-					'<Files ~ "\.(php|js|css)$">'."\n" .
+					'<Files ~ "\.(php|js|css|log)$">'."\n" .
 						"Allow from all\n" .
 					"</Files>";
 		

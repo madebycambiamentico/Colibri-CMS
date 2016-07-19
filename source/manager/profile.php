@@ -8,12 +8,12 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(null);//allow everybody to change his profile (if logged in)
+allow_user_from_class(0); // allow everybody to change his profile (if logged in)
 
 $Colibrì = new Colibri();
 $Pop = new Popups();
@@ -102,7 +102,7 @@ if ($pdores = $pdo->query("SELECT * FROM utenti WHERE id = ".$_SESSION['uid']." 
 	foreach ($pdores as $r):
 		$hasrows = true;
 ?>
-			<div id="pf-image" class="_256" style="background-image:url('img/users/<?php echo $r['hasimage'] ? $r['id'].'/' : 'default/' ?>face-256.png')">
+			<div id="pf-image" class="pf-img _256" style="background-image:url('img/users/<?php echo $r['hasimage'] ? $r['id'].'/' : 'default/' ?>face-256.png')">
 				<b class="sicon"><i class="pencil"></i></b>
 			</div>
 			<div class="inputs ultra tools center">

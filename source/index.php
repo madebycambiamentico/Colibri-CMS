@@ -105,22 +105,25 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			goto anchor_main; break;
 		case 'signin':
 		case 'iscriviti':
-			exit("Questa operazione non &egrave; abilitata."); break;
+			include('manager/register.php'); exit; break;
 		case 'login':
 		case 'accedi':
 			include('manager/login.php'); exit; break;
-		case 'nuovo':
 		case 'new':
 		case 'editor':
+		case 'nuovo':
 			include('manager/editor.php'); exit; break;
 		case 'albums':
 			include('manager/albums.php'); exit; break;
-		case 'opzioni':
 		case 'options':
+		case 'opzioni':
 			include('manager/options.php'); exit; break;
 		case 'profile':
 		case 'profilo':
 			include('manager/profile.php'); exit; break;
+		case 'profiles':
+		case 'profili':
+			include('manager/profiles-manager.php'); exit; break;
 		case 'articles':
 		case 'articoli':
 			include('manager/articles.php'); exit; break;

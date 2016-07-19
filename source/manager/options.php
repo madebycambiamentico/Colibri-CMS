@@ -8,12 +8,12 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1);
+allow_user_from_class(2);
 
 $Colibrì = new Colibri();
 
@@ -138,8 +138,29 @@ if (!$web) die("Void properties!</body>");
 			<div class="inputs maxi aligned">
 				<h4>Informazioni generali</h4>
 				<p>Inserire indicazioni stradali, recapito, numeri telefonici, email, partita IVA...</p>
-				<p>Tenere presente che inserire la propria mail testuale attirerà grandi quantità di spam. Se il template in uso è dotato di una <i>form</i> di contatto, è consigliabile evitare questo rischio.</p>
+				<p>Tenere presente che inserire la propria e-mail testuale attirerà grandi quantità di <i>spam</i>. Se il template in uso è dotato di una <i>form</i> di contatto, è consigliabile evitare questo rischio.</p>
 				<textarea id="w-info" name="info" placeholder="Informazioni..."><?php echo htmlentities($web['info']) ?></textarea>
+			</div>
+		
+			<div class="inputs maxi aligned">
+				<h3>Gestione avvisi email</h3>
+				<p><i>Metodo di invio - leggere attentamente:</i></p>
+				<br>
+				<p><b>Manuale</b>: richiede di avviare lo script <a href="database/email-bodies/delivery.php" target="_blank"><i>delivery.php</i></a> manualmente tante volte quanto è necessario. Può essere anche gestito attraverso un <i>cron-job</i>.<br><span style="background-color:#ff5">Per attivare l'invio manuale imposta a <b>0</b> il <i>cooldown</i></span>.</p>
+				<p><b>Automatico (sperimentale)</b>: non richiede azioni da parte dell'amministratore del sito e lo script continua a mandare mail ad intervalli fissati fino a che non ci saranno più email in uscita.<br><span style="background-color:#ff5">Per attivare l'invio automatico il <i>cooldown</i> dev'essere <b>&geq; 1 secondo</b>.</span></p>
+			</div>
+		
+			<div class="inputs maxi aligned">
+				<h4>Limite numero e-mail</h4>
+				<p>Massimo numero di e-mail inviate alla volta. Imposta a <b>0</b> se il numero di e-mail che prevedi di spedire è limitato e/o non hai limiti imposti lato server.</p>
+				<input id="w-delivery-n" name="delivery[n]" type="number" value="<?php echo $web['delivery_quantity'] ?>" min="0" placeholder="limite n. e-mail">
+			</div>
+		
+			<div class="inputs maxi aligned">
+				<h4>Cooldown spedizione e-mail</h4>
+				<p>Instervallo in secondi prima di spedire il prossimo set di e-mail. Se <b>0</b> lo script verrà fermato al termine del primo invio di mail.</p>
+				<p>Aiuto: 1'=60'', 5'=300'', 10'=600'', 15'=900'', 30'=1800, 1h=3600''.</p>
+				<input id="w-delivery-t" name="delivery[t]" type="number" value="<?php echo $web['delivery_delay'] ?>" min="0" max="3600" placeholder="cooldown invio e-mail (secondi)">
 			</div>
 			
 			<div class="inputs center hide-on-cell">
@@ -167,7 +188,7 @@ if (!$web) die("Void properties!</body>");
 			</div>
 		
 			<div class="inputs maxi aligned">
-				<h4>chiavi reCAPTCHA (v2)</h4>
+				<h4>Chiavi reCAPTCHA (v2)</h4>
 				<p>(facoltativo) Inserire le chiavi ottenute all'indirizzo <a href="https://www.google.com/recaptcha/admin" target="_blank">reCAPTCHA admin</a> per questo sito</p>
 				<p>Chiave pubblica (per HTML):</p>
 				<input id="w-recap-1" name="rcptc[k]" type="text" value="<?php echo htmlentities($web['recaptcha_key'],ENT_QUOTES) ?>" placeholder="public key">
@@ -183,7 +204,7 @@ if (!$web) die("Void properties!</body>");
 		
 			<div class="inputs maxi aligned">
 				<?php
-					//template makers should be trusted... there whould be an official revisor/validator
+					//template makers should be trusted... there will be an official revisor/validator
 					$templatepath = $CONFIG['mbc_cms_dir'].'templates/'.$web['template'].'/';
 					$phisicaltp = $CONFIG['c_dir'].'templates/'.$web['template'].'/';
 					$json = null;

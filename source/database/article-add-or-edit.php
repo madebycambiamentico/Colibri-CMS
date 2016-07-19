@@ -7,7 +7,7 @@ require_once "functions.inc.php";
 require_once "../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1,true);
+allow_user_from_class(1,true);
 
 //controllo generale variabili
 if (!isset(
@@ -29,16 +29,19 @@ if (!isset(
 	}
 
 
+$reserved_titles = ['signin','iscriviti','login','accedi','new','editor','nuovo','albums','options','opzioni','profile','profilo','profiles','profili','articles','articoli','dashboard','bacheca'];
+
+
 //controllo variabili !== empty
 $titolo		= trim($_POST['title']);
 $map			= trim($_POST['map']);
 $corpo		= trim($_POST['content']);
 	//if (!$corpo) $corpo = '&nbsp;' //allow empty content, substitute with blank space
 $type			= intval($_POST['type'],10);
-if (empty($_POST['title']) ||
-	empty($_POST['type']) ||
-	empty($_POST['map'])
-	) jsonError("Controlla di aver correttamente assegnato titolo e contenuto");
+if (empty($titolo) || empty($map) || empty($_POST['type']))
+	jsonError("Controlla di aver correttamente assegnato titolo e contenuto");
+if (in_array($titolo,$reserved_titles))
+	jsonError("Questo titolo è riservato! Cambialo.");
 
 	
 //controllo variabili opzionali

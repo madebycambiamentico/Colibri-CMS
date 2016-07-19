@@ -7,7 +7,7 @@ require_once "functions.inc.php";
 require_once "../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1,true);
+allow_user_from_class(1,true);
 
 //control variables
 if (!isset($_GET['title'], $_GET['id'], $_GET['image'])) jsonError('Variabili errate');

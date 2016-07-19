@@ -2,7 +2,7 @@
 
 
 class Colibri {
-	protected $version = "0.2.1&beta;m";
+	protected $version = "0.3.1&beta;m";
 
 	public static function link($rpath='', $echo=true){
 		global $CONFIG;
@@ -29,7 +29,7 @@ class Colibri {
 ?>
 	<div id="toolbar">
 		<i id="colibrì-icon"></i>
-		<a href="<?php echo $CONFIG['mbc_cms_dir'] ?>bacheca" class="sicon"><i class="home"></i></a>
+		<a href="<?php self::link("bacheca") ?>" class="sicon"><i class="home"></i></a>
 		<b id="menu-toggle" class="sicon"><i class="list-3"></i></b>
 	</div>
 <?php
@@ -45,8 +45,15 @@ class Colibri {
 		<li><a href="<?php self::link("bacheca") ?>"><b class="sicon"><i class="home"></i></b>Bacheca</a></li>
 		<li><a href="<?php self::link() ?>" target="_blank"><b class="sicon"><i class="eye"></i></b>Visualizza sito</a></li>
 		
-		<?php if ($_SESSION['uclass'] == 1): /* START allowed only for administrators */ ?>
+		<?php
+			//only webmasters
+			if ($_SESSION['uclass'] == 2):
+		?>
 		<li><a href="./options"><b class="sicon"><i class="options-3"></i></b>Gestione sito</a></li>
+		<?php endif;
+			//only for administrators + webmasters
+			if ($_SESSION['uclass'] >= 1):
+		?>
 		<li><a href="./articoli?q=0"><b class="sicon"><i class="label-2"></i></b>Articoli</a>
 			<ul class="sub-menu">
 				<li><a href="<?php self::link("editor?q=new") ?>">Nuovo</a></li>
@@ -58,14 +65,17 @@ class Colibri {
 			</ul>
 		</li>
 		<li><a href="<?php self::link("albums") ?>"><b class="sicon"><i class="hearth"></i></b>Albums</a></li>
-		<?php endif; /* END allowed only for administrators */ ?>
+		<?php endif; ?>
 		
 		<li><a href="<?php self::link("profilo") ?>"><b class="sicon"><i class="man"></i></b>Profilo</a>
 			<ul class="sub-menu">
 				<li><a href="<?php self::link("profilo") ?>">Modifica</a></li>
 				<li><a href="<?php self::link("database/logout.php?redirect") ?>">Scollegati</a></li>
-				<?php if ($_SESSION['uclass'] == 1): ?>
-				<li><a href="<?php self::link("profiles") ?>">Gestisci Profili Pubblici<br></a></li>
+				<?php
+					//START allowed only for administrators + webmasters
+					if ($_SESSION['uclass'] >= 1):
+				?>
+				<li><a href="<?php self::link("profili") ?>">Gestisci Profili Pubblici<br></a></li>
 				<?php endif; ?>
 			</ul>
 		</li>
@@ -78,7 +88,7 @@ class Colibri {
 	public function getJQuery(){
 		//for debug offline... remove 
 		global $CONFIG;
-		$local = strpos('C:',$CONFIG['c_dir']) === 0;
+		$local = substr($CONFIG['c_dir'],0,2) === "C:";
 		if (!$local):
 ?>
 <!--[if lte IE 8]>

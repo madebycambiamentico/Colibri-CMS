@@ -23,7 +23,7 @@ require_once "../../".$CONFIG['database']['dir']."functions.inc.php";
 /*
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1);
+allow_user_from_class(1,true);
 */
 
 include "php/link.class.php";

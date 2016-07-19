@@ -8,12 +8,12 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(0);
+allow_user_from_class(0); // everybody can see this page (guest and admins)
 
 $Colibrì = new Colibri();
 
@@ -64,7 +64,7 @@ $Colibrì = new Colibri();
 if ($pdores = $pdo->query("SELECT id, hasimage, nome FROM utenti WHERE id = ".$_SESSION['uid']." LIMIT 1", PDO::FETCH_ASSOC)){
 	foreach ($pdores as $r):
 ?>
-			<div id="pf-image" class="_128" style="background-image:url('img/users/<?php echo $r['hasimage'] ? $r['id'].'/' : 'default/' ?>face-128.png')"></div>
+			<div id="pf-image" class="pf-img _128" style="background-image:url('img/users/<?php echo $r['hasimage'] ? $r['id'].'/' : 'default/' ?>face-128.png')"></div>
 			<div class="inputs ultra tools center">
 				<p><a href="./database/logout.php?redirect">
 					<b class="sicon"><i class="off"></i></b>

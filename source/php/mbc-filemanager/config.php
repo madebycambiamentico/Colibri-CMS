@@ -5,6 +5,19 @@ if (version_compare(phpversion(), '5.4.0', '<')) {
 }
 
 
+
+
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// PROBLEMA: la configurazione del database dev'essere la stessa che nel config.php della cartella principale...
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
 //-------------------------
 function fix_script_url(){
 	$script_url = NULL;
@@ -31,24 +44,10 @@ fix_script_url();
 //-------------------------
 
 
-
-
-
-
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// PROBLEMA: la configurazione del database dev'essere la stessa che nel config.php della cartella principale...
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-
-
 function getDomain(){
 	return (((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=='off') || $_SERVER['SERVER_PORT']==443) ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'];
 }
+
 
 function getFMDir(){
 	//----------- find current directory url: ------------
@@ -78,6 +77,8 @@ function getFMDir(){
 	return $prefix;
 }
 
+
+
 $CONFIG = [
 	//------------- LOCKED VARS: DO NOT CHANGE -------------
 	//domain -- example: "http://localhost:8080"
@@ -92,10 +93,10 @@ $CONFIG = [
 													//all folders must be lowercase
 													//Do not set as sub-path of default_thumb in any of your dreams!
 	
-	"hidden_dirs" => [],						//array of uploads sub-directories to hide
+	"hidden_dirs" => [],						//array of sub-directories to hide
 													//(all folders must be lowercase)
 	
-	//TODO... set unique place to define database dir...
+	//set unique place to define database dir... should be the same as in config.php in CMS dir.
 	'database' => [
 		'dir' => '../../database/',
 		'name' => 'mbcsqlite3.db'

@@ -46,12 +46,15 @@ function log(){
 		.removeClass('done');
 	//send post request
 	if ( !checkform(function(){
-		console.log('l false')
 		$.post('database/login.php',$('#my-login').serialize(),null,'json')
 			.success(function(json){
-				console.log(json);
-				if (json.error !== false) return alert("ERRORE\n"+json.error);
-				else location.assign('./bacheca');
+				if (json.error !== false){
+					alert("ERRORE\n"+json.error);
+					$loader.addClass('done');
+					LOGGING = false;
+				}
+				else
+					location.assign('./bacheca?logged');
 			})
 			.error(function(e){
 				alert('Ooops!');
@@ -73,7 +76,7 @@ $(function(){
 	
 	$('#my-login input').keypress(function(e){
 		if (e.which == 13){
-			log()
+			log();
 			return false;    //<---- Add this line
 		}
 	});

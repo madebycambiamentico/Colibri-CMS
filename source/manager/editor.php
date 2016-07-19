@@ -8,12 +8,12 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1);
+allow_user_from_class(1);
 
 $Colibrì = new Colibri();
 $Pop = new Popups();

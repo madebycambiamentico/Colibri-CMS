@@ -25,5 +25,5 @@ anchor_redirect:
 
 //control login
 logout('logout',false);
-header('Location: ../login.php?logout');
+header('Location: ../login?logout');
 ?>

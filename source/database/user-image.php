@@ -7,7 +7,7 @@ require_once "functions.inc.php";
 require_once "../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(0,true);
+allow_user_from_class(0,true);
 
 
 if (isset($_GET['remove'])) goto anchor_remove;

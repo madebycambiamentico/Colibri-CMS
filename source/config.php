@@ -30,9 +30,11 @@ function fix_script_url(){
 fix_script_url();
 //-------------------------
 
+
 function getDomain(){
 	return (((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=='off') || $_SERVER['SERVER_PORT']==443) ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'];
 }
+
 
 function getCMSDir(){
 	//----------- find current directory url: ------------
@@ -74,7 +76,7 @@ $CONFIG = [
 	'mbc_cms_dir' => getCMSDir(),
 	//drive path for this file
 	//example: "C:/virtual-hosts/Colibri/test-cms/mbc-cms/"
-	'c_dir' => str_replace("\\","/",__DIR__).'/',
+	'c_dir' => __DIR__ . DIRECTORY_SEPARATOR,	//do not change!,
 	//----------------- END OF LOCKED VARS -----------------
 	
 	
@@ -101,7 +103,7 @@ $CONFIG['database']['path'] = $CONFIG['c_dir'].$CONFIG['database']['dir'].$CONFI
 
 
 /**
- * Autoloader for any class
+ * Autoloader for any Colibrì class
  * 
  * // istead of write:
  * include_once("./php/foo.class.php");
@@ -112,13 +114,16 @@ $CONFIG['database']['path'] = $CONFIG['c_dir'].$CONFIG['database']['dir'].$CONFI
  * // with no need to explicitly include file!!!
  * $foo = new Foo;
  * BAR::dosomething();
+ *
+ * //classes need to be placed and named as this: "php/<lowered_class_name>.class.php"
  */
 
-function mbc_autoload($pClassName) {
-	global $CONFIG;
-	include_once $CONFIG['c_dir'].'php/' . strtolower($pClassName).'.class.php';
-}
-spl_autoload_register("mbc_autoload");
+spl_autoload_register(function($class) {
+	$path = __DIR__ . '/php/' . strtolower($class).'.class.php';
+	if (file_exists($path)) {
+		require_once $path;
+	}
+});
 
 
 ?>

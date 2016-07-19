@@ -38,7 +38,12 @@ ul.list>li::before{
 .inputs.center{
 	text-align:center;
 }
+.inputs p{
+	padding-bottom:4px;
+}
 .inputs input[type=text],
+.inputs input[type=number],
+.inputs input[type=email],
 .inputs input[type=password],
 .inputs select,
 .inputs textarea{
@@ -62,6 +67,8 @@ ul.list>li::before{
 	border-radius:4px 4px 0 0;
 }
 .inputs.maxi input[type=text],
+.inputs.maxi input[type=email],
+.inputs.maxi input[type=number],
 .inputs.maxi input[type=password],
 .inputs.maxi select{
 	width: 100%;
@@ -84,18 +91,24 @@ ul.list>li::before{
 	text-align:center;
 }
 .inputs.field-btn input[type=text],
+.inputs.field-btn input[type=email],
+.inputs.field-btn input[type=number],
 .inputs.field-btn input[type=password],
 .inputs.field-btn select{
 	border-radius: 4px 0px 0px 4px;
 	width:220px;
 }
 .inputs input[type=text]:hover,
+.inputs input[type=email]:hover,
+.inputs input[type=number]:hover,
 .inputs input[type=password]:hover,
 .inputs select:hover,
 .inputs textarea:hover{
 	border-color: #93A9CF;
 }
 .inputs input[type=text]:active,
+.inputs input[type=email]:active,
+.inputs input[type=number]:active,
 .inputs input[type=password]:active,
 .inputs select:active,
 .inputs textarea:active{
@@ -185,12 +198,16 @@ ul.list>li::before{
 @media only screen and (max-width:480px){
 	/* form template */
 	.inputs input[type=text],
+	.inputs input[type=email],
+	.inputs input[type=number],
 	.inputs input[type=password],
 	.inputs select,
 	.inputs textarea{
 		width: 90%;
 	}
 	.inputs.field-btn input[type=text],
+	.inputs.field-btn input[type=email],
+	.inputs.field-btn input[type=number],
 	.inputs.field-btn input[type=password],
 	.inputs.field-btn select{
 		width:60%;

@@ -20,7 +20,7 @@ if (!isset($web)){
 <div id="contactform">
 	<h2>Contacts</h2>
 	<div id="fluidform">
-		<form data-action="<?php echo LINK::file('manager/contact-admin.php') ?>" action="<?php echo $templatepath.'nojs-contact.php' ?>" method="POST">
+		<form data-action="<?php echo LINK::file('contact-admin.php') ?>" action="<?php echo $templatepath.'nojs-contact.php' ?>" method="POST">
 			<ul>
 				<li>
 					<label for="cf-subject">Subject: </label><input id="cf-subject" type="text" name="subject" placeholder="Subject">
@@ -35,8 +35,8 @@ if (!isset($web)){
 					<label for="cf-message">Message</label><textarea id="cf-message" type="text" name="message" placeholder="Message"></textarea>
 				</li>
 				<li>
+					<script src="https://www.google.com/recaptcha/api.js?hl=it" async defer></script>
 					<div class="g-recaptcha" data-sitekey="<?php echo htmlentities($web['recaptcha_key'],ENT_QUOTES); ?>"></div>
-					<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=en"></script>
 				</li>
 				<li class="confirm">A confirmation email will be sent to your email (if provided). We read carefully every message we receive.<br><label><input type="checkbox" name="sendconfirm" value="1" checked> inviami conferma email</label></li>
 				<li>

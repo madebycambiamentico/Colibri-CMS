@@ -9,7 +9,7 @@ closeConnection();
 require_once "../../../php/sessionmanager.class.php";
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1,true);
+allow_user_from_class(1,true);
 
 
 function check_and_create_path($path){

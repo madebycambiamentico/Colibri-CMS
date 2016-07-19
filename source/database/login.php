@@ -29,13 +29,14 @@ pass : "620d289aef644aff1a36e0a516a01be0fbdb70caa67cfa5593f6ec5a5b4f1a30272b361f
 */
 
 //controllo del database
-$pdostat = $pdo->prepare("SELECT id, class, pass, salt FROM utenti WHERE nome = ? LIMIT 1") or jsonErrorLogout('Errore durante ricerca utente [prepare]');
+$pdostat = $pdo->prepare("SELECT id, classe, pass, salt, flags FROM utenti WHERE nome = ? LIMIT 1") or jsonErrorLogout('Errore durante ricerca utente [prepare]');
 if (!$pdostat->execute([$user])) jsonErrorLogout('Errore durante ricerca utente [execute]');
 if ($r = $pdostat->fetch(PDO::FETCH_ASSOC)){
 	$hashSaltPlusPass = hash('sha512', $pass.$r['salt']);
 	if ($hashSaltPlusPass == $r['pass']){
 		$_SESSION['uid'] = $r['id'];
-		$_SESSION['uclass'] = $r['class'];
+		$_SESSION['uclass'] = $r['classe'];
+		$_SESSION['uflags'] = $r['flags'];
 		jsonSuccess();
 	}
 	else{

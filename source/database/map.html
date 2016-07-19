@@ -20,10 +20,14 @@ body{
 ul{
 	display:block;
 	position:absolute;
+	z-index:0;
 	background:#eee;
 	width:160px;
 	font-size:13px;
 	transform:translateZ(0);
+}
+ul:hover{
+	z-index:1000;
 }
 ul.close{
 	overflow-y:hidden;
@@ -61,23 +65,42 @@ ul li.title{
 
 <body>
 
-<ul class="table" id="link_album_immagini" style="top:25px; left:25px;">
+<ul class="table" id="sito" style="top:25px; left:25px;">
+	<li class="title">sito <span></span></li>
+	<li><b>id</b> <span>integer</span></li>
+	<li>autore <span>text</span></li>
+	<li>titolo <span>text</span></li>
+	<li>descr <span>text</span></li>
+	<li>motto <span>text</span></li>
+	<li>template <span>text</span></li>
+	<li>email <span>text</span></li>
+	<li>dataedit <span>datetime (text)</span></li>
+	<li>info <span>text</span></li>
+	<li>recaptcha_key <span>text</span></li>
+	<li>recaptcha_secret <span>text</span></li>
+	<li>multilanguage <span>bool</span></li>
+	<li>delivery_quantity <span>int</span></li>
+	<li>delivery_delay <span>int</span></li>
+</ul>
+
+<ul class="table" id="link_album_immagini" style="top:25px; left:200px;">
 	<li class="title">link_album_immagini</li>
 	<li><i>idalbum</i> <span>integer</span></li>
 	<li><i>idimage</i> <span>integer</span></li>
 </ul>
 
-<ul class="table" id="immagini_albums" style="top:25px; left:200px;">
+<ul class="table" id="immagini_albums" style="top:130px; left:200px;">
 	<li class="title">immagini_albums <span></span></li>
 	<li><b>id</b> <span>integer</span></li>
-	<li>nome <span>varchar(100)</span></li>
+	<li>titolo <span>varchar(100)</span></li>
+	<li><i>idimage</i> <span>integer</span></li>
 </ul>
 
-<ul class="table" id="immagini" style="top:120px; left:200px;">
+<ul class="table" id="immagini" style="top:260px; left:200px;">
 	<li class="title">immagini <span></span></li>
 	<li><b>id</b> <span>integer</span></li>
 	<li>src <span>text</span></li>
-	<li>desc <span>varchar(200)</span></li>
+	<li>descr <span>varchar(200)</span></li>
 	<li>data <span>datetime (text)</span></li>
 	<li>width <span>integer</span></li>
 	<li>height <span>integer</span></li>
@@ -86,12 +109,12 @@ ul li.title{
 <ul class="table" id="articoli" style="top:25px; left:375px;">
 	<li class="title">articoli <span></span></li>
 	<li><b>id</b> <span>integer</span></li>
+	<li>datacreaz <span>datetime (text)</span></li>
+	<li>dataedit <span>datetime (text)</span></li>
 	<li>titolo <span>varchar(50)</span></li>
+	<li>remaplink <span>text</span></li>
 	<li>corpo <span>text</span></li>
 	<li>inbreve <span>text</span></li>
-	<li>remaplink <span>text</span></li>
-	<li>data <span>datetime (text)</span></li>
-	<li>dataedit <span>datetime (text)</span></li>
 	<li>isindex <span>bool</span></li>
 	<li>isinmenu <span>bool</span></li>
 	<li><i>idtype</i> <span>integer</span></li>
@@ -99,6 +122,11 @@ ul li.title{
 	<li><i>idalbum</i> <span>integer</span></li>
 	<li><i>idimage</i> <span>integer</span></li>
 	<li>isgarbage <span>bool</span></li>
+	<li><i>idowner</i> <span>integer</span></li>
+	<li><i>ideditor</i> <span>integer</span></li>
+	<li>lang <span>char(5)</span></li>
+	<li>isindexlang <span>bool</span></li>
+	<li><i>idarticololang</i> <span>integer</span></li>
 </ul>
 
 <ul class="table" id="articoli_types" style="top:25px; left:550px;">
@@ -112,14 +140,25 @@ ul li.title{
 <ul class="table" id="utenti" style="top:25px; left:725px;">
 	<li class="title">utenti <span></span></li>
 	<li><b>id</b> <span>integer</span></li>
-	<li>class <span>integer</span></li>
+	<li>classe <span>integer</span></li>
 	<li>nome <span>varchar(100)</span></li>
 	<li>email <span>text</span></li>
 	<li>datacreaz <span>datetime (text)</span></li>
 	<li>hasimage <span>bool</span></li>
+	<li>about <span>text</span></li>
 	<li>salt <span>char(128)</span></li>
 	<li>pass <span>char(128)</span></li>
 	<li>passhint <span>text</span></li>
+	<li>flags <span>int</span></li>
+</ul>
+
+<ul class="table" id="emails" style="top:180px; left:550px;">
+	<li class="title">utenti <span></span></li>
+	<li><b>id</b> <span>integer</span></li>
+	<li>type <span>integer</span></li>
+	<li>datacreaz <span>datetime (text)</span></li>
+	<li>content <span>text</span></li>
+	<li><i>iduser</i> <span>integer</span></li>
 </ul>
 
 <!--[if lte IE 8]><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><![endif]--><!--[if gt IE 8]><!--><script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script><!--<![endif]-->

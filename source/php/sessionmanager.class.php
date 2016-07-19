@@ -18,49 +18,6 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSE
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
-
-
-/*
-
-## Usage
-
-Starting the session is a simple call to the "sessionStart" static function:
-
---------------------------
-// Creates a basic session.
-SessionManager::sessionStart('InstallationName');
-
-// Creates a session thats ends when the browser closes and is only accessible at www.site.com/myBlog/
-SessionManager::sessionStart('Blog_myBlog', 0, '/myBlog/', 'www.site.com');
-
-// Creates a session thats ends when the browser closes and is only accessible at https://accounts.bank.com/
-SessionManager::sessionStart('Accounts_Bank', 0, '/', 'accounts.bank.com', true);
---------------------------
-
-You can manually set a session id to regenerate using the regenerateSession function.
-This is useful for when you change authentication states (the user logs in or out)
-as it also invalidates the old session:
-
---------------------------
-// Regenerate the session.
-SessionManager::regenerateSession();
---------------------------
-
-
-## Features:
-
-Protects against fixation attacks by regenerating the ID periodically.
-Prevents session run conditions caused by rapid concurrent connections (such as when Ajax is in use).
-Locks a session to a user agent and ip address to prevent theft.
-Supports users behind proxies by identifying proxy headers in requests.
-Handles edge cases such as AOL's proxy network and IE8's user-agent changes.
-
-*/
-
-
-
-
 /**
  * This SessionManager starts the php session (regardless of which handler is set) and secures it by locking down
  * the cookie, restricting the session to a specific host and browser, and regenerating the ID.
@@ -73,7 +30,7 @@ class SessionManager {
 	 * @link http://webmaster.info.aol.com/proxyinfo.html
 	 * @var array
 	 */
-	protected static $aolProxies = array('195.93.', '205.188', '198.81.', '207.200', '202.67.', '64.12.9');
+	protected $aolProxies = array('195.93.', '205.188', '198.81.', '207.200', '202.67.', '64.12.9');
 	/**
 	 * This function starts, validates and secures a session.
 	 *
@@ -164,7 +121,7 @@ class SessionManager {
 		$remoteIpHeader = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
 		$remoteIpSegment = substr($remoteIpHeader, 0, 7);
 		if($_SESSION['IPaddress'] != $remoteIpHeader
-			&& !(in_array($sessionIpSegment, $self::aolProxies) && in_array($remoteIpSegment, $self::aolProxies))) {
+			&& !(in_array($sessionIpSegment, $this->aolProxies) && in_array($remoteIpSegment, $this->aolProxies))) {
 			return false;
 		}
 		if( $_SESSION['userAgent'] != $_SERVER['HTTP_USER_AGENT'])

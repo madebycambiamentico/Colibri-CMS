@@ -8,7 +8,7 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found"); die; }
+if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 $SessionManager = new SessionManager();
 $SessionManager->sessionStart('colibri');
@@ -65,6 +65,7 @@ $Colibrì = new Colibri();
 	
 	<div class="inputs center">
 		<b id="send-me" class="btn">Accedi</b>
+		<br><br><a href="./signin">Registra nuovo utente</a>
 	</div>
 	
 </form>

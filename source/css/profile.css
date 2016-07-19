@@ -1,20 +1,33 @@
 /* REQUIRE: css/style.css */
 
-#pf-image{
-	position:relative;
-	margin:5px auto;
+.pf-img{
+	display:inline-block;
+	margin:5px;
 	border-radius:50%;
 	background: #FFF none no-repeat scroll center center;
 	border: 1px solid #999;
-	box-shadow: 0 0 16px #aaa;
 }
-#pf-image._256{
+.pf-img._256{
 	width:256px;
 	height:256px;
 }
-#pf-image._128{
+.pf-img._128{
 	width:128px;
 	height:128px;
+}
+.pf-img._64{
+	width:64px;
+	height:64px;
+}
+.pf-img._32{
+	width:32px;
+	height:32px;
+}
+#pf-image{
+	display:block;
+	position:relative;
+	margin:5px auto;
+	box-shadow: 0 0 16px #aaa;
 }
 #pf-image b{
 	position:absolute;
@@ -72,6 +85,60 @@
 	font-size:12px;
 	font-weight:bold;
 	transition:width 0.1s, background 0.1s;
+}
+.no-pfs{
+	display:none;
+	font-weight:bold;
+	padding-bottom:20px;
+}
+.has-no-pfs .no-pfs{
+	display:block;
+}
+.has-no-pfs .with-pf{
+	display:none;
+}
+.profile-edit td{
+	vertical-align:middle;
+}
+.profile-edit p{
+	padding-bottom:5px;
+}
+.profile-edit .tools input+label{
+	opacity:0.5;
+}
+.profile-edit .tools input:checked+label{
+	opacity:1
+} 
+.pf-name{
+	text-transform:uppercase;
+}
+.pf-info{
+	max-width:375px;
+	margin-left: 15px;
+	padding: 8px 8px 2px;
+	background: #fafafa;
+	border-radius: 6px;
+}
+.pf-td-img{
+	position:relative;
+	width:128px;
+	text-align:center;
+}
+.pf-td-img .pf-img{
+	/*display:block;
+	margin:10px auto;*/
+}
+.pf-td-img .pf-email{
+	position:absolute;
+	top:60px;
+	width:100%;
+}
+.pf-td-img :checked{
+	background:#000;
+}
+#small_webmasters{
+	padding:15px 0;
+	line-height:0;
 }
 
 @media only screen and (max-width:980px){
