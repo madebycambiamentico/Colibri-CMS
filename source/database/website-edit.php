@@ -73,7 +73,7 @@ $recaptcha = [
 if (!empty($recaptcha['k']) && !empty($recaptcha['s'])){
 	$query .= ", recaptcha_key=?, recaptcha_secret=?";
 	$params[] = $recaptcha['k'];
-	$params[] = $recaptcha['s'];
+	$params[] = $ENCRYPTER->encrypt($recaptcha['s']);
 }
 elseif (empty($recaptcha['k'])){
 	$query .= ", recaptcha_key=?, recaptcha_secret=?";

@@ -61,12 +61,12 @@ if ($pdores = $pdo->query("SELECT autore, email, recaptcha_secret FROM sito ORDE
 				$ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
 				curl_setopt_array($ch, array(
 					CURLOPT_HEADER				=> false,
-					CURLOPT_TIMEOUT			=> 1,
+					CURLOPT_TIMEOUT			=> 4,
 					CURLOPT_RETURNTRANSFER	=> true,
 					CURLOPT_POST				=> true,
 					CURLOPT_SSL_VERIFYPEER	=> false,
 					CURLOPT_POSTFIELDS		=> http_build_query([
-							'secret'		=> $r['recaptcha_secret'],
+							'secret'		=> $ENCRYPTER->decrypt($r['recaptcha_secret']),
 							'response'	=> $_POST['g-recaptcha-response']
 						])
 				));
@@ -84,7 +84,7 @@ if ($pdores = $pdo->query("SELECT autore, email, recaptcha_secret FROM sito ORDE
 				*/
 				if ($captcha_res['success'] === false)
 					if (isset($captcha_res['error-code'])) jsonError( "Si è verificato un errore (".implode($captcha_res['error-code']).")" );
-					else jsonError('Dimostra di non essere un BOT... riprova!');
+					else jsonError('Dimostra di non essere un BOT... riprova!' . print_r($captcha_res,true));
 			}
 			else
 				jsonError( "Il template del sito non è configurato adeguatamente per l'uso di reCAPTCHA. Notificare l'amministratore se possibile." );
