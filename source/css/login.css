@@ -85,7 +85,7 @@ body{
 	#my-login{
 		border-radius:0;
 		padding:90px 16px 16px 16px;
-		background:#fff url(img/logo/colibri-micro-black.png) no-repeat center 16px;
+		background:#fff url(../img/logo/colibri-micro-black.png) no-repeat center 16px;
 		box-shadow:none;
 	}
 }
