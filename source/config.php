@@ -1,14 +1,22 @@
 <?php
 
-if (version_compare(phpversion(), '5.4.0', '<')) {
-	trigger_error('You are running a version of PHP not supported (too old). Minimum requirements are <b>PHP 5.4.0</b>', E_USER_ERROR);
-}
+
+
+
+//#####################################################################
+//#######  C H A N G E  T H E  S E C R E T  S T R I N G  !!!  #########
+//#####################################################################
+
+
+//TODO
+//render CONFIG a class or a constant
+
 
 
 //-------------------------
 function fix_script_url(){
 	$script_url = NULL;
-	//to do:
+	//TODO...
 	//what order? SCRIPT_URL, REQUEST_URI, REDIRECT_URL?
 	//to be determined... not entirely sure
 	//and by the way: SCRIPT_URL is what I think it is?
@@ -41,9 +49,9 @@ function getCMSDir(){
 	// !!! WARNING !!! WORKS ONLY FOR FILES WITHIN INSTALLATION DIRECTORY FOLDER, NOT SUB-FOLDERS!!!
 	// if requested "http://www.your_site.com/[installation_directory]/required/path"
 	// should find something like:
-	//   $_SERVER['SCRIPT_NAME'] = "/[installation_directory]/index.php"
-	//   $_SERVER['SCRIPT_URL'] = "/[installation_directory]/required/path"
-	// $CONFIG['mbc_cms_dir'] result in "/" or "/[installation_directory]/"
+	//		$_SERVER['SCRIPT_NAME'] = "/<installation_directory>/index.php"
+	//		$_SERVER['SCRIPT_URL'] = "/<installation_directory>/required/path"
+	// $CONFIG['mbc_cms_dir'] result in "/" or "/<installation_directory>/"
 	$prefix = dirname($_SERVER['SCRIPT_NAME']);  // "/wathever/index.php" -> "/wathever", or "/whatever" -> "/"
 	if ($prefix !== '/'){
 		$prefix .= '/';
@@ -67,34 +75,48 @@ function getCMSDir(){
 
 
 $CONFIG = [
+
 	//------------- LOCKED VARS: DO NOT CHANGE -------------
+	
 	//domain
 	//example: "http://localhost:8080"
 	'domain' => getDomain(),
-	//absolute path for main directory
-	//example: "/any_path/to/installation_directory/"
+	
+	//absolute folder path of calling script.
+	//example: "/any_path/to/installation_directory/" if root script is "index.php"
+	//example 2: "/any_path/to/installation_directory/database/" if root script is "database/user-edit.php"
 	'mbc_cms_dir' => getCMSDir(),
+	
 	//drive path for this file
 	//example: "C:/virtual-hosts/Colibri/test-cms/mbc-cms/"
-	'c_dir' => __DIR__ . DIRECTORY_SEPARATOR,	//do not change!,
+	'c_dir' => __DIR__ . '/', //do not change!
+	
 	//----------------- END OF LOCKED VARS -----------------
 	
 	
-	//------------- CUSTOMIZABLE VARS -------------
+	
+	
+	//------------------ CUSTOMIZABLE VARS -----------------
+	
 	//database directory and file name.
 	'database' => [
 		'dir' => 'database/',		//should not be changed: some js scripts rely on this path.
 		'name' => 'mbcsqlite3.db'	//can be changed at will, but must be the same as in php/mbc-filemanager/config.php
 	],
+	
 	//secret string to encrypt and decrypt emails. If changed, you should backup the decrypted old emails
 	//and restore them with the new key encryption.
 	//this feature is not officially supported
+	//...
+	//##########################################################
+	//#######  C H A N G E  T H I S  S T R I N G  !!!  #########
+	//##########################################################
 	'encrypt' => [
-		###/SECRETEY###
 		'secret_key' => '!CHANGE THIS STRING TO ANY RANDOM ONE!',
-		###SECRETEY/###
 	]
-	//----------- END OF CUSTOMIZABLE VARS -----------
+	
+	//-------------- END OF CUSTOMIZABLE VARS --------------
+
 ];
 
 
@@ -102,28 +124,12 @@ $CONFIG = [
 $CONFIG['database']['path'] = $CONFIG['c_dir'].$CONFIG['database']['dir'].$CONFIG['database']['name'];
 
 
-/**
- * Autoloader for any Colibrì class
- * 
- * // istead of write:
- * include_once("./php/foo.class.php");
- * include_once("./php/bar.class.php");
- * ...
- * 
- * // the right classes will be loaded automatically on call
- * // with no need to explicitly include file!!!
- * $foo = new Foo;
- * BAR::dosomething();
- *
- * //classes need to be placed and named as this: "php/<lowered_class_name>.class.php"
- */
 
-spl_autoload_register(function($class) {
-	$path = __DIR__ . '/php/' . strtolower($class).'.class.php';
-	if (file_exists($path)) {
-		require_once $path;
-	}
-});
+//include autoloaders:
+require_once( __DIR__ .'/autoloader.php' ); // for non-categorized classes
+require_once( __DIR__ .'/php/Colibri-Manager/autoloader.php' );
+require_once( __DIR__ .'/php/Colibri-ReCaptcha/autoloader.php' );
+require_once( __DIR__ .'/php/Colibri-Website/autoloader.php' );
 
 
 ?>

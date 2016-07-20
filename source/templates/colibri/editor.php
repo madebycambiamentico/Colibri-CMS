@@ -21,7 +21,7 @@ require_once "../../".$CONFIG['database']['dir']."functions.inc.php";
 
 //control login - uncomment to hide this page from public
 /*
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 */
@@ -96,8 +96,8 @@ here the colibrì background image
 		<div id="menu">
 			<a class="logo" href="http://colibricms.altervista.org/"></a><!--
 			--><!--a class="item" href="http://cambiamentico.altervista.org/">MadeByCambiamentico</a--><!--
-			--><a class="item" href="<?php echo LINK::file('bacheca') ?>">Bacheca</a><!--
-			--><a class="item" href="<?php echo LINK::file('options') ?>">Gestione sito</a>
+			--><a class="item" href="../../bacheca">Bacheca</a><!--
+			--><a class="item" href="../../options">Gestione sito</a>
 		</div>
 		
 		<!-- menu for mobiles -->
@@ -105,8 +105,8 @@ here the colibrì background image
 			<div class="content">
 				<a class="logo" href="http://colibricms.altervista.org/"></a><!--
 				--><!--a class="item" href="http://cambiamentico.altervista.org/">MadeByCambiamentico</a--><!--
-				--><a href="<?php echo LINK::file('bacheca') ?>">Bacheca</a><!--
-				--><a href="<?php echo LINK::file('options') ?>">Gestione sito</a>
+				--><a class="item" href="../../bacheca">Bacheca</a><!--
+				--><a class="item" href="../../options">Gestione sito</a>
 			</div>
 		</div>
 		<div id="open-menu"><a></a></div>

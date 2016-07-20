@@ -12,19 +12,19 @@
 
 //control variables
 if (!isset($CONFIG, $page)){
-	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-	die('variabili mancanti');
+	header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
+	die;
 }
 
 //load template classes (custom)
-require_once TEMPLATES::custom($web['template'],'php/link.class.php');
+require_once __DIR__ . '/php/link.class.php';
 
 ?><!DOCTYPE html>
 
 <html lang="it-IT">
 <head>
 	<title><?php echo htmlentities($web['titolo']); ?></title>
-	<?php include TEMPLATES::custom($web['template'],'_meta.php') ?>
+	<?php include \WebSpace\Template::custom($web['template'],'_meta.php') ?>
 	
 	<?php
 		//main stylesheet
@@ -66,7 +66,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 
 
 
-<?php include TEMPLATES::custom($web['template'],'_menu.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_menu.php') ?>
 
 
 
@@ -84,7 +84,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 			}
 			//print header...
 			if ($video){
-				include TEMPLATES::custom($web['template'],'_YTiframe.php');
+				include \WebSpace\Template::custom($web['template'],'_YTiframe.php');
 			}
 			elseif ($page['src']){
 				echo '<div class="image-main"><div class="image-sizer web"></div></div>';
@@ -106,7 +106,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 		<div id="sub-articles" class="article-cont">
 			<?php
 				//search all sub-main-pages
-				$pdostat = ARTQUERY::query('subMainArts', [1, 0]);
+				$pdostat = \WebSpace\Query::query('subMainArts', [1, 0]);
 				$subarticles = $pdostat->fetchAll();
 				$pdostat->closeCursor();
 				$sa_idx = 0;
@@ -122,7 +122,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 					return $res;
 				}
 				//search all main-pages (1), no limit (0), no full image (false)
-				$pdostat = ARTQUERY::query('mainArts');
+				$pdostat = \WebSpace\Query::query('mainArts');
 				while ($sp = $pdostat->fetch()){
 					$link = htmlentities($sp['remaplink'],ENT_QUOTES);
 					echo '<div class="article"><div class="sub-art-cont">'.
@@ -144,15 +144,15 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 </div>
 
 
-<?php include TEMPLATES::custom($web['template'],'_quotation.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_quotation.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_news.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_news.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_links.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_links.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_powered.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_powered.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_contact.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_contact.php') ?>
 
 
 

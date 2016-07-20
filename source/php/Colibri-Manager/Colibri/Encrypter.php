@@ -1,12 +1,18 @@
-<?php
-/*
- * @Encrypter class: 
- * Basic encryption and decryption of a string with php MCRYPT
- * @use for encription of sensible data. key should be stored safely (see $CONFIG[])
-**/
+<?php namespace Colibri;
 
-class Encrypter
-{
+/**
+* Basic encryption and decryption of a string with php MCRYPT library
+*
+* This method is not "secure" for storing password.
+* The IV is stored along with the encrypted string in order to be able to decrypt in the future.
+*
+* @method (public) set_cipher_n_mode
+* @method (public) set_key
+* @method (public) encrypt
+* @method (public) decrypt
+*/
+
+class Encrypter {
 	private $securekey;//hashed!
 	private $iv_size;
 	private $CIPHER;
@@ -39,11 +45,17 @@ class Encrypter
 	}
 
 
-	/*
-	 * @encrypt: encrypt a string
-	 * @return encrypted string base64
-	 * @inputs (string)$input
-	**/
+	/**
+	* encrypt a string
+	*
+	* will store the IV size along with the ecrypted string.
+	* This will allow to decrypt the resulting string anytime.
+	* since the encryption is binary, to store the result it will be eventually encoded base64.
+	*
+	* @param (string) $input	the string to be encrypted
+	*
+	* @return (string)	encrypted string base64 encoded
+	*/
 	function encrypt($input){
 		//storing an empty input is really stupid.
 		if (empty($input)) return '';
@@ -68,11 +80,16 @@ class Encrypter
 	}
 
 
-	/*
-	 * @decrypt: decrypt a base64 string previously created with @encrypt
-	 * @return decrypted string
-	 * @inputs (string)$input
-	**/
+	/**
+	* decrypt a string
+	*
+	* the input string must be encoded base64.
+	* the input should be an encrypted string given by encrypt method.
+	*
+	* @param (string) $input	the string to be decrypted (base64)
+	*
+	* @return (string)	decrypted string in original encoding
+	*/
 	function decrypt($input){
 		//empty input throw error (IV of 0 size)
 		if (empty($input)) return '';
@@ -97,8 +114,8 @@ class Encrypter
 }
 
 
-/*
-//TEST
+/*/TEST
+
 echo '<!DOCTYPE HTML><html>
 	<head>
 		<title>MCRYPT test</title>
@@ -118,6 +135,7 @@ echo '<i>Original string</i>: <b>'.htmlentities($original).'</b><br><br>'.
 		'<b>Encripted</b>: '. $encrypted.'<br>'.
 		'<b>Decrypted</b>: '.htmlentities($decrypted).
 	'</body>';
+
 //*/
 
 ?>

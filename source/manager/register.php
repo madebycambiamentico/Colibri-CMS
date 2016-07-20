@@ -10,7 +10,8 @@
 **/
 if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
-/*$SessionManager = new SessionManager();
+//if user already logged, why should he regiter another profile?
+/*$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 if (isLoggedIn()){
 	//La sessione è ancora attiva.
@@ -19,7 +20,17 @@ if (isLoggedIn()){
 	exit;
 }*/
 
-$Colibrì = new Colibri();
+
+//search website properties
+$pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
+if (!$web = $pdostat->fetch(PDO::FETCH_ASSOC))
+	noPageFound('Database corrotto [cod 001]');
+$pdostat->closeCursor();
+if (!$web['multilanguage']) $mylang = null;
+
+
+$Colibrì = new \Colibri\Template;
+
 
 ?><!DOCTYPE html>
 
@@ -60,13 +71,19 @@ $Colibrì = new Colibri();
 		<br>
 		
 		<h4>Richiesta:</h4>
-		<p><textarea name="request" class="short" placeholder="(commento opzionale)"></textarea></p>
+		<p><input type="text" name="request" placeholder="(commento opzionale)"></p>
 		<br>
 		
 		<p>Tutti i campi sono obbligatori. Una mail di conferma ti verrà inviata quando la tua richiesta verrà accettata.</p>
 	</div>
 	
 	<div class="inputs center">
+		
+		<?php
+			$reCaptcha = new \ReCaptcha\ReCaptcha($web['recaptcha_key']);
+			$reCaptcha->get_browser_widget($mylang ? $mylang : 'en');
+		?>
+		
 		<b id="send-me" class="btn">Registrati</b>
 	</div>
 	

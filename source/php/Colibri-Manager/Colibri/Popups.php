@@ -1,4 +1,10 @@
-<?php
+<?php namespace Colibri;
+
+/**
+* some popup content commonly used thru the manager:
+* - album editor
+* - file manager (iframe)
+*/
 
 
 class Popups {

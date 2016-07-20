@@ -12,19 +12,19 @@
 
 //control variables
 if (!isset($CONFIG, $pageid, $page)){
-	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+	header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
 	die;
 }
 
 //load template classes (custom)
-require_once TEMPLATES::custom($web['template'],'php/link.class.php');
+require_once __DIR__ . '/php/link.class.php';
 
 ?><!DOCTYPE html>
 
 <html lang="it-IT">
 <head>
 	<title><?php echo htmlentities($web['titolo'].' - '.$page['titolo']); ?></title>
-	<?php include TEMPLATES::custom($web['template'],'_meta.php') ?>
+	<?php include \WebSpace\Template::custom($web['template'],'_meta.php') ?>
 	
 	<?php
 		//main stylesheet
@@ -76,7 +76,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 
 
 
-<?php include TEMPLATES::custom($web['template'],'_menu.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_menu.php') ?>
 
 
 
@@ -94,7 +94,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 			}
 			//print header...
 			if ($video){
-				include TEMPLATES::custom($web['template'],'_YTiframe.php');
+				include \WebSpace\Template::custom($web['template'],'_YTiframe.php');
 			}
 			elseif ($page['src']){
 				echo '<div class="image-main"><div class="image-sizer web"></div></div>';
@@ -116,7 +116,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 		<?php
 			//GALLERY
 			if ($page['idalbum']){
-				$pdostat = ARTQUERY::query('getAlbum', [$page['idalbum'],true], 'ricerca', 'album');
+				$pdostat = \WebSpace\Query::query('getAlbum', [$page['idalbum'],true], 'ricerca', 'album');
 				$hasrows = false;
 				while ($image = $pdostat->fetch(PDO::FETCH_ASSOC)){
 					if (!$hasrows){
@@ -142,7 +142,7 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 		<div id="sub-articles" class="article-cont">
 			<?php
 				//search all sub-pages with class "main page" (1), no limit (0), no full image (false)
-				$pdostat = ARTQUERY::query('subArt', [$pageid, 1, 0]);
+				$pdostat = \WebSpace\Query::query('subArt', [$pageid, 1, 0]);
 				while ($sp = $pdostat->fetch()){
 					$link = LINK::file(htmlentities($sp['remaplink'],ENT_QUOTES));
 					echo '<div class="article"><div class="sub-art-cont">'.
@@ -162,15 +162,15 @@ require_once TEMPLATES::custom($web['template'],'php/link.class.php');
 
 </div>
 
-<?php include TEMPLATES::custom($web['template'],'_quotation.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_quotation.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_news.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_news.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_links.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_links.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_powered.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_powered.php') ?>
 
-<?php include TEMPLATES::custom($web['template'],'_contact.php') ?>
+<?php include \WebSpace\Template::custom($web['template'],'_contact.php') ?>
 
 
 

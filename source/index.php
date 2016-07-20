@@ -3,9 +3,6 @@
 require_once("config.php");
 require_once $CONFIG['database']['dir']."functions.inc.php";
 
-require_once "php/queries.class.php";
-require_once "php/templates.class.php";
-
 
 
 
@@ -36,7 +33,7 @@ function noPageFound($str='Questa pagina non esiste.'){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	//STOPFORDEBUG(false);
 	global $CONFIG,$web,$templatepath;
-	if ($not_found_page = TEMPLATES::custom($web['template'],'not-found.php',true)){
+	if ($not_found_page = \WebSpace\Template::custom($web['template'],'not-found.php',true)){
 		include $not_found_page;
 		die('<!-- ERROR: '.htmlentities($str).' -->');
 	}
@@ -145,7 +142,7 @@ if (isset($_SERVER['REDIRECT_URL'])){
 	if (!$web = $pdostat->fetch(PDO::FETCH_ASSOC))
 		noPageFound('Database corrotto [cod 001]');
 	$pdostat->closeCursor();
-	$templatepath = TEMPLATES::path($web['template']);
+	$templatepath = \WebSpace\Template::path($web['template']);
 	if (!$web['multilanguage']) $mylang = null;
 	
 	
@@ -173,27 +170,27 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			//---------------------------------------------
 			//strict map + creation date + edit date + full image
 			$map = $fixPathPieces[3] . (isset($fixPathPieces[4]) ? '/'.$fixPathPieces[4] : '');
-			$pdostat = ARTQUERY::query('byMap', [true, true, $mylang], [$map, $artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query('byMap', [true, true, $mylang], [$map, $artDate.'%', $artDate.'%']);
 			if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 003]');
 			$pdostat->closeCursor();
 			$pageid = $page['id'];
 			
 			//open single page template.
-			require TEMPLATES::single($pageid, $page['idtype'], $web['template']);
+			require \WebSpace\Template::single($pageid, $page['idtype'], $web['template']);
 			exit;
 		}
 		else{
 			//---------------------------------------------
 			//all articles by creation date + edit date
-			$pdostat = ARTQUERY::query('byDate', [false, $mylang], [$artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query('byDate', [false, $mylang], [$artDate.'%', $artDate.'%']);
 			if (!$page = $pdostat->fetchAll(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 004]');
 			$pdostat->closeCursor();
 			$pageid = $page['id'];
 			
 			//open multiple page template.
-			require TEMPLATES::multi();
+			require \WebSpace\Template::multi();
 			exit;
 		}
 	}
@@ -202,14 +199,14 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		//strict map + full image
 		$map = $fixPathPieces[0] . (isset($fixPathPieces[1]) ? '/'.$fixPathPieces[1] : '');
 		
-		$pdostat = ARTQUERY::query('byMap', [false, true, $mylang], [$map]);
+		$pdostat = \WebSpace\Query::query('byMap', [false, true, $mylang], [$map]);
 		if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
 			noPageFound('Nessuna pagina trovata [cod 005] ('.$map.')/'.$mylang);
 		$pdostat->closeCursor();
 		$pageid = $page['id'];
 		
 		//open single page template.
-		require TEMPLATES::single($pageid, $page['idtype'], $web['template']);
+		require \WebSpace\Template::single($pageid, $page['idtype'], $web['template']);
 		exit;
 	}
 }
@@ -227,7 +224,7 @@ $pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_
 if (!$web = $pdostat->fetch())
 	noPageFound('Database corrotto [cod 006]');
 $pdostat->closeCursor();
-$templatepath = TEMPLATES::path($web['template']);
+$templatepath = \WebSpace\Template::path($web['template']);
 
 
 //---------------------
@@ -264,14 +261,14 @@ define('ISINDEX',true);
 
 //search for index page
 //(?)else fill with dummy empty array(?)
-$pdostat = ARTQUERY::query('index',[true, $mylang]);
+$pdostat = \WebSpace\Query::query('index',[true, $mylang]);
 if ($page = $pdostat->fetch()){
 	$pdostat->closeCursor();
 	$pageid = $page['id'];
 }
 elseif ($mylang){
 	//fallback to standard index if not available in that language
-	$pdostat = ARTQUERY::query('index',[true]);
+	$pdostat = \WebSpace\Query::query('index',[true]);
 	if ($page = $pdostat->fetch()){
 		$pdostat->closeCursor();
 		$pageid = $page['id'];
@@ -286,6 +283,6 @@ else{
 	noPageFound('Pagina index mancante! [cod 007/no-lang]');
 }
 $pdostat->closeCursor();
-require TEMPLATES::main($web['template']);
+require \WebSpace\Template::main($web['template']);
 
 ?>

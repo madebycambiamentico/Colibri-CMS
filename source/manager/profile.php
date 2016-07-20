@@ -11,12 +11,12 @@
 if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(0); // allow everybody to change his profile (if logged in)
 
-$Colibrì = new Colibri();
-$Pop = new Popups();
+$Colibrì = new \Colibri\Template;
+$Pop = new \Colibri\Popups;
 
 ?><!DOCTYPE html>
 
@@ -125,8 +125,8 @@ if ($pdores = $pdo->query("SELECT * FROM utenti WHERE id = ".$_SESSION['uid']." 
 					<h4>Modifica e-mail</h4>
 					<p>Inserisci vecchia e-mail (<b id="my-email-hint"><?php
 						if ($r['email']){
-							$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
-							$decrypted = $ENCRYPTER->decrypt($r['email']);
+							$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+							$decrypted = $Encrypter->decrypt($r['email']);
 							//delete all character, leave first, @ and last
 							$emailparts = explode('@',$decrypted);
 							echo htmlentities( $emailparts[0][0] . str_repeat("*", mb_strlen($emailparts[0])-1) . '@' . str_repeat("*", mb_strlen($emailparts[1])-1) . mb_substr($emailparts[1],-1) );

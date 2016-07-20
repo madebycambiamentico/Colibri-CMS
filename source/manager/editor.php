@@ -11,12 +11,12 @@
 if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1);
 
-$Colibrì = new Colibri();
-$Pop = new Popups();
+$Colibrì = new \Colibri\Template;
+$Pop = new \Colibri\Popups;
 
 ?><!DOCTYPE html>
 
@@ -86,7 +86,7 @@ if (isset($_GET['q'])){
 				if ($ARTICLE == null) $id = null;
 				else{
 					//parse dates
-					$ARTICLE['_di'] = new DateTime($ARTICLE['data']);
+					$ARTICLE['_di'] = new DateTime($ARTICLE['datacreaz']);
 					$ARTICLE['_de'] = new DateTime($ARTICLE['dataedit']);
 				}
 			}

@@ -42,13 +42,13 @@ $id = intval($_POST['id'],10);
 
 //common properties
 $prop = [
-	preg_replace('/\s+/',' ',trim($_POST['author'])),
-	preg_replace('/\s+/',' ',trim($_POST['title'])),
-	preg_replace('/\s+/',' ',trim($_POST['descr'])),
-	preg_replace('/\s+/',' ',trim($_POST['quote'])),
-	trim($_POST['info']),
-	max(0,intval($_POST['delivery']['n'],10)),
-	min(3600,max(0,intval($_POST['delivery']['t'],10)))
+	preg_replace('/\s+/',' ',trim($_POST['author'])),		//site owner
+	preg_replace('/\s+/',' ',trim($_POST['title'])),		//site title
+	preg_replace('/\s+/',' ',trim($_POST['descr'])),		//brief description
+	preg_replace('/\s+/',' ',trim($_POST['quote'])),		//motto
+	trim($_POST['info']),											//info (optional)
+	max(0,intval($_POST['delivery']['n'],10)),				//n. of email to delivery every interval (if set)
+	min(3600,max(0,intval($_POST['delivery']['t'],10)))	//interval in seconds [0 - 3600]
 ];
 foreach($prop as $p){ $params[] = $p; }
 unset($prop);
@@ -56,7 +56,7 @@ unset($prop);
 require_once "../php/encrypter.class.php";
 	$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
 
-//email
+//control email
 $email = trim($_POST['email']);
 if ($email!==''){
 	if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
@@ -68,7 +68,7 @@ $params[] = $email;
 //recaptcha keys
 $recaptcha = [
 	'k' => trim($_POST['rcptc']['k']),	//public key
-	's' => trim($_POST['rcptc']['s'])	//private key
+	's' => trim($_POST['rcptc']['s'])	//private key (will be encrypted)
 ];
 if (!empty($recaptcha['k']) && !empty($recaptcha['s'])){
 	$query .= ", recaptcha_key=?, recaptcha_secret=?";
@@ -80,7 +80,7 @@ elseif (empty($recaptcha['k'])){
 	$params[] = '';
 	$params[] = '';
 }
-//(else do not update keys)
+// (else: do not update keys)
 
 $query .= " WHERE id={$id}";
 

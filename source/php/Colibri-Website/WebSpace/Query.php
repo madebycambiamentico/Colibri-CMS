@@ -1,6 +1,6 @@
-<?php
+<?php namespace WebSpace;
 
-class ARTQUERY{
+class Query{
 	//type: 0 = query, 1 = prepare
 	
 	static function byId($id=0, $fullimage=false, $lang=''){
@@ -203,7 +203,8 @@ class ARTQUERY{
 		}
 		else{
 			//QUERY STATEMENT
-			$pdostat = $pdo->query($query['query'],PDO::FETCH_ASSOC) or trigger_error("Errore durante {$action} {$subject} [query]", E_USER_ERROR);
+			//NB - \PDO has the prefix "\" to access a global defined class
+			$pdostat = $pdo->query($query['query'],\PDO::FETCH_ASSOC) or trigger_error("Errore durante {$action} {$subject} [query]", E_USER_ERROR);
 			return $pdostat;
 		}
 	}

@@ -10,7 +10,7 @@
 **/
 if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 if (isLoggedIn()){
 	//La sessione è ancora attiva.
@@ -19,7 +19,7 @@ if (isLoggedIn()){
 	exit;
 }
 
-$Colibrì = new Colibri();
+$Colibrì = new \Colibri\Template;
 
 ?><!DOCTYPE html>
 

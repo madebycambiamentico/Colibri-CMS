@@ -35,8 +35,10 @@ if (!isset($web)){
 					<label for="cf-message">Message</label><textarea id="cf-message" type="text" name="message" placeholder="Message"></textarea>
 				</li>
 				<li>
-					<script src="https://www.google.com/recaptcha/api.js?hl=it" async defer></script>
-					<div class="g-recaptcha" data-sitekey="<?php echo htmlentities($web['recaptcha_key'],ENT_QUOTES); ?>"></div>
+					<?php
+						$reCaptcha = new \ReCaptcha\ReCaptcha($web['recaptcha_key']);
+						$reCaptcha->get_browser_widget($mylang ? $mylang : 'en');
+					?>
 				</li>
 				<li class="confirm">A confirmation email will be sent to your email (if provided). We read carefully every message we receive.<br><label><input type="checkbox" name="sendconfirm" value="1" checked> inviami conferma email</label></li>
 				<li>

@@ -21,7 +21,7 @@ if (!isset($web)){
 <!-- news -->
 <?php
 	//search all news (idtype=3), no limit, no full image (false)
-	$pdostat = ARTQUERY::query('byType', [3, 0]);
+	$pdostat = \WebSpace\Query::query('byType', [3, 0]);
 	$hasrows = false;
 	while ($sp = $pdostat->fetch()){
 		if (!$hasrows){

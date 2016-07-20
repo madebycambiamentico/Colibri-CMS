@@ -46,6 +46,7 @@ if (empty($subject)) $subject = "Colibrì System: new communication";
 if (empty($phone)) $phone = "no phone number(s) given";
 
 
+//(autoload class)
 $ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 //get email from system:
@@ -83,8 +84,10 @@ if ($pdores = $pdo->query("SELECT autore, email, recaptcha_secret FROM sito ORDE
 				}
 				*/
 				if ($captcha_res['success'] === false)
-					if (isset($captcha_res['error-code'])) jsonError( "Si è verificato un errore (".implode($captcha_res['error-code']).")" );
-					else jsonError('Dimostra di non essere un BOT... riprova!' . print_r($captcha_res,true));
+					if (isset($captcha_res['error-code']))
+						jsonError( "Si è verificato un errore (".implode($captcha_res['error-code']).")" );
+					else
+						jsonError('Dimostra di non essere un BOT... riprova!' . print_r($captcha_res,true));
 			}
 			else
 				jsonError( "Il template del sito non è configurato adeguatamente per l'uso di reCAPTCHA. Notificare l'amministratore se possibile." );

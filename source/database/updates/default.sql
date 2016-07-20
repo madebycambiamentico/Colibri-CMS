@@ -160,6 +160,9 @@ INNER JOIN articoli b ON b.idarticolo = a.id OR (b.idarticolo IS NULL AND b.id =
 WHERE a.isinmenu AND NOT a.isgarbage AND NOT b.isgarbage AND a.idarticolo IS NULL
 ORDER BY parentid DESC, b.idarticolo ASC;
 
+-- View: view_template_maps
+CREATE VIEW view_template_maps AS SELECT id, remapprefix as remap FROM articoli_types;
+
 
 
 

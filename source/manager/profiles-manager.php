@@ -12,13 +12,13 @@
 if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1);
 
-$Colibrì = new Colibri();
+$Colibrì = new \Colibri\Template;
 
-$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 ?><!DOCTYPE html>
 
@@ -90,7 +90,7 @@ if ($pdores = $pdo->query("SELECT id, nome, email, about FROM utenti WHERE class
 	$hasrows = false;
 	foreach ($pdores as $r):
 		if (!$hasrows) $hasrows = true;
-		$email = htmlentities( $ENCRYPTER->decrypt($r['email']) );
+		$email = htmlentities( $Encrypter->decrypt($r['email']) );
 ?>
 	<div class="inputs maxi aligned" id="profile--1-<?php echo $r['id']; ?>">
 		<table class="profile-edit"><tr>

@@ -22,7 +22,7 @@ if (!isset($web)){
 		<a class="logo" href="<?php echo LINK::file(''); ?>"></a>
 	</div>
 	<ul id="menus"><?php
-		$pdostat = ARTQUERY::query('menu');
+		$pdostat = \WebSpace\Query::query('menu');
 		$lastid = false;
 		$hassubmenu = false;
 		$lis = $pdostat->fetchAll();

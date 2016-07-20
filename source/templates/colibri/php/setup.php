@@ -6,9 +6,9 @@ require_once "../../../".$CONFIG['database']['dir']."functions.inc.php";
 
 //control login
 require_once "../../../php/sessionmanager.class.php";
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager();
 $SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(1);
+allow_user_from_class(1);
 
 //control if database already setup:
 //this template add a table called "youtube", linked to any article.

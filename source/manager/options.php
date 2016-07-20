@@ -11,11 +11,11 @@
 if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(2);
 
-$Colibrì = new Colibri();
+$Colibrì = new \Colibri\Template;
 
 ?><!DOCTYPE html>
 
@@ -180,8 +180,8 @@ if (!$web) die("Void properties!</body>");
 				<p>Questa mail non sarà direttamente visibile nel sito, ma nascosta lato server.</p>
 				<input id="w-email" name="email" type="text" value="<?php
 					if ($web['email']){
-						$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
-						$decrypted = $ENCRYPTER->decrypt($web['email']);
+						$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+						$decrypted = $Encrypter->decrypt($web['email']);
 						echo htmlentities($decrypted,ENT_QUOTES);
 					}
 				?>" placeholder="Email">

@@ -1,5 +1,9 @@
 <?php
 
+if (version_compare(phpversion(), '5.4.0', '<')) {
+	trigger_error('You are running a version of PHP not supported (too old). Minimum requirements are <b>PHP 5.4.0</b>', E_USER_ERROR);
+}
+
 
 function setup_error($string){
 	header($_SERVER["SERVER_PROTOCOL"]." 422 Validation failure");
@@ -13,7 +17,7 @@ require_once "config.php";
 
 
 /* create database from mbcsqlite3-default.db */
-$default_database = $CONFIG['c_dir'].$CONFIG['database']['dir'].$CONFIG['database']['name'];
+$default_database = $CONFIG['c_dir'].$CONFIG['database']['dir'].'mbcsqlite3-default.db';
 if (!file_exists($CONFIG['database']['path'])){
 	if (file_exists($default_database)){
 		copy($default_database, $CONFIG['database']['path']) or
@@ -26,15 +30,7 @@ if (!file_exists($CONFIG['database']['path'])){
 }
 
 
-//control login (?)
-/*
-require_once $CONFIG['database']['dir']."functions.inc.php";
-$SessionManager = new SessionManager();
-$SessionManager->sessionStart('colibri');
-allowOnlyUntilUserClass(0);
-*/
-
-$rwapi = new Setup(true);
+$rwapi = new \Colibri\Setup(true);
 
 if ($rwapi->check === false){
 	setup_error('something went wrong during the <b>setup</b>.<br><br>'.

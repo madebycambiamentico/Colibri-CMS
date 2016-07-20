@@ -6,8 +6,7 @@ require_once "../../../".$CONFIG['database']['dir']."functions.inc.php";
 closeConnection();
 
 //control login
-require_once "../../../php/sessionmanager.class.php";
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 

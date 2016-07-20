@@ -1,8 +1,20 @@
-<?php
+<?php namespace Colibri;
+
+/**
+* Base CSS, JS and HTML parts used in manager template, such as the menu, the album showroom...
+*
+* @method (public) link
+* @method (public) getBaseCss
+* @method (public) getToolbar
+* @method (public) getMenu
+* @method (public) getJQuery
+* @method getaAlbumEditor
+*/
 
 
-class Colibri {
-	protected $version = "0.3.1&beta;m";
+class Template {
+	
+	public $version = "0.4.0&beta;m";
 
 	public static function link($rpath='', $echo=true){
 		global $CONFIG;
@@ -12,14 +24,13 @@ class Colibri {
 
 	//-------------------------------------------------
 	public function getBaseCss(){
-		global $CONFIG;
 ?>
-	<link rel="stylesheet" href="<?php self::link("css/modalbox.css?v=1.1") ?>">
-	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/icons.css?v=1.1") ?>">
-	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/sicons.custom.css?v=1.1") ?>">
-	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/inputs.css?v=1.1") ?>">
-	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/style.css?v=1.1") ?>">
-	<link rel="stylesheet" href="<?php self::link("css/style.css?v=1.1") ?>">
+	<link rel="stylesheet" href="<?php self::link("css/modalbox.css") ?>">
+	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/icons.css") ?>">
+	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/sicons.custom.css") ?>">
+	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/inputs.css") ?>">
+	<link rel="stylesheet" href="<?php self::link("php/mbc-filemanager/css/style.css") ?>">
+	<link rel="stylesheet" href="<?php self::link("css/style.css") ?>">
 <?php
 	}
 
