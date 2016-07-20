@@ -1,11 +1,10 @@
 <?php
 header('Content-Type: application/json');
 
-require_once "../php/sessionmanager.class.php";
 require_once "functions.inc.php";
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 if (isLoggedIn()) jsonSuccess();//Hai già effettuato il login
 

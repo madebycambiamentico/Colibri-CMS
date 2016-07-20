@@ -4,8 +4,7 @@ header('Content-Type: application/json');
 require_once "functions.inc.php";
 
 //control login
-require_once "../php/sessionmanager.class.php";
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 
@@ -53,15 +52,15 @@ $prop = [
 foreach($prop as $p){ $params[] = $p; }
 unset($prop);
 
-require_once "../php/encrypter.class.php";
-	$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+
+$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 //control email
 $email = trim($_POST['email']);
 if ($email!==''){
 	if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
 		jsonError('e-mail non accettabile');
-	$email = $ENCRYPTER->encrypt($email);
+	$email = $Encrypter->encrypt($email);
 }
 $params[] = $email;
 
@@ -73,7 +72,7 @@ $recaptcha = [
 if (!empty($recaptcha['k']) && !empty($recaptcha['s'])){
 	$query .= ", recaptcha_key=?, recaptcha_secret=?";
 	$params[] = $recaptcha['k'];
-	$params[] = $ENCRYPTER->encrypt($recaptcha['s']);
+	$params[] = $Encrypter->encrypt($recaptcha['s']);
 }
 elseif (empty($recaptcha['k'])){
 	$query .= ", recaptcha_key=?, recaptcha_secret=?";

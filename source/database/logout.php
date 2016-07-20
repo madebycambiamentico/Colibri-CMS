@@ -1,9 +1,8 @@
 <?php
 
-require_once "../php/sessionmanager.class.php";
 require_once "functions.inc.php";
 
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 
 if (isset($_GET['redirect'])) goto anchor_redirect;

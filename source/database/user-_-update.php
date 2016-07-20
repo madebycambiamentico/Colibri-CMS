@@ -2,11 +2,11 @@
 header('Content-Type: application/json');
 
 require_once "functions.inc.php";
-require_once "../php/encrypter.class.php";
-$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+
+$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 
@@ -22,24 +22,6 @@ function getUserClassName($i){
 
 
 
-
-
-//----------------------------------------------------
-//					/*RANDOMLIB + SECURITYLIB
-//----------------------------------------------------
-
-spl_autoload_register(function ($class) {
-	$nslen = strlen(__NAMESPACE__);
-	if (substr($class, 0, $nslen) != __NAMESPACE__) {
-		//Only autoload libraries from this package
-		return;
-	}
-	$path = substr(str_replace('\\', '/', $class), $nslen);
-	$path = __DIR__ . '/../php/RandomLib-1.1.0/lib/' . $path . '.php';
-	if (file_exists($path)) {
-		require_once $path;
-	}
-});
 
 $RL_factory = new RandomLib\Factory;
 
@@ -61,11 +43,6 @@ function getNewPassword($length=16, $chars='0123456789@abcdefghijklmnopqrstuvwxy
 	//return cleared password, and database values:
 	return ['plain_pass' => $password, 'db_pass' => $database_password, 'db_salt' => $database_random_salt];
 }
-
-//----------------------------------------------------
-//					RANDOMLIB + SECURITYLIB*/
-//----------------------------------------------------
-
 
 
 
@@ -205,7 +182,7 @@ if (!empty($idsToEdit)){
 	$pdores = $pdo->query("SELECT id,nome,email FROM utenti WHERE id IN (".implode(',',$idsToEdit).")", PDO::FETCH_ASSOC) or
 		jsonError('Errore durante ricerca email utente [query]');
 	while ($r = $pdores->fetch()){
-		$users[$r['id']]['email'] = $ENCRYPTER->decrypt($r['email']);
+		$users[$r['id']]['email'] = $Encrypter->decrypt($r['email']);
 		$users[$r['id']]['name'] = $r['nome'];
 	}
 	

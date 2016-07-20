@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 require_once "functions.inc.php";
-$Encrypter = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 //controllo generale variabili
 if (!isset(

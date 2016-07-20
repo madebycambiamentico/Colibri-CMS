@@ -4,8 +4,7 @@ header('Content-Type: application/json');
 require_once "functions.inc.php";
 
 //control login
-require_once "../php/sessionmanager.class.php";
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(0,true);
 
@@ -75,8 +74,8 @@ jsonSuccess(['count' => $pdostat->rowCount(), 'p' => $password, 'pp' => $_POST['
 
 anchor_1:
 
-require_once "../php/encrypter.class.php";
-$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+
+$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 //controllo generale variabili
 if (!isset($_POST['e0'], $_POST['e1'])) jsonError('Variabili errate');
@@ -94,14 +93,14 @@ if ($email !== ''){
 	$emailparts = explode('@',$email);
 	$hintemail = $emailparts[0][0] . str_repeat("*", mb_strlen($emailparts[0])-1) . '@' . str_repeat("*", mb_strlen($emailparts[1])-1) . mb_substr($emailparts[1],-1);
 	//encrypt email
-	$encrypted = $ENCRYPTER->encrypt($email);
+	$encrypted = $Encrypter->encrypt($email);
 }
 
 //ricavo email vecchia e confronto con quella mandata
 $pdostat = $pdo->query("SELECT email FROM utenti WHERE id={$id}",PDO::FETCH_ASSOC) or jsonError('Errore durante ricerca utente [query]');
 if ($r = $pdostat->fetch()){
 	if ($r['email']){
-		if ($ENCRYPTER->decrypt($r['email']) !== $oldemail)
+		if ($Encrypter->decrypt($r['email']) !== $oldemail)
 			jsonError('La vecchia mail non coincide.');
 	}
 	elseif ($oldemail !== '')

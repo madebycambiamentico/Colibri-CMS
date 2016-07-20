@@ -2,11 +2,11 @@
 header('Content-Type: application/json');
 
 require_once "functions.inc.php";
-require_once "../php/encrypter.class.php";
-$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+
+$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 
@@ -134,7 +134,7 @@ if (!empty($idsToEdit)){
 	$pdores = $pdo->query("SELECT id,nome,email,hasimage FROM utenti WHERE id IN (".implode(',',$idsToEdit).")", PDO::FETCH_ASSOC) or
 		jsonError('Errore durante ricerca email utente [query]');
 	while ($r = $pdores->fetch()){
-		$users[$r['id']]['email'] = $ENCRYPTER->decrypt($r['email']);
+		$users[$r['id']]['email'] = $Encrypter->decrypt($r['email']);
 		$users[$r['id']]['img'] = $r['hasimage'];
 		$users[$r['id']]['name'] = $r['nome'];
 	}

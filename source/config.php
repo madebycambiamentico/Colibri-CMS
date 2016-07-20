@@ -130,6 +130,7 @@ require_once( __DIR__ .'/autoloader.php' ); // for non-categorized classes
 require_once( __DIR__ .'/php/Colibri-Manager/autoloader.php' );
 require_once( __DIR__ .'/php/Colibri-ReCaptcha/autoloader.php' );
 require_once( __DIR__ .'/php/Colibri-Website/autoloader.php' );
+require_once( __DIR__ .'/php/RandomLib-1.1.0/autoloader.php' );
 
 
 ?>

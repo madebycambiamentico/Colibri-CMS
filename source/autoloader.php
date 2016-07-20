@@ -12,11 +12,11 @@
 
 spl_autoload_register(function ($class) {
 	
-	$path = __DIR__ . '/php/' . $class . '.class.php';
+	$file = __DIR__ . '/php/' . $class . '.class.php';
 	
 	//request class (if file exists)
-	if (file_exists($path)) {
-		require $path;
+	if (file_exists($file)) {
+		require $file;
 	}
 	
 }, true);
