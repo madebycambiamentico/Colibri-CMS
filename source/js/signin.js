@@ -2,7 +2,7 @@
 * @author: nereo costacurta
 *
 * @project: colibrì CMS | madebycambiamentico
-* @description: login script.
+* @description: signin script.
 *
 * @require: [jquery.js >= 1.11.3]
 *
@@ -18,16 +18,6 @@ $(function(){
 			alert("Inserire il nome!");
 			return false;
 		}
-		//control password
-		var pass = $('#my-password').val().trim();
-		if (pass.length<4){
-			alert("La password è troppo corta!");
-			return false;
-		}
-		//generate hashed password
-		var shaObj = new jsSHA("SHA-512", 'TEXT');
-		shaObj.update(pass);
-		$('#my-hashed-pass').val( shaObj.getHash("HEX") ); //128 CHAR
 		//callback on success
 		if ($.isFunction(onsuccess)) onsuccess();
 		return true;
@@ -38,7 +28,7 @@ $(function(){
 	function log(){
 		//prevent multiple login
 		if (LOGGING){
-			alert("Login già in corso, attendi.");
+			alert("Registrazione già in corso, attendi.");
 			return false;
 		}
 		else LOGGING = true;
@@ -47,15 +37,16 @@ $(function(){
 			.removeClass('done');
 		//send post request
 		if ( !checkform(function(){
-			$.post('database/login.php',$('#my-login').serialize(),null,'json')
+			$.post('database/user-request.php',$('#my-login').serialize(),null,'json')
 				.success(function(json){
+					console.log(json);
 					if (json.error !== false){
 						alert("ERRORE\n"+json.error);
 						$loader.addClass('done');
 						LOGGING = false;
 					}
 					else
-						location.assign('./bacheca?logged');
+						location.assign('./');
 				})
 				.error(function(e){
 					alert('Ooops!');

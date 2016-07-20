@@ -10,7 +10,7 @@
 **/
 if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
-//if user already logged, why should he regiter another profile?
+//if user already logged, why should he register another profile?
 /*$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 if (isLoggedIn()){
@@ -74,17 +74,17 @@ $Colibrì = new \Colibri\Template;
 		<p><input type="text" name="request" placeholder="(commento opzionale)"></p>
 		<br>
 		
-		<p>Tutti i campi sono obbligatori. Una mail di conferma ti verrà inviata quando la tua richiesta verrà accettata.</p>
-	</div>
-	
-	<div class="inputs center">
-		
 		<?php
 			$reCaptcha = new \ReCaptcha\ReCaptcha($web['recaptcha_key']);
 			$reCaptcha->get_browser_widget($mylang ? $mylang : 'en');
 		?>
 		
+		<p>Tutti i campi sono obbligatori. Una mail di conferma ti verrà inviata quando la tua richiesta verrà accettata.</p>
+	</div>
+	
+	<div class="inputs center">
 		<b id="send-me" class="btn">Registrati</b>
+		<br><br><a href="./login">Accedi</a> | <a href="#todo">Recupera password</a>
 	</div>
 	
 </form>
@@ -97,73 +97,7 @@ $Colibrì = new \Colibri\Template;
 <!-- plugins -->
 
 <!-- main script -->
-<script>
-
-function checkform(onsuccess){
-	//control name
-	var name = $('#my-name').val().trim();
-	if (name == ''){
-		alert("Inserire il nome!");
-		return false;
-	}
-	//callback on success
-	if ($.isFunction(onsuccess)) onsuccess();
-	return true;
-}
-
-var LOGGING = false;
-
-function log(){
-	//prevent multiple login
-	if (LOGGING){
-		alert("Registrazione già in corso, attendi.");
-		return false;
-	}
-	else LOGGING = true;
-	//show loader
-	$loader = $('#loader')
-		.removeClass('done');
-	//send post request
-	if ( !checkform(function(){
-		$.post('database/user-request.php',$('#my-login').serialize(),null,'json')
-			.success(function(json){
-				console.log(json);
-				if (json.error !== false){
-					alert("ERRORE\n"+json.error);
-					$loader.addClass('done');
-					LOGGING = false;
-				}
-				else
-					location.assign('./');
-			})
-			.error(function(e){
-				alert('Ooops!');
-				$loader.addClass('done');
-				LOGGING = false;
-				console.log(e);
-			})
-	}) ){
-		//check form failed!!!
-		LOGGING = false;
-		$loader.addClass('done');
-	}
-}
-
-$(function(){
-	$('#my-login').submit(function(e){
-		e.preventDefault();
-	});
-	
-	$('#my-login input').keypress(function(e){
-		if (e.which == 13){
-			log()
-			return false;    //<---- Add this line
-		}
-	});
-	
-	$('#send-me').click(log);
-});
-</script>
+<script src="js/signin.min.js"></script>
 
 </body>
 </html>

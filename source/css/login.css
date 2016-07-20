@@ -40,8 +40,8 @@ body{
 	display:block;
 	position:relative;
 	margin:0 auto;
-	padding:160px 30px 30px 30px;
-	background:#fff url(../img/logo/colibri-mini-black.png) no-repeat center 30px;
+	padding:140px 30px 30px 30px;
+	background:#fff url(../img/logo/colibri-micro-black.png) no-repeat no-repeat center 40px;
 	width:300px;
 	border-radius:5px;
 	box-shadow:0 0 12px #000;
@@ -85,7 +85,7 @@ body{
 	#my-login{
 		border-radius:0;
 		padding:90px 16px 16px 16px;
-		background:#fff url(../img/logo/colibri-micro-black.png) no-repeat center 16px;
+		background:#fff url(../img/logo/colibri-micro-black.png) no-repeat no-repeat center 16px;
 		box-shadow:none;
 	}
 }
