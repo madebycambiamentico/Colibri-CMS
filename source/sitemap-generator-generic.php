@@ -7,7 +7,7 @@ $Config->i_need_functions();
 //include sitemap generator from template, if it has a custom one...
 $pdostat = $pdo->query("SELECT template FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
 if ($r = $pdostat->fetch()){
-	$template = CMS_INSTALL_DIR . "templates/{$r['template']}/";
+	$template = CMS_INSTALL_DIR . "/templates/{$r['template']}/";
 	$pdostat->closeCursor();
 	if (file_exists($template.'php/sitemap-generator-custom.php')){
 		include $template.'php/sitemap-generator-custom.php';
@@ -229,7 +229,7 @@ if (!$isValid) {
 
 
 header('Content-type: text/plain');
-if ($domtree->save(CMS_INSTALL_DIR . 'sitemap.xml'))
+if ($domtree->save(CMS_INSTALL_DIR . '/sitemap.xml'))
 	echo "Sitemap succesfully updated!";
 else
 	echo "An error occurred during sitemap generation..."
