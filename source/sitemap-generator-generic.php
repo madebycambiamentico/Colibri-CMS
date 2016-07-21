@@ -1,13 +1,13 @@
 <?php
 
 require_once "config.php";
-require_once $CONFIG['c_dir'].$CONFIG['database']['dir']."functions.inc.php";
+$Config->i_need_functions();
 
 
 //include sitemap generator from template, if it has a custom one...
 $pdostat = $pdo->query("SELECT template FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
-if ($res = $pdostat->fetch(PDO::FETCH_ASSOC)){
-	$template = $CONFIG['c_dir'].'templates/'.$res['template'].'/';
+if ($r = $pdostat->fetch()){
+	$template = CMS_INSTALL_DIR . "/templates/{$r['template']}/";
 	$pdostat->closeCursor();
 	if (file_exists($template.'php/sitemap-generator-custom.php')){
 		include $template.'php/sitemap-generator-custom.php';
@@ -108,7 +108,7 @@ $loc = null;
 $xhtml = null;
 $image = null;
 $remapped = null;
-$http = $CONFIG['domain'].$CONFIG['mbc_cms_dir'];
+$http = $Config->domain . $Config->script_path;
 
 while ($r = $pdostat->fetch()){
 	if ($r['canonical']){
@@ -229,7 +229,7 @@ if (!$isValid) {
 
 
 header('Content-type: text/plain');
-if ($domtree->save($CONFIG['c_dir'].'sitemap.xml'))
+if ($domtree->save(CMS_INSTALL_DIR . '/sitemap.xml'))
 	echo "Sitemap succesfully updated!";
 else
 	echo "An error occurred during sitemap generation..."

@@ -75,19 +75,19 @@ class Setup {
 	*/
 	public function get_rewrite_rules_apache(){
 		$this->add_log("called <code>get_rewrite_rules_apache()</code>");
-		global $CONFIG;
+		global $Config;
 		$rules =
 		"<IfModule mod_rewrite.c>".							"\n".
 			"AddType application/x-httpd-php .php".		"\n".
 			"RewriteEngine On".									"\n".
-			"RewriteBase ".$CONFIG['mbc_cms_dir'].			"\n".
+			"RewriteBase ".$Config->script_path.			"\n".
 			// Prevent -f checks on index.php.
 			"RewriteRule ^index\.(php|html)$ - [L]".		"\n".
 			//if file or dir doesn't exists...
 			"RewriteCond %{REQUEST_FILENAME} !-f".			"\n".
 			"RewriteCond %{REQUEST_FILENAME} !-d".			"\n".
 			//then index should handle the path.
-			"RewriteRule . ".$CONFIG['mbc_cms_dir']."{$this->index} [L]". "\n".
+			"RewriteRule . ".$Config->script_path."{$this->index} [L]". "\n".
 		"</IfModule>";
 		
 		return $rules;
@@ -230,8 +230,7 @@ class Setup {
 	*/
 	public function save_mod_rewrite_rules(){
 		$this->add_log("called <code>save_mod_rewrite_rules()</code>");
-		global $CONFIG;
-		$htaccess_file = $CONFIG['c_dir'].'.htaccess';
+		$htaccess_file = CMS_INSTALL_DIR .'.htaccess';
 
 		//If the file doesn't already exist check for write access to the directory
 		//and whether we have some rules. Else check for write access to the file.
@@ -254,8 +253,8 @@ class Setup {
 	*/
 	public function save_permission_rules_db(){
 		$this->add_log("called <code>save_permission_rules_db()</code>");
-		global $CONFIG;
-		$htaccess_file = $CONFIG['c_dir'].$CONFIG['database']['dir'].'.htaccess';
+		global $Config;
+		$htaccess_file = CMS_INSTALL_DIR .$Config->database['dir'].'.htaccess';
 
 		//If the file doesn't already exist check for write access to the directory
 		//and whether we have some rules. Else check for write access to the file.
@@ -277,7 +276,6 @@ class Setup {
 	*/
 	public function set_CMS_key(){
 		$this->add_log("called <code>set_CMS_key()</code>");
-		global $CONFIG;
 		//template
 		$template_file = __DIR__ . '/secret_key_template.txt';
 		$template = @file_get_contents($template_file);
@@ -286,7 +284,7 @@ class Setup {
 			return false;
 		}
 		//php file that will hold the key
-		$secret_file = $CONFIG['c_dir'] . 'database/encryption_key.php';
+		$secret_file = CMS_INSTALL_DIR  . 'database/encryption_key.php';
 		//generate file
 		return $this->generate_CMS_key($secret_file, $template);
 	}

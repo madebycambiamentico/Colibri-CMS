@@ -13,13 +13,11 @@
 
 
 class Template {
-	
-	public $version = "0.4.0&beta;m";
 
 	public static function link($rpath='', $echo=true){
-		global $CONFIG;
-		if ($echo) echo $CONFIG['mbc_cms_dir'].$rpath;
-		else return $CONFIG['mbc_cms_dir'].$rpath;
+		global $Config;
+		if ($echo) echo $Config->script_path.$rpath;
+		else return $Config->script_path.$rpath;
 	}
 
 	//-------------------------------------------------
@@ -36,7 +34,6 @@ class Template {
 
 	//-------------------------------------------------
 	public function getToolbar(){
-		global $CONFIG;
 ?>
 	<div id="toolbar">
 		<i id="colibrì-icon"></i>
@@ -50,9 +47,10 @@ class Template {
 
 	//-------------------------------------------------
 	public function getMenu(){
+		global $Config;
 ?>
 	<ul class="menu">
-		<li><div id="colibrì"><code>v<?php echo $this->version; ?></code></div></li>
+		<li><div id="colibrì"><code>v<?php echo $Config::VERSION . $Config::RELEASE; ?></code></div></li>
 		<li><a href="<?php self::link("bacheca") ?>"><b class="sicon"><i class="home"></i></b>Bacheca</a></li>
 		<li><a href="<?php self::link() ?>" target="_blank"><b class="sicon"><i class="eye"></i></b>Visualizza sito</a></li>
 		
@@ -98,8 +96,7 @@ class Template {
 	//-------------------------------------------------
 	public function getJQuery(){
 		//for debug offline... remove 
-		global $CONFIG;
-		$local = substr($CONFIG['c_dir'],0,2) === "C:";
+		$local = substr(CMS_INSTALL_DIR ,0,2) === "C:";
 		if (!$local):
 ?>
 <!--[if lte IE 8]>

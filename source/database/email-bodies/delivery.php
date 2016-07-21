@@ -53,10 +53,12 @@ if (isset($_GET['debug'])){
 
 
 
-require_once "../functions.inc.php";
+require_once "../../config.php";
 require_once 'async_curl.fn.php';
 
-$Encrypter = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+$Config->i_need_functions();
+
+$Encrypter = new Encrypter( CMS_ENCRYPTION_KEY );
 
 
 
@@ -114,7 +116,7 @@ echo "qt = {$quantity}, dt = {$delay}<br>";
 //		THE DELAY IS NOT ENOUGH...
 //**************************************
 
-define('DELIVERY_URL', $CONFIG['domain'].$CONFIG['mbc_cms_dir'].'delivery.php'/*.'?debug=1'*/ );
+define('DELIVERY_URL', $Config->domain . $Config->script_path . 'delivery.php'/*.'?debug=1'*/ );
 
 require_once "delivery.check.inc.php";
 $delivery_checker = new DeliveryCheck( false, true );

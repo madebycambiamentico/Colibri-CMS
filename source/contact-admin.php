@@ -3,14 +3,12 @@
 /*
  * @author Nereo Costacurta
  *
- * @require: /index.php (this is not a standalone page!)
- *
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
 
-require_once __DIR__ . "/config.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
+require_once "config.php";
+$Config->i_need_functions();
 
 //control login
 $SessionManager = new \Colibri\SessionManager();
@@ -47,7 +45,7 @@ if (empty($phone)) $phone = "no phone number(s) given";
 
 
 //(autoload class)
-$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+$ENCRYPTER = new Encrypter( CMS_ENCRYPTION_KEY );
 
 //get email from system:
 $adminname = null;
@@ -57,40 +55,11 @@ if ($pdores = $pdo->query("SELECT autore, email, recaptcha_secret FROM sito ORDE
 		
 		//verify recaptcha...
 		if (!empty($r['recaptcha_secret'])){
-			if (isset($_POST['g-recaptcha-response'])){
-				//-------------get curl contents----------------
-				$ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
-				curl_setopt_array($ch, array(
-					CURLOPT_HEADER				=> false,
-					CURLOPT_TIMEOUT			=> 4,
-					CURLOPT_RETURNTRANSFER	=> true,
-					CURLOPT_POST				=> true,
-					CURLOPT_SSL_VERIFYPEER	=> false,
-					CURLOPT_POSTFIELDS		=> http_build_query([
-							'secret'		=> $ENCRYPTER->decrypt($r['recaptcha_secret']),
-							'response'	=> $_POST['g-recaptcha-response']
-						])
-				));
-				$captcha_res = curl_exec($ch);
-				if (false === $captcha_res || empty($captcha_res))
-					jsonError( "Siamo spiacenti, il servizio reCAPTCHA non risponde. Prova più tardi. ".curl_error($ch) );
-				$captcha_res = (array) json_decode($captcha_res);
-				/*
-				{
-					"success": true|false,
-					"challenge_ts": timestamp,  // timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
-					"hostname": string,         // the hostname of the site where the reCAPTCHA was solved
-					"error-codes": [...]        // optional
-				}
-				*/
-				if ($captcha_res['success'] === false)
-					if (isset($captcha_res['error-code']))
-						jsonError( "Si è verificato un errore (".implode($captcha_res['error-code']).")" );
-					else
-						jsonError('Dimostra di non essere un BOT... riprova!' . print_r($captcha_res,true));
-			}
-			else
-				jsonError( "Il template del sito non è configurato adeguatamente per l'uso di reCAPTCHA. Notificare l'amministratore se possibile." );
+			
+			$ReCaptcha = new \ReCaptcha\ReCaptcha([
+				'secret_key' => $Encrypter->decrypt($r['recaptcha_secret'])
+			]);
+			$ReCaptcha->validate() or jsonError($ReCaptcha->error);
 		}
 		
 		//set admin email + name
@@ -127,7 +96,8 @@ if (isLoggedIn()){
 	PHPMailer SENDER
 **********************/
 
-require 'php/PHPMailer/PHPMailerAutoload.php';
+require_once __DIR__ . '/php/PHPMailer/PHPMailerAutoload.php';
+//require_once __DIR__ . '/php/html2text/html2text.php';
 
 //send to admin...
 

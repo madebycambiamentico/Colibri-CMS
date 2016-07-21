@@ -146,8 +146,8 @@ class Template{
 	* @return (string)	the folder path
 	*/
 	static function path($tmplt='colibri'){
-		global $CONFIG;
-		return $CONFIG['mbc_cms_dir']."templates/{$tmplt}/";
+		global $Config;
+		return $Config->script_path."templates/{$tmplt}/";
 	}
 	
 	
@@ -159,14 +159,13 @@ class Template{
 	* @return (string)	the folder path
 	*/
 	static function cpath($tmplt='colibri'){
-		global $CONFIG;
-		return $CONFIG['c_dir']."templates/{$tmplt}/";
+		return CMS_INSTALL_DIR ."/templates/{$tmplt}/";
 	}
 }
 
 
 //get remapprefix to be used when searching a template page...
-if (isset($CONFIG) && isset($pdo)){
+if (isset($Config) && isset($pdo)){
 	if ($pdores = $pdo->query("SELECT * FROM view_template_maps", PDO::FETCH_ASSOC)){
 		$maps = [];
 		while ($r = $pdores->fetch()){

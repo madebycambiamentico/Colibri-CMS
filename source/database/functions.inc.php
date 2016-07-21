@@ -1,70 +1,95 @@
 <?php
 
-/**
-* setup rewrite rules
-*
-* @require config.php loaded
-**/
-if (!isset($CONFIG)){
-	require_once __DIR__ . '/../config.php';
+//this is not a standalone script.
+if (!isset($Config)){
+	trigger_error('functions.inc.php need to be included by config.php!', E_USER_ERROR);
 }
 
 
 
 //open database connection
-$pdo = new PDO('sqlite:'.$CONFIG['database']['path']) or die("cannot open the database");
+$pdo = new PDO('sqlite:'.$Config->database['src']) or die("cannot open the database");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
 
 /**
-* check logged in.
-* if logged in return user class (>=1), else return false.
-* if $maxuserclass is given, return FALSE if user class > $maxuserclass, else return user class (>=1)
+* check if user is logged in.
 *
-* @param		(int)(optional)
-* @return bool | int
-**/
-function isLoggedIn($maxuserclass=0){
-	if (!$maxuserclass)
+* if logged in return user class, else return false.
+* if $min_user_class is given, success if user class >= $maxuserclass.
+*
+* @param	(int)[optional]	$min_user_class
+*
+* @return (bool|int)			User class if success, false otherwise.
+*/
+function isLoggedIn($min_user_class=0){
+	if (!$min_user_class)
 		return isset($_SESSION['uid']) ? $_SESSION['uclass'] : false;
 	else{
 		if (!isset($_SESSION['uid'])) return false;
-		return $maxuserclass <= $_SESSION['uclass'] ? $_SESSION['uclass'] : false;
+		return $min_user_class <= $_SESSION['uclass'] ? $_SESSION['uclass'] : false;
 	}
 }
 
-//logout + should invalidate old session 
+
+
+/**
+* logout + invalidate old session + redirect to login
+*
+* @param (string) $get			Append GET request to redirect path
+* @param (bool) $stopScript	Redirect to another page (or stop script if header already sent)
+*/
 function logout($get='',$stopScript=true){
-	global $SessionManager, $CONFIG;
+	global $SessionManager, $Config;
 	$SessionManager->regenerateSession();
 	session_destroy();
-	if ($stopScript) goToPage( $CONFIG['mbc_cms_dir'].'login'.($get !== '' ? '?'.$get : '') );
+	if ($stopScript)
+		goToPage( $Config->script_path . 'login' . ($get !== '' ? '?'.$get : '') );
 }
 
-//go to login page, set custom GET
+
+
+/**
+* redirect to other page. header must not be already sent.
+*/
 function goToPage($path='/'){
 	closeConnection();
 	if (!headers_sent()) {
 		header('Location: '.$path);
 	}
-	die();
+	die;
 }
 
 
 /**
-* move user to home if not allowed in, clear session for not logged in, allow for class > $min_user_class.
+* Block users whom haven't at least X class (or aren't logged)
+*
+* move user to dashboard if logged but not allowed in.
+* for non-logged users: they will be redirect to homepage, and session will be cleared
 * classes are as follow:
 * (2)  is the most important user (webmaster)
 * (1)  is the admin
 * (0)  is the guest
 * (-1) is a not-already-accepted user
-**/
+*
+* @see isLoggedIn
+* @see jsonError
+* @see logout
+* @see goToPage
+*
+* @param (int) $min_user_class				minimum class to access the page. default: 0
+* @param (bool) $jsonError						if true will print the json with error. Else user will be redirected. default: false
+* @param (string) $errorNOLOG [optional]	display error if not logged in
+* @param (string) $errorLOG [optional]		display error if class not high enough
+*
+* @return (bool)
+*/
 function allow_user_from_class(
-	$min_user_class=0,
-	$jsonError=false,
-	$errorNOLOG="La sessione è scaduta. Effettua nuovamente l'accesso.",
-	$errorLOG="Non possiedi i privilegi necessari per effettuare questa operazione."
+	$min_user_class	= 0,
+	$jsonError			= false,
+	$errorNOLOG			= "La sessione è scaduta. Effettua nuovamente l'accesso.",
+	$errorLOG			= "Non possiedi i privilegi necessari per effettuare questa operazione."
 ){
 	if ($jsonError){
 		if (false === isLoggedIn())
@@ -73,36 +98,65 @@ function allow_user_from_class(
 			jsonError($errorLOG);
 	}
 	else{
-		global $CONFIG;
+		global $Config;
 		if (false === isLoggedIn())
 			//clear session
 			logout();
 		if ($_SESSION['uclass'] < $min_user_class)
 			//istead of blocking page, the not-allowed user is redirected to dashboard
-			goToPage( $CONFIG['mbc_cms_dir'].'bacheca' );
+			goToPage( $Config->script_path . 'bacheca' );
 	}
 }
 
 
 
 
+
+//---------------------------
 //common functions
-//TODO
+//---------------------------
+
+
+
+/**
+* Close sqlite (pdo) connection, if active.
+*/
 function closeConnection(){
 	global $pdo;
 	if (isset($pdo)) unset($pdo);
 }
 
+
+/**
+* stop script with a json-ish error
+*
+* @param (string) $error [optional]		What to print in error value
+*/
 function jsonError($error="unknow"){
 	closeConnection();
 	die(json_encode(["error" => $error]));
 }
 
+
+/**
+* stop script with a json-ish success
+*
+* json will contain default "error" => false + merged success array.
+* success array can contain anything you want.
+*
+* @param (array) $success [optional]		What to print in error value
+*/
 function jsonSuccess($success=["success" => true]){
 	closeConnection();
 	exit(json_encode(array_merge(["error" => false],$success)));
 }
 
+
+/**
+* stop script with a json-ish error + logout
+*
+* @param (array) $success [optional]		What to print in error value
+*/
 function jsonErrorLogout($error="unknow"){
 	global $SessionManager;
 	$SessionManager->regenerateSession();

@@ -3,10 +3,8 @@
 /* MBC file manager client side */
 
 require_once "config.php";
-require_once "functions.inc.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
 
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1);
 
@@ -124,7 +122,7 @@ allow_user_from_class(1);
 		$temp = ["immagini", "files", "video", "audio", "archivi"];
 		//get filter in (Int) mode
 		$filter = isset($_GET['filter']) ? getFilter($_GET['filter']) : false;
-		for ($i=0; $i<count($CONFIG['allowed_ext']); $i++){
+		for ($i=0; $i<count($Config->FM['allowed_ext']); $i++){
 			if ($filter !== false && $filter !== $i) continue;
 			echo "<p><input type='checkbox' id='filter-{$i}' value='{$i}' checked><label for='filter-{$i}'><b class='sicon'><i class='checkboard-ok'></i></b></label><label class='desc' for='filter-{$i}'>".$temp[$i]."</label></p>";
 		}
@@ -164,7 +162,7 @@ allow_user_from_class(1);
 		if ($filter !== false){
 			//set filter as CONFIG index (string)
 			$filter = getGroupFilter($filter);
-			echo "Estensioni permesse: <i>".implode(", ", $CONFIG['allowed_ext'][$filter]).'</i>';
+			echo "Estensioni permesse: <i>".implode(", ", $Config->FM['allowed_ext'][$filter]).'</i>';
 		}
 	?></div>
 	<form id="my-dropzone" action="uploadHandler.php" method="POST" enctype="multipart/form-data" class="dropzone">
@@ -281,7 +279,7 @@ var MANAGER_OPTIONS = (function(){
 	//add constant:
 	_default.opener = getManagerMod();
 	_default.allowedExt = [<?php
-		foreach ($CONFIG['allowed_ext'] as $i => $arr){
+		foreach ($Config->FM['allowed_ext'] as $i => $arr){
 			//virgola divisoria degli array dei vari gruppi
 			if ($i !== 'img' && $filter === false) echo ',';
 			//skip if filtered request

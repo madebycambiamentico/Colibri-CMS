@@ -5,12 +5,13 @@ if (!isset($_POST['markx'],$_POST['marky']))
 	die("Variabili errate");
 
 require_once "../../../config.php";
-require_once "../../../".$CONFIG['database']['dir']."functions.inc.php"; closeConnection();
+$Config->i_need_functions();
+closeConnection();
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
-allow_user_from_class(1,true);
+allow_user_from_class(2,true);
 
 
 function check_and_create_path($path){

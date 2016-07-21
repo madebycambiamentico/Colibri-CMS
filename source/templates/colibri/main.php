@@ -11,7 +11,7 @@
 **/
 
 //control variables
-if (!isset($CONFIG, $page)){
+if (!isset($Config, $page)){
 	header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
 	die;
 }

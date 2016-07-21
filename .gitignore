@@ -46,6 +46,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Probably anything zipped is only a container of debugs
+# so ignore all zipped files in colibrì cms.
+*.zip
+
 # Colibrì CMS private files
 *.htaccess
 source/sitemap*.xml

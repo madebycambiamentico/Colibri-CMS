@@ -9,7 +9,7 @@
  * @copyright: (C)2016 nereo costacurta
 **/
 
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
+if (!isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
@@ -18,7 +18,7 @@ allow_user_from_class(1);
 
 $Colibrì = new \Colibri\Template;
 
-$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 ?><!DOCTYPE html>
 

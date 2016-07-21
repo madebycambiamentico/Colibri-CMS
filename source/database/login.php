@@ -1,7 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-require_once "functions.inc.php";
+require_once "../config.php";
+$Config->i_need_functions();
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
@@ -16,9 +17,12 @@ $user = trim($_POST['u']);
 $pass = trim($_POST['p']);
 if (empty($user) || strlen($pass) != 128) jsonErrorLogout("Variabili errate");
 
-/*
+
+//---------------------------------------
+/*/test
+$hashed_pass = hash('sha512','admin');
 $random_salt = hash('sha512', uniqid(mt_rand(1, mt_getrandmax()), true));
-$password = hash('sha512', $pass.$random_salt);
+$password = hash('sha512', $hashed_pass.$random_salt);
 die($random_salt.'<br>'.$password);
 /*
 u: admin + p: admin =
@@ -26,6 +30,9 @@ user : "admin"
 salt : "4522c4024f9bdae001e78e2839d354285169c82293c9106370faf3666958b38e2016d6f6ce5de5807e5ceb4856de34988794d59a77877960c3d444a418937b13"
 pass : "620d289aef644aff1a36e0a516a01be0fbdb70caa67cfa5593f6ec5a5b4f1a30272b361fb79adcf148dfc94fcda09ed42afb7ad874bc5f8bb65c1cfb22dd0f4c"
 */
+//---------------------------------------
+
+
 
 //controllo del database
 $pdostat = $pdo->prepare("SELECT id, classe, pass, salt, flags FROM utenti WHERE nome = ? LIMIT 1") or jsonErrorLogout('Errore durante ricerca utente [prepare]');

@@ -2,10 +2,8 @@
 header('Content-Type: application/json');
 
 require_once "config.php";
-require_once "functions.inc.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
 
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager();
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(0,true);
 
@@ -37,14 +35,14 @@ foreach ($_POST['files'] as $file){
 	
 	//determine directory
 	$u_subdir = empty($file['dir']) ? "" : fix_path($file['dir'],true);
-	if (!is_dir( $CONFIG['upload_dir'].$u_subdir )){
+	if (!is_dir( $Config->FM['upload_dir'].$u_subdir )){
 		$response['fail'][] = [
 			'f' => $name,
 			'e' => "The specified sub-directory (".$u_subdir.") cannot be found."
 		];
 		continue;
 	}
-	if (in_array($CONFIG['upload_dir'].$u_subdir, $CONFIG['hidden_dirs'])){
+	if (in_array($Config->FM['upload_dir'].$u_subdir, $Config->FM['hidden_dirs'])){
 		$response['fail'][] = [
 			'f' => $name,
 			'e' => "The specified sub-directory (".$u_subdir.") cannot be deleted."
@@ -63,7 +61,7 @@ foreach ($_POST['files'] as $file){
 		];
 		continue;
 	}
-	if (!file_exists( $CONFIG['upload_dir'].$u_subdir.$fixedname )){
+	if (!file_exists( $Config->FM['upload_dir'].$u_subdir.$fixedname )){
 		$response['fail'][] = [
 			'f' => $fixedname,
 			'e' => "The file doesn't exists anymore..."
@@ -72,11 +70,11 @@ foreach ($_POST['files'] as $file){
 	}
 	
 	
-	$info = pathinfo($CONFIG['upload_dir'].$u_subdir.$fixedname);
+	$info = pathinfo($Config->FM['upload_dir'].$u_subdir.$fixedname);
 	
 	
 	//delete main file from disk
-	if (!unlink($CONFIG['upload_dir'].$u_subdir.$fixedname)){
+	if (!unlink($Config->FM['upload_dir'].$u_subdir.$fixedname)){
 		$response['fail'][] = [
 			'f' => $fixedname,
 			'e' => "Couldn't delete file from disk."
@@ -91,10 +89,10 @@ foreach ($_POST['files'] as $file){
 		
 		//delete thumbs...
 		//DEFAULT:
-		@unlink( $CONFIG['default_thumb']['dir'].$u_subdir.$fixedname );
+		@unlink( $Config->FM['default_thumb']['dir'].$u_subdir.$fixedname );
 		//CUSTOMS:
-		foreach ($CONFIG['custom_thumbs'] as $dt){
-			@unlink( $CONFIG['default_thumb']['dir'].$dt['dir'].$u_subdir.$fixedname );
+		foreach ($Config->FM['custom_thumbs'] as $dt){
+			@unlink( $Config->FM['default_thumb']['dir'].$dt['dir'].$u_subdir.$fixedname );
 		}
 		
 		//delete from database

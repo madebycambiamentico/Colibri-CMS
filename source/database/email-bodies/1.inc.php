@@ -10,8 +10,8 @@
 
 function create_email($userinfo, $id, $encrypt=false){
 	
-	global $CONFIG;
-	$cms_dir = $CONFIG['domain'].str_replace('database/','',$CONFIG['mbc_cms_dir']);
+	global $Config;
+	$cms_dir = $Config->domain . str_replace('database/','',$Config->script_path);
 	
 	ob_start();
 
@@ -49,7 +49,7 @@ function create_email($userinfo, $id, $encrypt=false){
 			<h3 style="font-size:18px;font-weight:100;">Aggiornamento profilo di</h3>
 			<h2 style="font-size:24px;font-weight:bold;"><?php echo htmlentities($userinfo['name']) ?></h2>
 			<p style="padding:4px 16px;">
-				Lo staff di <a href="<?php echo htmlentities($CONFIG['domain'],ENT_QUOTES) ?>" target="_blank"><?php echo htmlentities($_SERVER['HTTP_HOST']) ?></a> segnala che è stata assegnata al tuo profilo la classe di <b><?php
+				Lo staff di <a href="<?php echo htmlentities($Config->domain,ENT_QUOTES) ?>" target="_blank"><?php echo htmlentities($_SERVER['HTTP_HOST']) ?></a> segnala che è stata assegnata al tuo profilo la classe di <b><?php
 					switch($userinfo['class']){
 						case 0: echo 'ospite'; break;
 						case 1: echo 'amministratore'; break;
@@ -58,7 +58,7 @@ function create_email($userinfo, $id, $encrypt=false){
 					}
 				?></b>.
 			</p>
-			<p>Per ulteriori informazioni e chiarimenti contattare il <a href="<?php echo htmlentities($CONFIG['domain'],ENT_QUOTES) ?>" target="_blank">webmaster</a>.</p>
+			<p>Per ulteriori informazioni e chiarimenti contattare il <a href="<?php echo htmlentities($Config->domain,ENT_QUOTES) ?>" target="_blank">webmaster</a>.</p>
 		</td></tr>
 		
 		<tr><td style="vertical-align:middle;padding:4px;background:#2d2d2d;color:#ffffff;">
@@ -92,23 +92,11 @@ function create_email($userinfo, $id, $encrypt=false){
 
 
 	if ($encrypt){
-		global $ENCRYPTER;
-		return $ENCRYPTER->encrypt( ob_get_clean() );
+		global $Encrypter;
+		return $Encrypter->encrypt( ob_get_clean() );
 	}
 	else
 		return ob_get_clean();
 }
-
-
-
-
-
-/*/TEST
-	require '../../php/encrypter.class.php';
-	$ENCRYPTER = new Encrypter('secret key');
-	$CONFIG = ['domain' => "http://colibricms.altervista.org", 'mbc_cms_dir' => '/'];
-	$encrypted_email = create_email(['name' => "Nèreo C", 'pass' => "trallallero trallallà", 'class' => 0], true);
-	echo $ENCRYPTER->decrypt($encrypted_email);
-//*/
 
 ?>

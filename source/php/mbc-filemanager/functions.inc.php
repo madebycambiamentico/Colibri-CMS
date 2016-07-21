@@ -69,9 +69,9 @@ function getGroupFilter($filter){
  * @return String | Bool(false)
 **/
 function getFileGroup($ext){
-	global $CONFIG;
+	global $Config;
 	$count = 0;
-	foreach ($CONFIG['allowed_ext'] as $allowed){
+	foreach ($Config->FM['allowed_ext'] as $allowed){
 		if (in_array($ext,$allowed)) return $count;
 		$count++;
 	}

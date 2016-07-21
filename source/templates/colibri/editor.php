@@ -12,12 +12,11 @@
 
 //-------------------------------------------------------------------------
 // !!! WARNING !!!
-// $CONFIG['mbc_cms_dir'] nor $CONFIG['database']['path'] cannot be used!!!
-// see comment in config.php
+// $Config->script_path contain the path to THIS folder
 //-------------------------------------------------------------------------
 
 require_once "../../config.php";
-require_once "../../".$CONFIG['database']['dir']."functions.inc.php";
+$Config->i_need_functions();
 
 //control login - uncomment to hide this page from public
 /*
@@ -26,8 +25,8 @@ $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 */
 
-include "php/link.class.php";
-include "php/ini.class.php";
+include __DIR__ . "php/link.class.php";
+include __DIR__ . "php/ini.class.php";
 
 
 $ini = INI_FILE::iread('php/template.ini',true);

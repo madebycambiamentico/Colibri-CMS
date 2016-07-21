@@ -139,7 +139,8 @@ $(function(){
 					$(this).parent(/*label*/).parent(/*p*/).remove();
 				});
 				if (!$('#all_sub_arts input').length){
-					$('#all_sub_arts').append("<p><b>(nessun articolo correlato a questa pagina)</b></p>");
+					if (!$('#all_sub_arts p').length)
+						$('#all_sub_arts').append("<p><b>(nessun articolo correlato a questa pagina)</b></p>");
 				}
 				alert('Aggiornamento completato con successo!')
 			}

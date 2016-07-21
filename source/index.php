@@ -1,38 +1,34 @@
 <?php
 
 require_once("config.php");
-require_once $CONFIG['database']['dir']."functions.inc.php";
+$Config->i_need_functions();
 
 
 
 
 //--------------------------------------------------------
 function STOPFORDEBUG($die=true){
-	global $requestedURL, $pathPieces, $mylang, $CONFIG;
+	global $requestedURL, $pathPieces, $mylang, $Config;
 	
-	echo 'LANG : '.$mylang;
+	$i=0;
+	echo (++$i).') $lang : '.($mylang or 'NULL');
 	
-	echo '<br>a) $requestedURL:<pre>'.print_r($requestedURL,true).'</pre>';
+	echo '<br>'.(++$i).') $requestedURL:<pre>'.print_r($requestedURL,true).'</pre>';
 	
-	echo '<br>b) $pathPieces:<pre>'.print_r($pathPieces,true).'</pre>';
+	echo '<br>'.(++$i).') $pathPieces:<pre>'.print_r($pathPieces,true).'</pre>';
 	
-	echo '<br>c) $CONFIG["database"]:<pre>'.print_r($CONFIG['database'],true).'</pre>';
-	echo '<br>c) $CONFIG[...]:<pre>'.
-		'domain: '.print_r($CONFIG['domain'],true).'<br>'.
-		'mbc_cms_dir: '.print_r($CONFIG['mbc_cms_dir'],true).'<br>'.
-		'c_dir: '.print_r($CONFIG['c_dir'],true).
-	'</pre>';
+	echo '<br>'.(++$i).') $Config:<pre>'.print_r($Config,true).'</pre>';
 	
-	echo '<br>d) $_SERVER:<pre>'.print_r($_SERVER,true).'</pre>';
+	echo '<br>'.(++$i).') $_SERVER:<pre>'.print_r($_SERVER,true).'</pre>';
 	
-	$die and die();
+	$die and die;
 }
 //--------------------------------------------------------
 
 function noPageFound($str='Questa pagina non esiste.'){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	//STOPFORDEBUG(false);
-	global $CONFIG,$web,$templatepath;
+	global $Config, $web, $templatepath;
 	if ($not_found_page = \WebSpace\Template::custom($web['template'],'not-found.php',true)){
 		include $not_found_page;
 		die('<!-- ERROR: '.htmlentities($str).' -->');
@@ -87,11 +83,11 @@ $mylang			= detectPreferredLanguage();
 //***************************************
 if (isset($_SERVER['REDIRECT_URL'])){
 	
-	if ($CONFIG['mbc_cms_dir']==='/')
+	if ($Config->script_path === '/')
 		$requestedURL = substr($_SERVER['SCRIPT_URL'],1);
 	else
-		$requestedURL = str_ireplace($CONFIG['mbc_cms_dir'],"",$_SERVER['SCRIPT_URL']);
-	$pathPieces = explode("/",$requestedURL);
+		$requestedURL = str_ireplace($Config->script_path,"",$_SERVER['SCRIPT_URL']);
+	$pathPieces = explode("/",rtrim($requestedURL, '/'));
 	
 	//STOPFORDEBUG();
 	
@@ -240,7 +236,7 @@ if ($mylang && isset($_GET['translate'])){
 	if ($r = $pdores->fetch()){
 		//for mapped pages (no index) reload page...
 		if (!($r['isindex'] || $r['isindexlang'])){
-			header('Location: '.$CONFIG['mbc_cms_dir'].$r['remaplink']);
+			header('Location: '.$Config->script_path.$r['remaplink']);
 			exit;
 		}
 		//if this is an index page, then do not reload locations (it is already doing this in this very script :) )
@@ -248,7 +244,7 @@ if ($mylang && isset($_GET['translate'])){
 	//-----------------------------
 	//translated page not available
 	else{
-		/*header('Location: '.$CONFIG['mbc_cms_dir']);
+		/*header('Location: '.$Config->script_path);
 		exit;*/
 		noPageFound('Nessuna traduzione di pagina trovata [cod 002/2]');
 	}

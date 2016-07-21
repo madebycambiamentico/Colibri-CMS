@@ -2,10 +2,8 @@
 header('Content-Type: application/json');
 
 require_once "config.php";
-require_once "functions.inc.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
 
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager();
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(0,true);
 
@@ -29,17 +27,17 @@ function sanitizePath($s=""){
 
 //control if it's requested a specific directory
 //are allowed only sub-directory of upload_dir
-$folder = $CONFIG['upload_dir'];
+$folder = $Config->FM['upload_dir'];
 $subfolder = "";
 if (isset($_GET['folder'])){
 	$subfolder = sanitizePath($_GET['folder']);
 	if ($subfolder !== "/") $folder .= $subfolder;
 	else $subfolder = "";
-	if (!is_dir($folder)) $folder = $CONFIG['upload_dir'];
+	if (!is_dir($folder)) $folder = $Config->FM['upload_dir'];
 }
 
 if ($subfolder){
-	if (in_array(pathinfo($folder)['filename'], $CONFIG['hidden_dirs'])) jsonError("La cartella è protetta o inesistente.");
+	if (in_array(pathinfo($folder)['filename'], $Config->FM['hidden_dirs'])) jsonError("La cartella è protetta o inesistente.");
 }
 
 
@@ -47,8 +45,8 @@ if ($subfolder){
 
 //create response...
 $response = [
-	"uploads_dir" => $CONFIG['upload_dir'],
-	"thumbs_dir" => $CONFIG['default_thumb']['dir'],
+	"uploads_dir" => $Config->FM['upload_dir'],
+	"thumbs_dir" => $Config->FM['default_thumb']['dir'],
 	"scanned_dir" => $subfolder,
 	"folders" => [],
 	"files" => []
@@ -57,7 +55,7 @@ $response = [
 foreach( array_diff(scandir($folder), ['..', '.']) as $k => $f ){
 	//directories
 	if (is_dir($folder.$f)){
-		if (in_array($folder.$f, $CONFIG['hidden_dirs'])) continue;
+		if (in_array($folder.$f, $Config->FM['hidden_dirs'])) continue;
 		$response['folders'][] = $f;
 	}
 	//files

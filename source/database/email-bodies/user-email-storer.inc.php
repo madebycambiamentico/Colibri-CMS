@@ -15,7 +15,7 @@
 * @copyright: (C)2016 nereo costacurta
 */
 
-if (!defined('EMAIL_TYPE') || !isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
+if (!defined('EMAIL_TYPE') || !isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 require_once __DIR__ . "/async_curl.fn.php";
 
