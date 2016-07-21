@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/../../php/PHPMailer-5.2.14/PHPMailerAutoload.php';
-require_once __DIR__ . '/../../php/html2text-0.3.4/html2text.php';
+require_once __DIR__ . '/../../php/PHPMailer/PHPMailerAutoload.php';
+require_once __DIR__ . '/../../php/html2text/html2text.php';
 
 
 

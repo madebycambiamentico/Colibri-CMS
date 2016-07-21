@@ -54,10 +54,9 @@ if (isset($_GET['debug'])){
 
 
 require_once "../functions.inc.php";
-require_once '../../php/encrypter.class.php';
-	$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
 require_once 'async_curl.fn.php';
 
+$Encrypter = new Encrypter( $CONFIG['encrypt']['secret_key'] );
 
 
 
@@ -160,7 +159,7 @@ $failed_emails = [];
 while ($r = $pdores->fetch()){
 	//define email properties
 	$receiver = [
-		'email'			=> $ENCRYPTER->decrypt($r['email']),
+		'email'			=> $Encrypter->decrypt($r['email']),
 		'email_id'		=> $r['id'],
 		'user_id'		=> $r['iduser']
 	];
@@ -171,7 +170,7 @@ while ($r = $pdores->fetch()){
 	//echo "sending email to <i>{$receiver['email']}</i> #{$r['id']}<br>";
 	//end debug ----------------------
 	
-	$html = $ENCRYPTER->decrypt($r['content']);
+	$html = $Encrypter->decrypt($r['content']);
 	//send mail, then update user status deleting that email
 	//(?) if email fail to send, increase a flag to that user. if flag > 3 block user (?)
 	if ( true === phpmailer_send_email($sender, $replyto, $receiver, $subject, $html) ){

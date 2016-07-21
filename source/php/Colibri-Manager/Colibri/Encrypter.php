@@ -30,6 +30,12 @@ class Encrypter {
 	}
 
 
+	/**
+	* set the cipher and mode of encryption. set IV size.
+	*
+	* @param (const|string) $cipher		The cipher algo block. default: MCRYPT_RIJNDAEL_128
+	* @param (const|string) $mode			Block cipher mode of operation. default: MCRYPT_MODE_CBC
+	*/
 	function set_cipher_n_mode($cipher = MCRYPT_RIJNDAEL_128, $mode = MCRYPT_MODE_CBC){
 		//get the needed IV length for (cipher U mode)
 		//default: chipher = MCRYPT_RIJNDAEL_128 and mode = 'cbc' => IV size is 16
@@ -39,6 +45,11 @@ class Encrypter {
 	}
 
 
+	/**
+	* set the secret key to encrypt/decrypt
+	*
+	* @param (string) $textkey		random-ish key
+	*/
 	function set_key($textkey){
 		//create hashed key, return raw output (bytes)
 		$this->securekey = hash('sha256', $textkey, TRUE);

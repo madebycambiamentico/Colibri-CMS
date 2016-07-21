@@ -126,11 +126,11 @@ $CONFIG['database']['path'] = $CONFIG['c_dir'].$CONFIG['database']['dir'].$CONFI
 
 
 //include autoloaders:
-require_once( __DIR__ .'/autoloader.php' ); // for non-categorized classes
-require_once( __DIR__ .'/php/Colibri-Manager/autoloader.php' );
-require_once( __DIR__ .'/php/Colibri-ReCaptcha/autoloader.php' );
-require_once( __DIR__ .'/php/Colibri-Website/autoloader.php' );
-require_once( __DIR__ .'/php/RandomLib-1.1.0/autoloader.php' );
+require_once( __DIR__ .'/autoloader.php' );								// for non-categorized Colibrì classes
+require_once( __DIR__ .'/php/Colibri-Manager/autoloader.php' );	// for Colibrì manager classes (menu, popups etc.)
+require_once( __DIR__ .'/php/Colibri-ReCaptcha/autoloader.php' );	// reCaptcha v2 wrapper
+require_once( __DIR__ .'/php/Colibri-Website/autoloader.php' );	// base queries for website
+require_once( __DIR__ .'/php/RandomLib/autoloader.php' );			// generate casual secure strings
 
 
 ?>

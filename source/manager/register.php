@@ -84,7 +84,7 @@ $Colibrì = new \Colibri\Template;
 	
 	<div class="inputs center">
 		<b id="send-me" class="btn">Registrati</b>
-		<br><br><a href="./login">Accedi</a> | <a href="#todo">Recupera password</a>
+		<br><br><a href="login">Accedi</a> | <a href="#todo">Recupera password</a>
 	</div>
 	
 </form>

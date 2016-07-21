@@ -127,7 +127,7 @@ if (isLoggedIn()){
 	PHPMailer SENDER
 **********************/
 
-require 'php/PHPMailer-5.2.14/PHPMailerAutoload.php';
+require 'php/PHPMailer/PHPMailerAutoload.php';
 
 //send to admin...
 
