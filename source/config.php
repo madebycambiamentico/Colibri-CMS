@@ -1,7 +1,8 @@
 <?php
 
-require_once __DIR__ . '/database/encryption_key.php';
+define( 'CMS_HDD_DIR', __DIR__ );
 
+require_once __DIR__ . '/database/encryption_key.php';
 
 //TODO
 //render CONFIG a class or a constant
