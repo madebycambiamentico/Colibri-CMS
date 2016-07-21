@@ -2,10 +2,8 @@
 header('Content-Type: application/json');
 
 require_once "config.php";
-require_once "functions.inc.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
 
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager();
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(0,true);
 
@@ -39,9 +37,9 @@ if (!isset($_GET['original'])) jsonError("Variabili errate");
 
 //fix directory
 $u_subdir = empty($_GET['dir']) ? "" : fix_path($_GET['dir'],true);
-if (!is_dir( $CONFIG['upload_dir'].$u_subdir ))
+if (!is_dir( $Config->FM['upload_dir'].$u_subdir ))
 	jsonError("The specified sub-directory (".$u_subdir.") cannot be found.");
-if (in_array($CONFIG['upload_dir'].$u_subdir, $CONFIG['hidden_dirs']))
+if (in_array($Config->FM['upload_dir'].$u_subdir, $Config->FM['hidden_dirs']))
 	jsonError("The specified sub-directory (".$u_subdir.") is not writable.");
 if ($u_subdir!== "") $u_subdir .= "/";
 
@@ -49,23 +47,23 @@ if ($u_subdir!== "") $u_subdir .= "/";
 $fixedOLDname = fix_filename($_GET['original'],true);
 if ($fixedOLDname === "")
 	jsonError("Empty file name...");
-if (!file_exists( $CONFIG['upload_dir'].$u_subdir.$fixedOLDname ))
+if (!file_exists( $Config->FM['upload_dir'].$u_subdir.$fixedOLDname ))
 	jsonError("The file doesn't exists anymore...");
-if (is_dir($CONFIG['upload_dir'].$u_subdir.$fixedOLDname))
+if (is_dir($Config->FM['upload_dir'].$u_subdir.$fixedOLDname))
 	jsonError("Cannot edit folders like was files!");
-$oldExt = pathinfo( $CONFIG['upload_dir'].$u_subdir.$fixedOLDname, PATHINFO_EXTENSION );
+$oldExt = pathinfo( $Config->FM['upload_dir'].$u_subdir.$fixedOLDname, PATHINFO_EXTENSION );
 
 //determine file name
 $fixedname = fix_filename($_GET['f'].'.'.$oldExt,true);
 if ($fixedname === "")
 	jsonError("Empty file name...");
-if (file_exists( $CONFIG['upload_dir'].$u_subdir.$fixedname && $fixedOLDname !== $fixedname))
+if (file_exists( $Config->FM['upload_dir'].$u_subdir.$fixedname && $fixedOLDname !== $fixedname))
 	jsonError("A file with same name already exists!");
 
 //rename file
-if (rename($CONFIG['upload_dir'].$u_subdir.$fixedOLDname, $CONFIG['upload_dir'].$u_subdir.$fixedname)){
+if (rename($Config->FM['upload_dir'].$u_subdir.$fixedOLDname, $Config->FM['upload_dir'].$u_subdir.$fixedname)){
 	
-	if (!in_array($oldExt,$CONFIG['allowed_ext']['img'])){
+	if (!in_array($oldExt,$Config->FM['allowed_ext']['img'])){
 		jsonSuccess([
 			'f'			=> $fixedname,
 			'd'			=> $u_subdir,
@@ -75,10 +73,10 @@ if (rename($CONFIG['upload_dir'].$u_subdir.$fixedOLDname, $CONFIG['upload_dir'].
 	
 	//try to rename all thumbs
 	//DEFAULT:
-	@rename($CONFIG['default_thumb']['dir'].$u_subdir.$fixedOLDname, $CONFIG['default_thumb']['dir'].$u_subdir.$fixedname);
+	@rename($Config->FM['default_thumb']['dir'].$u_subdir.$fixedOLDname, $Config->FM['default_thumb']['dir'].$u_subdir.$fixedname);
 	//CUSTOMS:
-	foreach ($CONFIG['custom_thumbs'] as $dt){
-		@rename( $CONFIG['default_thumb']['dir'].$dt['dir'].$u_subdir.$fixedOLDname, $CONFIG['default_thumb']['dir'].$dt['dir'].$u_subdir.$fixedname );
+	foreach ($Config->FM['custom_thumbs'] as $dt){
+		@rename( $Config->FM['default_thumb']['dir'].$dt['dir'].$u_subdir.$fixedOLDname, $Config->FM['default_thumb']['dir'].$dt['dir'].$u_subdir.$fixedname );
 	}
 	
 	//update database -- only for images
@@ -117,9 +115,9 @@ anchor_1://create new directory
 
 //fix directory
 $u_subdir = empty($_GET['dir']) ? "" : fix_path($_GET['dir'],true);
-if (!is_dir( $CONFIG['upload_dir'].$u_subdir ))
+if (!is_dir( $Config->FM['upload_dir'].$u_subdir ))
 	jsonError("The specified sub-directory (".$u_subdir.") cannot be found.");
-if (in_array($CONFIG['upload_dir'].$u_subdir, $CONFIG['hidden_dirs']))
+if (in_array($Config->FM['upload_dir'].$u_subdir, $Config->FM['hidden_dirs']))
 	jsonError("The specified sub-directory (".$u_subdir.") is not writable.");
 $u_subdir .= "/";
 
@@ -127,11 +125,11 @@ $u_subdir .= "/";
 $fixedname = fix_filename($_GET['f'],true);
 if ($fixedname === "")
 	jsonError("Empty folder name...");
-if (file_exists( $CONFIG['upload_dir'].$u_subdir.$fixedname ))
+if (file_exists( $Config->FM['upload_dir'].$u_subdir.$fixedname ))
 	jsonError("The folder or file already exists...");
 
 //create directory
-if (mkdir( $CONFIG['upload_dir'].$u_subdir.$fixedname, 0755 ))
+if (mkdir( $Config->FM['upload_dir'].$u_subdir.$fixedname, 0755 ))
 	jsonSuccess(['d' => $u_subdir, 'f' => $fixedname, 'action' => 'newdir']);
 else
 	jsonError("Couldn't create folder.");

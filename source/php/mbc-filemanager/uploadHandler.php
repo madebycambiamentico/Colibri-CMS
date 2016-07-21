@@ -2,19 +2,19 @@
 header('Content-Type: application/json');
 
 require_once "config.php";
-require_once "functions.inc.php";
-require_once $CONFIG['database']['dir']."functions.inc.php";
 
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager();
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(0,true);
 
 
 //extend CONFIG with custom thumbnails
-$pdores = $pdo->query("SELECT template FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_NUM) or jsonError("STOP QUERY");
+$pdores = $pdo->query("SELECT template FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC) or jsonError("STOP QUERY");
 if ($templ = $pdores->fetch()){
 	//if file exists include custom thumbnails
-	@include $CONFIG['c_dir']."../../templates/".$templ[0].'/fm-custom-thumbnails.php';
+	$tumbnail_extension = CMS_INSTALL_DIR . "/templates/".$templ['template'].'/fm-custom-thumbnails.php';
+	if (is_file($tumbnail_extension))
+		include $tumbnail_extension;
 }
 
 
@@ -30,10 +30,10 @@ include "classes/uploadexception.class.php";
 //set subdirectory
 $u_subdir = empty($_POST['dir']) ? "" : fix_path($_POST['dir'],true);
 
-if (!is_dir( $CONFIG['upload_dir'].$u_subdir ))
+if (!is_dir( $Config->FM['upload_dir'].$u_subdir ))
 	jsonError("The specified sub-directory (".$u_subdir.") cannot be found.");
 
-if (in_array($CONFIG['upload_dir'].$u_subdir, $CONFIG['hidden_dirs']))
+if (in_array($Config->FM['upload_dir'].$u_subdir, $Config->FM['hidden_dirs']))
 	jsonError("The specified sub-directory (".$u_subdir.") cannot be writed.");
 
 if ($u_subdir!== "") $u_subdir .= "/";
@@ -61,19 +61,16 @@ function abortImage($newfile, $stopscript=false, $report="errore sconosciuto", $
 
 
 
-/* @description create thumbnail from $CONFIG configured thumbnail sizes and filters.
- *
- * @params
- * (String) $source		: link to source image. must exists.
- * (String) $filename	: pure name of the file (eg. "file.ext") without path
- * (Object) $CT			: from $CONFIG array - $CONFIG['default_thumb'] or $CONFIG['custom_thumbs'][$i]
- * (String) $subdir		: relative sub-directory from thumb folder. should be $CT['dir'], apart the default thumb.
- *
- * @return
- * (Void)
+/**
+* create thumbnail from $Config configured thumbnail sizes and filters.
+*
+* @params (String) $source			link to source image. must exists.
+* @params (String) $filename		name of the file (eg. "file.ext") without path
+* @params (Array)  $CT				item from $Config->FM['default_thumb'] or $Config->FM['custom_thumbs'][$i]
+* @params (String) $subdir			relative sub-directory from thumb folder. should be $CT['dir'] but the default thumb.
 */
 function createThumbnail($source, $filename, $CT, $subdir=""){
-	global $CONFIG;
+	global $Config;
 	$magicianObj = new imageLib($source);
 	//rezized image...
 	if ($CT['sizes'][0]>0 && $CT['sizes'][1]>0)
@@ -84,7 +81,7 @@ function createThumbnail($source, $filename, $CT, $subdir=""){
 		$magicianObj->$filter();
 	}
 	//create thumbnail:
-	$thumbpath = $CONFIG['default_thumb']['dir'] .  $subdir;
+	$thumbpath = $Config->FM['default_thumb']['dir'] . $subdir;
 	// - control if directory exists - or write it
 	if (!file_exists($thumbpath)){
 		if (!mkdir($thumbpath,0755,true)) return false;
@@ -169,11 +166,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_FILES['files'])){
 		
 		$control_ext = 0;
 		$ext = "";
-		foreach ($CONFIG['allowed_ext'] as $group => $extensions){
+		foreach ($Config->FM['allowed_ext'] as $group => $extensions){
 			$ext = mb_strtolower(pathinfo($fixedname, PATHINFO_EXTENSION));
 			if ( in_array($ext, $extensions) ){
 				// skip large files
-				if ( $_FILES['files']['size'][$i] >= $CONFIG['max_file_size'][$group] ){
+				if ( $_FILES['files']['size'][$i] >= $Config->FM['max_file_size'][$group] ){
 					$response['fail'][] = [
 						'f' => $fixedname,
 						'e' => "The uploaded file exceeds the max file size directive in config.php"
@@ -185,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_FILES['files'])){
 			$control_ext++;
 		}
 		// skip unprotected files
-		if ($control_ext == count($CONFIG['allowed_ext'])){
+		if ($control_ext == count($Config->FM['allowed_ext'])){
 			$response['fail'][] = [
 				'f' => $fixedname,
 				'e' => "Extension not allowed!"
@@ -194,14 +191,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_FILES['files'])){
 		}
 		
 		//set path + file as new file...
-		$newfile = $CONFIG['upload_dir'].$u_subdir.$fixedname;
+		$newfile = $Config->FM['upload_dir'].$u_subdir.$fixedname;
 		
 		$existent = false;
 		if (file_exists($newfile)){
-			if (!$CONFIG['allow_overwrite_file']){
+			if (!$Config->FM['allow_overwrite_file']){
 				$response['fail'][] = [
 					'f' => $fixedname,
-					'e' => "Overwirte file disabled in config.php. Change directive to give permission."
+					'e' => "Overwirte file disabled in config.php. Change directive to give permission to write on existent files"
 				];
 				continue;
 			}
@@ -217,10 +214,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_FILES['files'])){
 				
 				//create thumbnails...
 				//DEFAULT:
-				createThumbnail($newfile, $fixedname, $CONFIG['default_thumb'], $u_subdir);
+				createThumbnail($newfile, $fixedname, $Config->FM['default_thumb'], $u_subdir);
 				//CUSTOMS:
-				foreach ($CONFIG['custom_thumbs'] as $dt){
-					createThumbnail($newfile, $fixedname, $dt, $dt['dir'].$u_subdir);
+				foreach ($Config->FM['custom_thumbs'] as $custom_thumb){
+					createThumbnail($newfile, $fixedname, $custom_thumb, $custom_thumb['dir'].$u_subdir);
 				}
 				
 				//insert into database...
