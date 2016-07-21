@@ -9,7 +9,7 @@
 * @see /php/mbc-filemanager/config.php
 */
 
-$CONFIG["custom_thumbs"] = [
+$Config->FM["custom_thumbs"] = [
 	// ??? x 300 for galleries
 	[
 		'dir' => "300/",				//sub-directory of thumb directory. MUST end with "/".
