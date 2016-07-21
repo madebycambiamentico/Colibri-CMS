@@ -212,7 +212,7 @@ if (!$web) die("Void properties!</body>");
 				<?php
 					//template makers should be trusted... there will be an official revisor/validator
 					$templatepath = $Config->script_path.'templates/'.$web['template'].'/';
-					$phisicaltp = CMS_INSTALL_DIR.'templates/'.$web['template'].'/';
+					$phisicaltp = CMS_INSTALL_DIR.'/templates/'.$web['template'].'/';
 					$json = null;
 					if (is_file($phisicaltp.'properties.json'))
 						$json = json_decode(file_get_contents($phisicaltp.'properties.json'), true);
