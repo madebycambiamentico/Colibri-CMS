@@ -130,7 +130,7 @@ class Template {
 		if (!empty($id) && !empty($ARTICLE)) $ida = $ARTICLE['idalbum'];
 		else $ida = 0;
 		
-		echo $title;
+		echo "\n".$title."\n";
 ?>
 	<div class="inputs maxi aligned tools">
 		<p><input type='checkbox' id="at-0" value="add">
@@ -148,11 +148,12 @@ class Template {
 	</div>
 	
 	<h4>Album disponibili</h4>
-	<div id="all-albums" class="inputs maxi aligned albums active"><?php
+	<div id="all-albums" class="inputs maxi aligned albums active">
+	<?php
 
-if ($pdores = $pdo->query("SELECT immagini_albums.*, immagini.src FROM immagini_albums left outer join immagini on immagini_albums.idimage = immagini.id")):
+if ($pdores = $pdo->query("SELECT immagini_albums.*, immagini.src FROM immagini_albums left outer join immagini on immagini_albums.idimage = immagini.id")){
 	//stampo preview + titolo album
-	foreach ($pdores as $r):
+	foreach ($pdores as $r){
 		echo '<figure id="album-'.$r['id'].'" class="album'.($ida == $r['id'] ? ' selected' : '').'">'.
 			'<div class="icon i-jpg loaded">'.
 				'<label class="image" for="alb-'.$r['id'].'"'.
@@ -168,11 +169,10 @@ if ($pdores = $pdo->query("SELECT immagini_albums.*, immagini.src FROM immagini_
 				'<b class="sicon del" data-id="'.$r['id'].'"><i class="trash"></i></b>'.
 			'</figcaption>'.
 		'</figure>';
-	endforeach;
-endif;
+	}
+}
 
-	?></div>
-<?php
+	?></div><?php
 	}
 
 }

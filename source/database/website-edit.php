@@ -32,6 +32,7 @@ if (!isset($_POST['delivery']['n'], $_POST['delivery']['t']))
 
 $query = "UPDATE sito SET
 	autore=?, titolo=?, descr=?, motto=?, info=?,
+	multilanguage = ?,
 	delivery_quantity=?, delivery_delay=?,
 	email=?";
 $params = [];
@@ -46,6 +47,7 @@ $prop = [
 	preg_replace('/\s+/',' ',trim($_POST['descr'])),		//brief description
 	preg_replace('/\s+/',' ',trim($_POST['quote'])),		//motto
 	trim($_POST['info']),											//info (optional)
+	isset($_POST['multilanguage']),								//is this site multi-language?
 	max(0,intval($_POST['delivery']['n'],10)),				//n. of email to delivery every interval (if set)
 	min(3600,max(0,intval($_POST['delivery']['t'],10)))	//interval in seconds [0 - 3600]
 ];

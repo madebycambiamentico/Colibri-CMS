@@ -1,11 +1,6 @@
 <?php
 
-
-
-
-//#####################################################################
-//#######  C H A N G E  T H E  S E C R E T  S T R I N G  !!!  #########
-//#####################################################################
+require_once __DIR__ . '/database/encryption_key.php';
 
 
 //TODO
@@ -104,15 +99,12 @@ $CONFIG = [
 		'name' => 'mbcsqlite3.db'	//can be changed at will, but must be the same as in php/mbc-filemanager/config.php
 	],
 	
+	//!!! temporary mantain array for retro-compatibility. will be deprecated soon.
 	//secret string to encrypt and decrypt emails. If changed, you should backup the decrypted old emails
 	//and restore them with the new key encryption.
-	//this feature is not officially supported
-	//...
-	//##########################################################
-	//#######  C H A N G E  T H I S  S T R I N G  !!!  #########
-	//##########################################################
+	//this feature is not yet supported
 	'encrypt' => [
-		'secret_key' => '!CHANGE THIS STRING TO ANY RANDOM ONE!',
+		'secret_key' => CMS_ENCRYPTION_KEY,
 	]
 	
 	//-------------- END OF CUSTOMIZABLE VARS --------------

@@ -141,7 +141,13 @@ if (!$web) die("Void properties!</body>");
 				<p>Tenere presente che inserire la propria e-mail testuale attirerà grandi quantità di <i>spam</i>. Se il template in uso è dotato di una <i>form</i> di contatto, è consigliabile evitare questo rischio.</p>
 				<textarea id="w-info" name="info" placeholder="Informazioni..."><?php echo htmlentities($web['info']) ?></textarea>
 			</div>
+			
+			<div class="inputs maxi aligned">
+				<h4><label><input name="multilanguage" type="checkbox"<?php echo $web['multilanguage'] ? ' checked' : '' ?>> Sito multi-lingua</label></h4>
+			</div>
 		
+			<hr>
+			
 			<div class="inputs maxi aligned">
 				<h3>Gestione avvisi email</h3>
 				<p><i>Metodo di invio - leggere attentamente:</i></p>

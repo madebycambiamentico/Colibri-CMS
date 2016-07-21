@@ -167,19 +167,22 @@ if (isset($_GET['q'])){
 				<p><label><input type="checkbox" name="isindex" value="1" <?php echo ($id ? ($ARTICLE['isindex'] ? 'checked' : '') : '') ?>> Pagina iniziale del sito</label><br>
 				<label><input type="checkbox" name="isinmenu" value="1" <?php echo ($id ? ($ARTICLE['isinmenu'] ? 'checked' : '') : '') ?>> Mostra nel menu</label></p>
 				
-				<h4>Gestione lingue</h4>
-				<p>
-				<label><input type="checkbox" name="isindexlang" value="1" <?php echo ($id ? ($ARTICLE['isindexlang'] ? 'checked' : '') : '') ?>>
-				Pagina iniziale del sito per la lingua selezionata</label>
-				<select name="lang"><?php
-					$langs = [
-						'sigla' => ['it','en','de','fr'],
-						'estesa' => ['italiano','english','deutsch','française']
-					];
-					foreach ($langs['sigla'] as $o => $opt)
-						echo "<option value='{$opt}' ".($id ? ($ARTICLE['lang']==$opt ? 'selected' : '') : '').">{$langs['estesa'][$o]} ({$opt})</option>";
-				?></select>
-				</p>
+				<div <?php if (!$web['multilanguage']) echo 'style="display:none"' ?>>
+					<h4>Gestione lingue</h4>
+					<p>
+					<label><input type="checkbox" name="isindexlang" value="1" <?php echo ($id ? ($ARTICLE['isindexlang'] ? 'checked' : '') : '') ?>>
+					Pagina iniziale del sito per la lingua selezionata</label>
+					<select name="lang"><?php
+						$langs = [
+							'sigla' => ['it','en','de','fr'],
+							'estesa' => ['italiano','english','deutsch','française']
+						];
+						foreach ($langs['sigla'] as $o => $opt)
+							echo "<option value='{$opt}' ".($id ? ($ARTICLE['lang']==$opt ? 'selected' : '') : '').">{$langs['estesa'][$o]} ({$opt})</option>";
+					?></select>
+					</p>
+				</div>
+				
 				<p>
 				Articolo originale:<br>
 				<select id="art-parentlang" name="parentlang">
@@ -229,7 +232,10 @@ if ($pdores = $pdo->query("SELECT id,titolo FROM articoli WHERE idtype = 1 AND i
 			
 				<?php if ($id): ?>
 				<h4>Sub-Articoli correlati</h4>
-				<p>Seleziona per rimuovere dipendenza</p><div id="all_sub_arts"><?php
+				<p>Seleziona per rimuovere dipendenza</p>
+				
+				<?php
+				echo '<div id="all_sub_arts">';
 
 if ($pdores = $pdo->query("SELECT id,titolo FROM articoli WHERE idarticolo = {$id}", PDO::FETCH_ASSOC)){
 	$hasdenpendecies = false;
@@ -240,7 +246,9 @@ if ($pdores = $pdo->query("SELECT id,titolo FROM articoli WHERE idarticolo = {$i
 	$pdores->closeCursor();
 	if (!$hasdenpendecies) echo '<p><b>(nessun articolo correlato a questa pagina)</b></p>';
 }
-				endif; ?></div>
+				echo '</div>';
+				endif;
+				?>
 			</div>
 			
 			<div class="inputs center hide-on-cell">

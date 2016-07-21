@@ -52,7 +52,7 @@ $wasindexlang = intval($_POST['wasindexlang'],10);
 $desc			= preg_replace("/\s+/"," ",trim($_POST['description']));
 $image		= trim($_POST['image']);
 $lang			= trim($_POST['lang']);
-	if (strlen($lang) > 2) $lang = '';
+	if (strlen($lang) < 2 || strlen($lang) > 5) $lang = '';
 $idparentlang = intval($_POST['parentlang'],10);
 	if (!$idparentlang) $idparentlang = 'NULL';
 

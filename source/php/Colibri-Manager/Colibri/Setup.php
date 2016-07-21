@@ -17,17 +17,53 @@ class Setup {
 
 	public $index = 'index.php';
 	public $check = true;
+	public $error = [];
+	public $logs = [];
 	
 	
-	public function __construct($init = false){
+	public function __construct($run_checks_immediately = false){
 		//TODO...
-		if ($init){
-			if ($this->check && $this->check != $this->save_permission_rules_db())
-				$this->check = false;
-			if ($this->check && $this->check != $this->save_mod_rewrite_rules())
-				$this->check = false;
+		if ($run_checks_immediately){
+			$this->add_log("running checks immediately:");
+			if (! $this->check = $this->save_permission_rules_db()){
+				$this->error[] = "Couldn't edit database <i>.htaccess</i>.<br>The code to inject was:<br><pre>".
+									htmlentities($this->get_permission_rules_db()).
+									"</pre>";
+				return false;
+			}
+			if (! $this->check = $this->save_mod_rewrite_rules()){
+				$this->error[] = "Couldn't edit main <i>.htaccess</i>.<br>The code to inject was:<br><pre>".
+									htmlentities($this->get_rewrite_rules_apache()).
+									"</pre>";
+				return false;
+			}
+			if (! $this->check = $this->set_CMS_key()){
+				$this->error[] = "Couldn't create <i>encryption_key.php</i>.<br>".
+									"Check if you have writing permission to <i>/database/</i> cms folder.<br>".
+									"Check if the file <i>secret_key_template.txt</i> is present in <i>/php/Colibri-Manager/Colibri/</i> directory too.<br>".
+									"Verify if the content is corrupted or different from the vanilla one founded at github.";
+				return false;
+			}
 		}
 	}
+	
+	
+	private function add_log($string){
+		$this->logs[] = date('H:i:s')." - ".$string;
+	}
+	
+	
+	public function get_errors(){
+		if ($this->error) return implode("<br>",$this->error);
+		else return 'no errors were stored in Setup class...';
+	}
+	
+	
+	public function get_logs(){
+		if ($this->logs) return implode("<br>",$this->logs);
+		else return 'no logs were stored in Setup class...';
+	}
+	
 	
 	/**
 	* generate mod_rewrite-formatted rules for .htaccess file.
@@ -38,6 +74,7 @@ class Setup {
 	* @return string
 	*/
 	public function get_rewrite_rules_apache(){
+		$this->add_log("called <code>get_rewrite_rules_apache()</code>");
 		global $CONFIG;
 		$rules =
 		"<IfModule mod_rewrite.c>".							"\n".
@@ -66,6 +103,7 @@ class Setup {
 	* @return (string)	htaccess rules
 	*/
 	public function get_permission_rules_db(){
+		$this->add_log("called <code>get_permission_rules_db()</code>");
 		$rules = "Order Deny,Allow".					"\n".
 					"Deny from all".						"\n".
 					'<Files ~ "\.(php|html)$">'.		"\n".
@@ -90,6 +128,7 @@ class Setup {
 	* @return (bool)			True on write success, false on failure.
 	*/
 	public function insert_with_markers( $filename, $marker, $rows ){
+		$this->add_log("called <code>insert_with_markers()</code> for file <i>{$filename}</i>");
 		//check if filename can be written. create file if not exists.
 		if (!file_exists($filename)){
 			if (!is_writable(dirname($filename))){
@@ -151,7 +190,6 @@ class Setup {
 		if ( $existing_lines === $rows ){
 			flock( $fp, LOCK_UN );
 			fclose( $fp );
-
 			return true;
 		}
 
@@ -184,17 +222,22 @@ class Setup {
 	*
 	* Always writes to the file if it exists and is writable to ensure that we
 	* blank out old rules.
+	*
+	* @see get_rewrite_rules_apache()
+	* @see insert_with_markers()
+	*
+	* @return (true|false)		success on creating the htaccess file
 	*/
 	public function save_mod_rewrite_rules(){
+		$this->add_log("called <code>save_mod_rewrite_rules()</code>");
 		global $CONFIG;
 		$htaccess_file = $CONFIG['c_dir'].'.htaccess';
 
 		//If the file doesn't already exist check for write access to the directory
 		//and whether we have some rules. Else check for write access to the file.
 		$rules = explode( "\n", $this->get_rewrite_rules_apache());
-		return $this->insert_with_markers( $htaccess_file, 'ColibrìCMS', $rules );
-
-		return false;
+		
+		return $this->insert_with_markers( $htaccess_file, 'Colibri', $rules );
 	}
 	
 	
@@ -203,15 +246,113 @@ class Setup {
 	*
 	* Always writes to the file if it exists and is writable to ensure that we
 	* blank out old rules.
+	*
+	* @see get_permission_rules_db()
+	* @see insert_with_markers()
+	*
+	* @return (true|false)		success on creating the htaccess file.
 	*/
 	public function save_permission_rules_db(){
+		$this->add_log("called <code>save_permission_rules_db()</code>");
 		global $CONFIG;
 		$htaccess_file = $CONFIG['c_dir'].$CONFIG['database']['dir'].'.htaccess';
 
 		//If the file doesn't already exist check for write access to the directory
 		//and whether we have some rules. Else check for write access to the file.
 		$rules = explode( "\n", $this->get_permission_rules_db());
-		return $this->insert_with_markers( $htaccess_file, 'ColibrìCMS', $rules );
+		
+		return $this->insert_with_markers( $htaccess_file, 'Colibri', $rules );
+	}
+	
+	
+	/**
+	* Generate a random key used in encryption
+	*
+	* Always writes to the file if it exists and is writable to ensure that we
+	* blank out old code.
+	*
+	* @see generate_CMS_key()
+	*
+	* @return (true|false)		success on creating the secret file.
+	*/
+	public function set_CMS_key(){
+		$this->add_log("called <code>set_CMS_key()</code>");
+		global $CONFIG;
+		//template
+		$template_file = __DIR__ . '/secret_key_template.txt';
+		$template = @file_get_contents($template_file);
+		if (false === $template){
+			$this->error[] = "Missing secret key template file";
+			return false;
+		}
+		//php file that will hold the key
+		$secret_file = $CONFIG['c_dir'] . 'database/encryption_key.php';
+		//generate file
+		return $this->generate_CMS_key($secret_file, $template);
+	}
+	
+	
+	/**
+	* Generate a random key used in encryption
+	*
+	* Always writes to the file if it exists and is writable to ensure that we
+	* blank out old code.
+	*
+	* @see create_new_CMS_key()
+	* @see update_old_CMS_key()
+	*
+	* @return (true|false)		success on creating the secret file.
+	*/
+	private function generate_CMS_key($file, $template){
+		$this->add_log("called <code>generate_CMS_key()</code> for file <i>{$file}</i>");
+		
+		//check variables
+		if (empty($file) || empty($template)) return false;
+		
+		//check if file can be written. create file if not exists.
+		$oldfile = null;
+		if (!file_exists($file)){
+			if (false === @file_put_contents($file,"")){
+				$this->error[] = "Cannot generate secret key php file.";
+				return false;
+			}
+		}
+		else{
+			//get old file content
+			$oldfile = @file_get_contents($file);
+		}
+		
+		//generate random string
+		$RL_factory = new \RandomLib\Factory;
+		$RL_generator = $RL_factory->getMediumStrengthGenerator();
+		$key = $RL_generator->generateString(64);
+		//$this->add_log("generated key: {$key}");
+		
+		if (empty($oldfile))
+			return $this->create_new_CMS_key($file, $template, $key);
+		else{
+			//check if old file content match
+			if (false === strpos($oldfile,"CMS_ENCRYPTION_KEY",1168)){
+				$this->error[] = "Missing CMS_ENCRYPTION_KEY in old php file.";
+				return false;
+			}
+			return $this->update_old_CMS_key($file, $oldfile, $template, $key);
+		}
+	}
+	
+	private function create_new_CMS_key($file, $template, $key){
+		$this->add_log("called <code>create_new_CMS_key()</code> for file <i>{$file}</i>");
+		//create file / overwrite
+		$new_php_code = str_replace('##random_generated_key_here##', $key, $template);
+		return ( false === @file_put_contents($file,$new_php_code, LOCK_EX) );
+	}
+	
+	private function update_old_CMS_key($file, $oldfile, $template, $key){
+		$this->add_log("called <code>update_old_CMS_key()</code> for file <i>{$file}</i>");
+		//update all database before changing file.
+		//TODO...
+		$this->error[] = "<code>update_old_CMS_key()</code> not yet implemented.";
+		return false;
 	}
 
 }

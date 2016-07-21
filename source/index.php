@@ -276,7 +276,7 @@ elseif ($mylang){
 		setPreferredLanguage($mylang);
 	}
 	else{
-		noPageFound('Pagina index mancante! [cod 007/lang]');
+		noPageFound('Pagina index mancante!<br>Il webmaster deve ancora impostare il primo articolo con spunta "index". [cod 007/lang]');
 	}
 }
 else{

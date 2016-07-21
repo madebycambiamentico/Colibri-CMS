@@ -48,5 +48,6 @@ Temporary Items
 
 # Colibrì CMS private files
 *.htaccess
-sitemap*.xml
+source/sitemap*.xml
+source/database/encryption_key*.php
 source/database/mbcsqlite3*.db
