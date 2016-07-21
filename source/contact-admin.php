@@ -13,7 +13,7 @@ require_once __DIR__ . "/config.php";
 require_once $CONFIG['database']['dir']."functions.inc.php";
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager();
 $SessionManager->sessionStart('colibri');
 
 if (!isset(
