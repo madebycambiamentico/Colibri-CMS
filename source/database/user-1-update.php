@@ -1,9 +1,10 @@
 <?php
 header('Content-Type: application/json');
 
-require_once "functions.inc.php";
+require_once "../config.php";
+$Config->i_need_functions();
 
-$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
@@ -141,7 +142,7 @@ if (!empty($idsToEdit)){
 	// (3) send password to owners' email addresses: -----------------------
 	//TODO... and please change the name of this file...
 	define('EMAIL_TYPE',1);
-	define('DELIVERY_URL', $CONFIG['domain'].$CONFIG['mbc_cms_dir'].'email-bodies/delivery.php' );
+	define('DELIVERY_URL', $Config->domain.$Config->script_path.'email-bodies/delivery.php' );
 	include __DIR__ . "/email-bodies/user-email-storer.inc.php";
 	
 	

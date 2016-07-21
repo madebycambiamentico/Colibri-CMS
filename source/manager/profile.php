@@ -8,7 +8,7 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
+if (!isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
@@ -125,7 +125,7 @@ if ($pdores = $pdo->query("SELECT * FROM utenti WHERE id = ".$_SESSION['uid']." 
 					<h4>Modifica e-mail</h4>
 					<p>Inserisci vecchia e-mail (<b id="my-email-hint"><?php
 						if ($r['email']){
-							$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+							$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 							$decrypted = $Encrypter->decrypt($r['email']);
 							//delete all character, leave first, @ and last
 							$emailparts = explode('@',$decrypted);

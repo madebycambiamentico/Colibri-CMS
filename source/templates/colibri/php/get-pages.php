@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 require_once "../../../config.php";
-require_once "../../../".$CONFIG['database']['dir']."functions.inc.php";
+$Config->i_need_functions();
 
 $query = 'SELECT a.id as "pageid", a.titolo as "title", a.inbreve as "desc", im.src, yt.*
 	FROM articoli a

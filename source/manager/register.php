@@ -8,17 +8,15 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
+if (!isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
-//if user already logged, why should he register another profile?
-/*$SessionManager = new \Colibri\SessionManager;
-$SessionManager->sessionStart('colibri');
-if (isLoggedIn()){
-	//La sessione è ancora attiva.
-	closeConnection();
-	header('Location: '.$CONFIG['mbc_cms_dir'].'bacheca');
-	exit;
-}*/
+
+//TODO
+//should i allow logged user to register new members?
+//- maybe to quickly add a member which you know and you are talking right in front of you
+//- test purposes...
+//- if i disallow it is not so hard to logout and enter new members anyway...
+//so i will allow to request new membership even if user seems logged in.
 
 
 //search website properties

@@ -1,7 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-require_once "functions.inc.php";
+require_once "../config.php";
+$Config->i_need_functions();
 
 //control login
 $SessionManager = new \Colibri\SessionManager;

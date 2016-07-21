@@ -1,13 +1,13 @@
 <?php
 
 require_once "config.php";
-require_once $CONFIG['c_dir'].$CONFIG['database']['dir']."functions.inc.php";
+$Config->i_need_functions();
 
 
 //include sitemap generator from template, if it has a custom one...
 $pdostat = $pdo->query("SELECT template FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
-if ($res = $pdostat->fetch(PDO::FETCH_ASSOC)){
-	$template = $CONFIG['c_dir'].'templates/'.$res['template'].'/';
+if ($r = $pdostat->fetch()){
+	$template = CMS_INSTALL_DIR . "templates/{$r['template']}/";
 	$pdostat->closeCursor();
 	if (file_exists($template.'php/sitemap-generator-custom.php')){
 		include $template.'php/sitemap-generator-custom.php';

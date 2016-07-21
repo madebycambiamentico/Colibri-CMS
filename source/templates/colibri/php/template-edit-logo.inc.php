@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($response)){
-	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+	header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
 	die;
 }
 

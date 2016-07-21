@@ -1,8 +1,10 @@
 <?php
 header('Content-Type: application/json');
 
-require_once "functions.inc.php";
-$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+require_once "../config.php";
+$Config->i_need_functions();
+
+$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 //controllo generale variabili
 if (!isset(

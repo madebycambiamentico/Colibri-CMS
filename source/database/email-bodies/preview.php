@@ -2,12 +2,12 @@
 if (!isset($_GET['id'])) die;
 
 
-require_once "../functions.inc.php";
-require_once '../../php/encrypter.class.php';
-$ENCRYPTER = new Encrypter( $CONFIG['encrypt']['secret_key'] );
+require_once "../../config.php";
+$Config->i_need_functions();
+$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 //control login
-$SessionManager = new SessionManager();
+$SessionManager = new \Colibri\SessionManager();
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(2,true);
 
@@ -18,6 +18,6 @@ $pdores = $pdo->query("SELECT * FROM emails WHERE iduser = ".intval($_GET['id'],
 $email = $pdores->fetch() or
 	die("Nessuna mail per l'utente {$_GET['id']}");
 
-echo $ENCRYPTER->decrypt($email['content']);
+echo $Encrypter->decrypt($email['content']);
 
 ?>

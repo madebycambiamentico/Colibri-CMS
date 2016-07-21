@@ -1,7 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-require_once "functions.inc.php";
+require_once "../config.php";
+$Config->i_need_functions();
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
@@ -75,7 +76,7 @@ jsonSuccess(['count' => $pdostat->rowCount(), 'p' => $password, 'pp' => $_POST['
 anchor_1:
 
 
-$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 //controllo generale variabili
 if (!isset($_POST['e0'], $_POST['e1'])) jsonError('Variabili errate');

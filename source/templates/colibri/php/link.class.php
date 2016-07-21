@@ -13,12 +13,15 @@
 
 
 class LINK{
+	//THIS CLASS RELY ON THE FACT THAT IT WILL BE USED WITH THE
+	//MAPPED ARTICLES, WITH ROOT SCRIPT >>>INDEX.PHP<<<
+	
 	//when using mod_rewrite, relative path are not fitting well..
 	//so istead this function return the absolute path of the installed
-	//CMS and add the relative path 
+	//CMS and add the relative path.
 	static function file($filepath){
-		global $CONFIG;
-		return $CONFIG['mbc_cms_dir'].$filepath;
+		global $Config;
+		return $Config->script_path . $filepath;
 	}
 	//shorthand LINK::file() for uploaded files with filemanager.
 	static function uploaded($filepath){
@@ -42,8 +45,7 @@ class LINK{
 	
 	static function getJQuery(){
 		//for debug offline... remove this lines in production site 
-		global $CONFIG;
-		$local = strpos($CONFIG['c_dir'],'C:') === 0;
+		$local = strpos(CMS_INSTALL_DIR,'C:') === 0;
 		if (!$local):
 ?>
 <!--[if lte IE 8]>

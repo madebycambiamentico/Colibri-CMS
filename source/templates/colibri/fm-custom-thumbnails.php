@@ -1,5 +1,14 @@
 <?php
 
+/**
+* Set custom thumbnail sizes.
+*
+* Will add different sizes to uploaded images.
+* how to use? search for "php image magician" and study "mbc-filemanager/config.php"
+*
+* @see /php/mbc-filemanager/config.php
+*/
+
 $CONFIG["custom_thumbs"] = [
 	// ??? x 300 for galleries
 	[

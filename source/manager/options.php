@@ -8,7 +8,7 @@
  * @license GPLv3
  * @copyright: (C)2016 nereo costacurta
 **/
-if (!isset($CONFIG)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
+if (!isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die; }
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
@@ -186,7 +186,7 @@ if (!$web) die("Void properties!</body>");
 				<p>Questa mail non sarà direttamente visibile nel sito, ma nascosta lato server.</p>
 				<input id="w-email" name="email" type="text" value="<?php
 					if ($web['email']){
-						$Encrypter = new \Colibri\Encrypter( $CONFIG['encrypt']['secret_key'] );
+						$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 						$decrypted = $Encrypter->decrypt($web['email']);
 						echo htmlentities($decrypted,ENT_QUOTES);
 					}
@@ -211,8 +211,8 @@ if (!$web) die("Void properties!</body>");
 			<div class="inputs maxi aligned">
 				<?php
 					//template makers should be trusted... there will be an official revisor/validator
-					$templatepath = $CONFIG['mbc_cms_dir'].'templates/'.$web['template'].'/';
-					$phisicaltp = $CONFIG['c_dir'].'templates/'.$web['template'].'/';
+					$templatepath = $Config->script_path.'templates/'.$web['template'].'/';
+					$phisicaltp = CMS_INSTALL_DIR.'templates/'.$web['template'].'/';
 					$json = null;
 					if (is_file($phisicaltp.'properties.json'))
 						$json = json_decode(file_get_contents($phisicaltp.'properties.json'), true);

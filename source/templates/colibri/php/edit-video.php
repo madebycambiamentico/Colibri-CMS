@@ -2,12 +2,12 @@
 header('Content-Type: application/json');
 
 require_once "../../../config.php";
-require_once "../../../".$CONFIG['database']['dir']."functions.inc.php";
+$Config->i_need_functions();
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
-allow_user_from_class(1,true);
+allow_user_from_class(2,true);
 
 if (!isset(
 	$_POST['video_id'],
