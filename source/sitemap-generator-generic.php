@@ -108,7 +108,7 @@ $loc = null;
 $xhtml = null;
 $image = null;
 $remapped = null;
-$http = $CONFIG['domain'].$CONFIG['mbc_cms_dir'];
+$http = $Config->domain . $Config->script_path;
 
 while ($r = $pdostat->fetch()){
 	if ($r['canonical']){
@@ -229,7 +229,7 @@ if (!$isValid) {
 
 
 header('Content-type: text/plain');
-if ($domtree->save($CONFIG['c_dir'].'sitemap.xml'))
+if ($domtree->save(CMS_INSTALL_DIR . 'sitemap.xml'))
 	echo "Sitemap succesfully updated!";
 else
 	echo "An error occurred during sitemap generation..."
