@@ -77,7 +77,10 @@ if (isset($_GET['q'])){
 		$id = intval($_GET['q'],0);
 		if ($id){
 			//retrieve all data from article... + image...
-			if ($pdores = $pdo->query("SELECT articoli.*, immagini.src as 'image' FROM articoli LEFT JOIN immagini ON articoli.idimage = immagini.id WHERE articoli.id={$id}", PDO::FETCH_ASSOC)){
+			if ($pdores = $pdo->query(	"SELECT articoli.*, immagini.src as 'image' FROM articoli ".
+												"LEFT JOIN immagini ON articoli.idimage = immagini.id ".
+												"WHERE articoli.id={$id}",
+												PDO::FETCH_ASSOC)){
 				$ARTICLE = null;
 				foreach ($pdores as $r){
 					$ARTICLE = $r;

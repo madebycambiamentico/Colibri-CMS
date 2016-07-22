@@ -1,17 +1,21 @@
 <?php
 
 require_once("config.php");
-$Config->i_need_functions();
 
 
-
-
-//--------------------------------------------------------
+/**
+* debug mode if cms doesn't behave as it should
+*
+* put this function anywhere to print server and cms variables.
+* output content of $requestedURL, $pathPieces, CMS_LANGUAGE, $Config and $_SERVER.
+*
+* @param (bool) $die		will stop script execution if true.
+*/
 function STOPFORDEBUG($die=true){
-	global $requestedURL, $pathPieces, $mylang, $Config;
+	global $requestedURL, $pathPieces, $Language, $Config, $web;
 	
 	$i=0;
-	echo (++$i).') $lang : '.($mylang or 'NULL');
+	echo 			(++$i).') $Language:<pre>'.print_r($Language,true).'</pre>';
 	
 	echo '<br>'.(++$i).') $requestedURL:<pre>'.print_r($requestedURL,true).'</pre>';
 	
@@ -19,12 +23,23 @@ function STOPFORDEBUG($die=true){
 	
 	echo '<br>'.(++$i).') $Config:<pre>'.print_r($Config,true).'</pre>';
 	
+	echo '<br>'.(++$i).') $web:<pre>'.print_r($web,true).'</pre>';
+	
 	echo '<br>'.(++$i).') $_SERVER:<pre>'.print_r($_SERVER,true).'</pre>';
 	
 	$die and die;
 }
-//--------------------------------------------------------
 
+
+
+/**
+* show custom 404 error or stop script printing given string.
+*
+* page 404 custom file (optional) should be placed in "/templates/<template_name>/not-found.php"
+* if "not-found.php" is provided, a comment with $str content will be available at the bottom of the HTML code.
+*
+* @param (bool) $str [optional]		warning error on no page found.
+*/
 function noPageFound($str='Questa pagina non esiste.'){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	//STOPFORDEBUG(false);
@@ -36,51 +51,40 @@ function noPageFound($str='Questa pagina non esiste.'){
 	die($str);
 }
 
-//-----------------------------------
-//should be fetched from database...
-$known_langs = ['it','en','de','fr'];
-//should contain 2-letters or 5-letters (e.g.: "en", "en-UK")
-//-----------------------------------
-
-function setPreferredLanguage($lang='it'){
-	setcookie('lang', $lang, time()+(86400*7), "/", "", false, false); // 86400 = 1 day, for all domain directory, no domain restriction, no SSL, js can edit
-}
-
-function detectPreferredLanguage(){
-	global $known_langs;
-	
-	if (!empty($_COOKIE['lang']) && in_array($_COOKIE['lang'], $known_langs))
-		return $_COOKIE['lang'];
-	
-	$user_pref_langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-
-	//set default language, in case neither one of the active ones are available.
-	$lang = $known_langs[0];
-	
-	foreach($user_pref_langs as $idx => $lang) {
-		$lang = substr($lang, 0, 2);
-		if (in_array($lang, $known_langs)) {
-			break;
-		}
-	}
-	setPreferredLanguage($lang);
-	return $lang;
-}
-
 
 
 //global variables
-$pageid			= null;
-$page				= null;
-$web				= null;
-$templatepath	= null;
-$mylang			= detectPreferredLanguage();
+$pageid			= null;		//article id
+$page				= null;		//article complete database result
+$web				= null;		//content of `sito` database table
+$templatepath	= null;		//path to template folder without domain.
+$Language		= null;		//contains preferred language (not null if site flagged multilanguage)
 
-//echo '<pre>'.print_r($_SERVER,true).'</pre>'; die;
+
+
+//STOPFORDEBUG();
+
+//------------------------ search website properties ------------------------
+$pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
+if (!$web = $pdostat->fetch(PDO::FETCH_ASSOC))
+	noPageFound('Database corrotto [cod 001]');
+$pdostat->closeCursor();
+
+//set preferred language
+if ($web['multilanguage']){
+	$Language = new \Colibri\LanguageDetector( $web['default_lang'] );
+}
+
+//set template url (absolute, no domain)
+$templatepath = \WebSpace\Template::path($web['template']);
+
+
 
 //***************************************
-//				redirect to page...
+// page has been redirected
+// (not for index.php aka "/")
 //***************************************
+
 if (isset($_SERVER['REDIRECT_URL'])){
 	
 	if ($Config->script_path === '/')
@@ -89,7 +93,9 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		$requestedURL = str_ireplace($Config->script_path,"",$_SERVER['SCRIPT_URL']);
 	$pathPieces = explode("/",rtrim($requestedURL, '/'));
 	
+	
 	//STOPFORDEBUG();
+	
 	
 	//------------------------ default pages / manager ------------------------
 	//should be translated if any other language is used
@@ -131,27 +137,25 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		if ($pp) $fixPathPieces[] = $pp;
 	}
 	
-	//------------------------ articles or search results ------------------------
-	
-	//search website properties
-	$pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
-	if (!$web = $pdostat->fetch(PDO::FETCH_ASSOC))
-		noPageFound('Database corrotto [cod 001]');
-	$pdostat->closeCursor();
-	$templatepath = \WebSpace\Template::path($web['template']);
-	if (!$web['multilanguage']) $mylang = null;
 	
 	
-	
-	
-	if ($mylang && in_array($fixPathPieces[0],$known_langs)){
-		$mylang = array_shift($fixPathPieces);
-		setPreferredLanguage($mylang);
+	//override detected language if searching with another /<code>/...
+	if ($Language && in_array($fixPathPieces[0],$Language->supported)){
+		
+		$Language->store_preferred_language( array_shift($fixPathPieces) );
+		
 		if (empty($fixPathPieces)) goto anchor_main;
 	}
 	
+	/*****************************************************************
+	 Here is defined the constant CMS_LANGUAGE, which is a shortcut to
+	 $Language->lang in case of multilanguage site (otherwise is null)
+	******************************************************************/
+	define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 	
+	//----------------- ??????? -----------------
 	define('ISINDEX',false);
+	//----------------- ??????? -----------------
 	
 	//if first 3 things are numbers, search for articles with this creation date.
 	if (count($fixPathPieces) >= 3){
@@ -166,7 +170,7 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			//---------------------------------------------
 			//strict map + creation date + edit date + full image
 			$map = $fixPathPieces[3] . (isset($fixPathPieces[4]) ? '/'.$fixPathPieces[4] : '');
-			$pdostat = \WebSpace\Query::query('byMap', [true, true, $mylang], [$map, $artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query('byMap', [true, true, CMS_LANGUAGE], [$map, $artDate.'%', $artDate.'%']);
 			if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 003]');
 			$pdostat->closeCursor();
@@ -179,7 +183,7 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		else{
 			//---------------------------------------------
 			//all articles by creation date + edit date
-			$pdostat = \WebSpace\Query::query('byDate', [false, $mylang], [$artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query('byDate', [false, CMS_LANGUAGE], [$artDate.'%', $artDate.'%']);
 			if (!$page = $pdostat->fetchAll(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 004]');
 			$pdostat->closeCursor();
@@ -195,9 +199,9 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		//strict map + full image
 		$map = $fixPathPieces[0] . (isset($fixPathPieces[1]) ? '/'.$fixPathPieces[1] : '');
 		
-		$pdostat = \WebSpace\Query::query('byMap', [false, true, $mylang], [$map]);
+		$pdostat = \WebSpace\Query::query('byMap', [false, true, CMS_LANGUAGE], [$map]);
 		if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
-			noPageFound('Nessuna pagina trovata [cod 005] ('.$map.')/'.$mylang);
+			noPageFound('Nessuna pagina trovata [cod 005] ('.$map.')/'.CMS_LANGUAGE);
 		$pdostat->closeCursor();
 		$pageid = $page['id'];
 		
@@ -214,29 +218,27 @@ if (isset($_SERVER['REDIRECT_URL'])){
 //open main template if no mapped request set:
 anchor_main:
 
-
-//search website properties
-$pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
-if (!$web = $pdostat->fetch())
-	noPageFound('Database corrotto [cod 006]');
-$pdostat->closeCursor();
-$templatepath = \WebSpace\Template::path($web['template']);
+/*****************************************************************
+ Here is defined the constant CMS_LANGUAGE, which is a shortcut to
+ $Language->lang in case of multilanguage site (otherwise is null)
+******************************************************************/
+define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 
 
 //---------------------
-//required translation:
+//translation request:
 //---------------------
 //if index with "translate" GET request, then redirect to translated page (if exists), or redirect to home in other case.
-if ($mylang && isset($_GET['translate'])){
+if (CMS_LANGUAGE && isset($_GET['translate'])){
 	$translate = intval($_GET['translate'],10);
-	$pdores = $pdo->query("SELECT isindex, isindexlang, remaplink FROM articoli WHERE lang='{$mylang}' AND idarticololang={$translate} LIMIT 1",PDO::FETCH_ASSOC) or
+	$pdores = $pdo->query("SELECT isindex, isindexlang, remaplink FROM articoli WHERE lang='{".CMS_LANGUAGE."}' AND idarticololang={$translate} LIMIT 1",PDO::FETCH_ASSOC) or
 		noPageFound('Error querying translated page [cod 002]');
 	//-------------------------
 	//translated page available
 	if ($r = $pdores->fetch()){
 		//for mapped pages (no index) reload page...
 		if (!($r['isindex'] || $r['isindexlang'])){
-			header('Location: '.$Config->script_path.$r['remaplink']);
+			header('Location: '.$Config->script_path. CMS_LANGUAGE.'/'. $r['remaplink']);
 			exit;
 		}
 		//if this is an index page, then do not reload locations (it is already doing this in this very script :) )
@@ -244,41 +246,34 @@ if ($mylang && isset($_GET['translate'])){
 	//-----------------------------
 	//translated page not available
 	else{
-		/*header('Location: '.$Config->script_path);
-		exit;*/
 		noPageFound('Nessuna traduzione di pagina trovata [cod 002/2]');
 	}
 }
 
 
+//header('Content-Type: text/plain; charset=utf-8');
 
-
+//----------------- ??????? -----------------
 define('ISINDEX',true);
+//----------------- ??????? -----------------
 
 //search for index page
 //(?)else fill with dummy empty array(?)
-$pdostat = \WebSpace\Query::query('index',[true, $mylang]);
+$pdostat = \WebSpace\Query::query('index',[true, CMS_LANGUAGE]);
 if ($page = $pdostat->fetch()){
 	$pdostat->closeCursor();
 	$pageid = $page['id'];
 }
-elseif ($mylang){
-	//fallback to standard index if not available in that language
-	$pdostat = \WebSpace\Query::query('index',[true]);
-	if ($page = $pdostat->fetch()){
-		$pdostat->closeCursor();
-		$pageid = $page['id'];
-		$mylang = $page['lang'];
-		setPreferredLanguage($mylang);
-	}
-	else{
-		noPageFound('Pagina index mancante!<br>Il webmaster deve ancora impostare il primo articolo con spunta "index". [cod 007/lang]');
-	}
+elseif (!is_null(CMS_LANGUAGE)){
+	noPageFound('Pagina index mancante per il tuo linguaggio!<br>Il webmaster deve ancora impostare il primo articolo con spunta "index". [cod 007/lang]');
 }
 else{
 	noPageFound('Pagina index mancante! [cod 007/no-lang]');
 }
 $pdostat->closeCursor();
-require \WebSpace\Template::main($web['template']);
+
+//STOPFORDEBUG(true);
+
+require \WebSpace\Template::main( $web['template'] );
 
 ?>

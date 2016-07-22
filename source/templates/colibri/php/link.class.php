@@ -59,10 +59,10 @@ class LINK{
 		else:
 ?>
 <!--[if lte IE 8]>
-<script src="<?php echo LINK::file('../../js/jquery/jquery-1.11.3.min.js') ?>"></script>
+<script src="<?php echo LINK::file('js/jquery/jquery-1.11.3.min.js') ?>"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
 <![endif]-->
-<!--[if gt IE 8]><!--><script src="<?php echo LINK::file('../../js/jquery/jquery-2.1.4.min.js') ?>"></script><!--<![endif]-->
+<!--[if gt IE 8]><!--><script src="<?php echo LINK::file('js/jquery/jquery-2.1.4.min.js') ?>"></script><!--<![endif]-->
 <?php
 		endif;
 	}

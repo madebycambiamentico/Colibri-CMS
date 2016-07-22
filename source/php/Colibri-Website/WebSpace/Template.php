@@ -159,7 +159,7 @@ class Template{
 	* @return (string)	the folder path
 	*/
 	static function cpath($tmplt='colibri'){
-		return CMS_INSTALL_DIR ."/templates/{$tmplt}/";
+		return \CMS_INSTALL_DIR ."/templates/{$tmplt}/";
 	}
 }
 

@@ -69,7 +69,7 @@ $Pop = new \Colibri\Popups;
 			</p>
 		</div>
 		
-		<div class="inputs">
+		<div class="inputs" <?php if (!$web['multilanguage']) echo 'style="display:none"' ?>>
 			<p>
 				<select id="eart-lang" name="lang"><?php
 					$langs = [

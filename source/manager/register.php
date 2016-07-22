@@ -19,13 +19,6 @@ if (!isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die;
 //so i will allow to request new membership even if user seems logged in.
 
 
-//search website properties
-$pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
-if (!$web = $pdostat->fetch(PDO::FETCH_ASSOC))
-	noPageFound('Database corrotto [cod 001]');
-$pdostat->closeCursor();
-if (!$web['multilanguage']) $mylang = null;
-
 
 $Colibrì = new \Colibri\Template;
 

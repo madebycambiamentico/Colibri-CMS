@@ -11,7 +11,7 @@
 **/
 
 //control variables
-if (!isset($Config, $page)){
+if (!isset($Config)){
 	header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
 	die;
 }
@@ -21,14 +21,14 @@ require_once __DIR__ . '/php/link.class.php';
 
 ?><!DOCTYPE html>
 
-<html lang="it-IT">
+<html lang="<?php echo CMS_LANGUAGE ?>">
 <head>
 	<title><?php echo htmlentities($web['titolo']); ?></title>
-	<?php include \WebSpace\Template::custom($web['template'],'_meta.php') ?>
+	<?php include __DIR__ . '/_meta.php' ?>
 	
 	<?php
 		//main stylesheet
-		LINK::stylesheet('style.css?v=1.2');
+		LINK::stylesheet('style.css');
 	?>
 	
 	<!-- custom stylesheet browser-sensitive or article-sensitive :) -->
@@ -66,7 +66,7 @@ require_once __DIR__ . '/php/link.class.php';
 
 
 
-<?php include \WebSpace\Template::custom($web['template'],'_menu.php') ?>
+<?php include __DIR__ . '/_menu.php' ?>
 
 
 
@@ -84,7 +84,7 @@ require_once __DIR__ . '/php/link.class.php';
 			}
 			//print header...
 			if ($video){
-				include \WebSpace\Template::custom($web['template'],'_YTiframe.php');
+				include __DIR__ . '/_YTiframe.php';
 			}
 			elseif ($page['src']){
 				echo '<div class="image-main"><div class="image-sizer web"></div></div>';
@@ -144,15 +144,15 @@ require_once __DIR__ . '/php/link.class.php';
 </div>
 
 
-<?php include \WebSpace\Template::custom($web['template'],'_quotation.php') ?>
+<?php include __DIR__ . '/_quotation.php' ?>
 
-<?php include \WebSpace\Template::custom($web['template'],'_news.php') ?>
+<?php include __DIR__ . '/_news.php' ?>
 
-<?php include \WebSpace\Template::custom($web['template'],'_links.php') ?>
+<?php include __DIR__ . '/_links.php' ?>
 
-<?php include \WebSpace\Template::custom($web['template'],'_powered.php') ?>
+<?php include __DIR__ . '/_powered.php' ?>
 
-<?php include \WebSpace\Template::custom($web['template'],'_contact.php') ?>
+<?php include __DIR__ . '/_contact.php' ?>
 
 
 
@@ -163,7 +163,7 @@ require_once __DIR__ . '/php/link.class.php';
 
 <!-- plugins -->
 <?php
-	LINK::script('js/main.min.js?v=1.0');
+	LINK::script('js/main.min.js');
 	
 	if (isset($YTIframeJsParams))
 		LINK::script('_YTiframe.js.php?'.$YTIframeJsParams);

@@ -12,7 +12,7 @@
 
 //control variables
 if (!isset($page,$video)){
-	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+	header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
 	die;
 }
 
@@ -33,7 +33,7 @@ $YTIframeJsParams = http_build_query($YTIframe,'&');
 ?>
 
 <div class="image-main video">
-	<div class="image-sizer iframe"style="padding-bottom:<?php echo $YTIframe['height']/$YTIframe['width']*100 ?>%" id="video-container">
+	<div class="image-sizer iframe" style="padding-bottom:<?php echo $YTIframe['height']/$YTIframe['width']*100 ?>%" id="video-container">
 		<div id="YTPlayer"></div>
 		<!--iframe src="https://www.youtube.com/embed/v10PDyCbwWY?autoplay=1&loop=1&start=32&end=104&modestbranding=1&disablekb=1&fs=0&rel=0&showinfo=0&iv_load_policy=3&theme=light"></iframe-->
 	</div>
