@@ -25,8 +25,8 @@ $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 */
 
-include __DIR__ . "php/link.class.php";
-include __DIR__ . "php/ini.class.php";
+include __DIR__ . "/php/link.class.php";
+include __DIR__ . "/php/ini.class.php";
 
 
 $ini = INI_FILE::iread('php/template.ini',true);
