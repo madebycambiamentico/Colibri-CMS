@@ -123,7 +123,7 @@ $(function(){
 		}
 		//send ajax
 		$.post('database/article-add-or-edit.php', $("#my-article").serialize(), null, 'json')
-		.success(function(json){
+		.done(function(json){
 			//console.log(json);
 			if (json.error) return alert("ERRORE:\n"+json.error);
 			if (json.success == 'insert'){
@@ -145,7 +145,7 @@ $(function(){
 				alert('Aggiornamento completato con successo!')
 			}
 		})
-		.error(function(e){
+		.fail(function(e){
 			console.log(e);
 			alert("Oooops!");
 		})

@@ -58,6 +58,43 @@ $Colibrì = new \Colibri\Template;
 	.template p{
 		padding-top:4px;
 	}
+	#lang-options.hidden{
+		display:none;
+	}
+	#lang-open.hidden{
+		visibility:hidden;
+	}
+	#lang-codes{
+		display: flex;
+		flex-wrap: wrap;
+		/*text-align:justify;*/
+		line-height:0;
+	}
+	#lang-codes label i{
+		font-style:normal;
+		font-size:13px;
+	}
+	#lang-codes label{
+		flex: 1 1 auto;
+		height:20px;
+		line-height:20px;
+		display:inline-block;
+		margin:2px;
+		padding:3px 6px;
+		border:1px solid #ccc;
+		/*border-radius: 4px;*/
+		background:#e6e6e6;
+	}
+	#lang-codes label:hover{
+		border-color:#4e94e3;
+	}
+	#lang-codes input:checked + i{
+		/*text-decoration:underline;*/
+		font-weight: bold;
+	}
+	#lang-open{
+		vertical-align:middle;
+	}
 	</style>
 </head>
 
@@ -98,6 +135,22 @@ if (!$web) die("Void properties!</body>");
 </div>
 
 
+<div class="popup-cont" id="languages-pop">
+	<h4>Lingue supportate dal sito</h4>
+	<div class="popup overthrow">
+		<br>
+		<br>
+		<div id="lang-codes"></div>
+		<br>
+		<div class="inputs center">
+			<b class="btn" id="lang-apply">Applica</b>
+		</div>
+		<br>
+	</div>
+</div>
+
+
+
 
 <!-- main editor -->
 
@@ -110,6 +163,7 @@ if (!$web) die("Void properties!</body>");
 	<div class="content">
 	<form id="my-article" action="please.use.js/" autocomplete="off">
 		<input type="hidden" name="id" id="w-id" value="<?php echo $web['id'] ?>">
+		<div id="lang-supported"></div>
 		
 		<!-- START main -->
 		<div class="main">
@@ -143,13 +197,24 @@ if (!$web) die("Void properties!</body>");
 			</div>
 			
 			<div class="inputs maxi aligned">
-				<h4><label><input name="multilanguage" type="checkbox"<?php echo $web['multilanguage'] ? ' checked' : '' ?>> Sito multi-lingua</label></h4>
+				<h4><label><input id="ismultilang" name="multilanguage" value="1" type="checkbox"<?php echo $web['multilanguage'] ? ' checked' : '' ?>> Sito multi-lingua</label>
+					<b id="lang-open" class="sicon"><i class="options" title="Scegli lingue supportate"></i></b>
+				</h4>
+			</div>
+				
+			<div id="lang-options">
+				<div class="inputs maxi aligned">
+					<h4>Lingua predefinita del sito</h4>
+					<select id="lang-default" name="defaultlang"></select>
+				</div>
 			</div>
 		
+			<br>
 			<hr>
 			
+			<h3>Gestione avvisi email</h3>
+			
 			<div class="inputs maxi aligned">
-				<h3>Gestione avvisi email</h3>
 				<p><i>Metodo di invio - leggere attentamente:</i></p>
 				<br>
 				<p><b>Manuale</b>: richiede di avviare lo script <a href="database/email-bodies/delivery.php" target="_blank"><i>delivery.php</i></a> manualmente tante volte quanto è necessario. Può essere anche gestito attraverso un <i>cron-job</i>.<br><span style="background-color:#ff5">Per attivare l'invio manuale imposta a <b>0</b> il <i>cooldown</i></span>.</p>
@@ -276,78 +341,7 @@ closeConnection();
 
 <!-- main script -->
 <script src="js/common.js"></script>
-
-<script>
-$(function(){
-	$('.save-arctic').click(function(){
-		BUSY.start();
-		$.post('database/website-edit.php',$('#my-article').serialize(),null,'json')
-			.success(function(json){
-				if (json.error !== false) return alert("ERRORE:\n"+json.error);
-				alert("Sito aggiornato correttamente");
-			})
-			.error(function(e){
-				console.log(e);
-			})
-			.always(function(){
-				BUSY.end();
-			});
-	});
-	var openedtempl = false;
-	$('#templates-pop .popup').on('scroll.lazy',checkLoadImage);
-	$('#change-template').click(function(){
-		$('#templates-pop').modalbox('open');
-		$.get('database/website-templates.php',null,null,'json')
-			.success(function(json){
-				console.log(json);
-				if (json.error !== false) return alert("Errore:\n"+json.error);
-				if (openedtempl){
-					updateView('#templates-pop');
-					return false;
-				}
-				openedtempl=true;
-				var c = $('#w-templ').val();
-				var templates = new Array(json.templates.length);
-				$.each(json.templates,function(k,v){
-					templates[k] = '<div id="template-'+k+'" class="template">'+
-						'<div class="imgcont load" data-thumb="templates/'+printAttr(v.folder)+'/screenshots/0.png"><label class="image">'+
-							'<input id="w-templ-'+k+'" name="newtemplate" type="radio" value="'+printAttr(v.folder)+'"'+(c==v.folder ? ' checked' : '')+'>'+
-						'</label></div>'+
-						'<p><b>Titolo:</b> '+printText(v.name)+'</p>'+
-						'<p><b>Autore:</b> '+printText(v.author)+'</p>'+
-						'<p><b>Descrizione:</b> '+printText(v.description).replace("\s+"," ")+'</p>'+
-						'<div class="tools">'+
-							('web' in v ? '<p><a target="_blank" href="'+printAttr(v.web[0])+'" title="'+printAttr(v.web[1])+'"><b class="sicon"><i class="star"></i></b> Sito di riferimento</a></p>' : '')+
-							'<p><label for="w-templ-'+k+'"><b class="sicon"><i class="hearth"></i></b> SCEGLI</label></p>'+
-						'</div>'+
-					'</div>';
-				})
-				$('#all-templates').html(templates.join(''));
-				//$('#templates-pop')[0].modalbox.refresh();
-				$('#all-templates input').change(function(){
-					var newt = this.value;
-					$.get('database/website-edit-template.php',{template:newt},null,'json')
-						.success(function(json){
-							console.log(json);
-							if (json.error) return alert("ERRORE:\n"+json.error);
-							$('#my-template p, #my-template .tools').remove();
-							$('#w-templ').val(newt);
-							var bkg = $('#my-template .imgcont').css('background-image').replace(/templates\/[a-z0-9_\- ]+\//i,"templates/"+newt+"/");
-							$('#my-template .imgcont').css('background-image',bkg);
-							$('#templates-pop').modalbox('close');
-						})
-						.error(function(e){
-							console.log(e);
-						})
-				});
-				updateView('#templates-pop');
-			})
-			.error(function(e){
-				console.log(e);
-			})
-	});
-})
-</script>
+<script src="js/options.min.js"></script>
 
 </body>
 </html>

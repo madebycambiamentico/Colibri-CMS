@@ -189,7 +189,7 @@
 		//console.log('---- savePass ----');
 		BUSY.start();
 		$.post('database/user-edit.php',{action:'pass', p0: p0, p1: p1, hint: $('#my-password-hint').val()},null,'json')
-			.success(function(json){
+			.done(function(json){
 				//console.log(json);
 				if (json.error) return alert("ERRORE:\n"+json.error);
 				alert("Password modificata correttamente");
@@ -197,7 +197,7 @@
 				$('#all-pass-inputs input').val('');
 				PW.input.keyup();
 			})
-			.error(function(e){
+			.fail(function(e){
 				console.log(e);
 				alert("Oooops!");
 			})
@@ -212,12 +212,12 @@
 		if (!confirm("Sei sicuro di voler rimuovere la tua immagine?\nVerrà sostituita dal profilo standard.")) return false;
 		BUSY.start();
 		$.get('database/user-image.php',{remove:true},null,'json')
-			.success(function(json){
+			.done(function(json){
 				//console.log(json);
 				if (json.error) return alert("ERRORE:\n"+json.error);
 				onUploadedImage(json)
 			})
-			.error(function(e){
+			.fail(function(e){
 				console.log(e);
 				alert("Oooops!");
 			})
@@ -247,7 +247,7 @@
 		//console.log('---- saveEmail ----');
 		BUSY.start();
 		$.post('database/user-edit.php',{action:'email', e0: e0, e1: e1},null,'json')
-			.success(function(json){
+			.done(function(json){
 				//console.log(json);
 				if (json.error) return alert("ERRORE:\n"+json.error);
 				else{
@@ -257,7 +257,7 @@
 					$('#all-email-inputs input').val('');
 				}
 			})
-			.error(function(e){
+			.fail(function(e){
 				console.log(e);
 				alert("Oooops!");
 			})

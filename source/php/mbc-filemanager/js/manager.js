@@ -62,7 +62,7 @@ function checkLoadImage(){
 				$('<img>').load(function(){
 					self.children('label').css('background-image','url("'+src+'")');
 					setTimeout(function(){ self.addClass('loaded').removeClass('wait') },30);
-				}).error(function(e){
+				}).fail(function(e){
 					console.log(e)
 				})[0].src = src;
 				purge++
@@ -441,7 +441,7 @@ function deleteFiles(aFiles){
 		data: {files: aFiles},
 		url: 'delete-files.php'
 	})
-	.success(function(json){
+	.done(function(json){
 		console.log(json);
 		if (json.error) return alert("ERRORE:\n"+json.error);
 		$.each(json.done,function(i,v){
@@ -462,7 +462,7 @@ function deleteFiles(aFiles){
 		//call sitemap generator
 		$.get('../../sitemap-generator-generic.php').always(function(e){console.log(e)});
 	})
-	.error(function(e){
+	.fail(function(e){
 		console.log(e);
 		alert("Oooops!");
 	})
@@ -696,13 +696,13 @@ function loadFolder(dir,openfromid,callback){
 		data: {folder: dir, filter: MANAGER_OPTIONS.filter},
 		url: 'get-file-list.php'
 	})
-	.success(function(e){
+	.done(function(e){
 		console.log(e);
 		if (e.error) return alert("ERRORE:\n"+e.error);
 		var newid = new FolderClass().init(e,openfromid).ID;
 		if (callback) callback(newid)
 	})
-	.error(function(e){
+	.fail(function(e){
 		console.log(e);
 		alert("Oooops!");
 	})

@@ -7,13 +7,13 @@ require_once("config.php");
 * debug mode if cms doesn't behave as it should
 *
 * put this function anywhere to print server and cms variables.
-* output content of $requestedURL, $pathPieces, CMS_LANGUAGE, $Config and $_SERVER.
+* output content of $requestedURL, $pathPieces, CMS_LANGUAGE, $Config, $web and $_SERVER.
 *
 * @param (bool) $die		will stop script execution if true.
 */
 function STOPFORDEBUG($die=true){
 	global $requestedURL, $pathPieces, $Language, $Config, $web;
-	
+	//header('Content-Type: text/plain; charset=utf-8');
 	$i=0;
 	echo 			(++$i).') $Language:<pre>'.print_r($Language,true).'</pre>';
 	
@@ -104,30 +104,39 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			goto anchor_main; break;
 		case 'signin':
 		case 'iscriviti':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/register.php'); exit; break;
 		case 'login':
 		case 'accedi':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/login.php'); exit; break;
 		case 'new':
 		case 'editor':
 		case 'nuovo':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/editor.php'); exit; break;
 		case 'albums':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/albums.php'); exit; break;
 		case 'options':
 		case 'opzioni':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/options.php'); exit; break;
 		case 'profile':
 		case 'profilo':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/profile.php'); exit; break;
 		case 'profiles':
 		case 'profili':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/profiles-manager.php'); exit; break;
 		case 'articles':
 		case 'articoli':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/articles.php'); exit; break;
 		case 'dashboard':
 		case 'bacheca':
+			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 			include('manager/bacheca.php'); exit; break;
 		//default: continue script :)
 	}
@@ -136,7 +145,6 @@ if (isset($_SERVER['REDIRECT_URL'])){
 	foreach ($pathPieces as $pp){
 		if ($pp) $fixPathPieces[] = $pp;
 	}
-	
 	
 	
 	//override detected language if searching with another /<code>/...
@@ -153,9 +161,6 @@ if (isset($_SERVER['REDIRECT_URL'])){
 	******************************************************************/
 	define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 	
-	//----------------- ??????? -----------------
-	define('ISINDEX',false);
-	//----------------- ??????? -----------------
 	
 	//if first 3 things are numbers, search for articles with this creation date.
 	if (count($fixPathPieces) >= 3){
@@ -250,12 +255,6 @@ if (CMS_LANGUAGE && isset($_GET['translate'])){
 	}
 }
 
-
-//header('Content-Type: text/plain; charset=utf-8');
-
-//----------------- ??????? -----------------
-define('ISINDEX',true);
-//----------------- ??????? -----------------
 
 //search for index page
 //(?)else fill with dummy empty array(?)

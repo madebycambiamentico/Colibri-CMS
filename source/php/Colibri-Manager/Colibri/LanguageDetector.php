@@ -23,7 +23,7 @@ class LanguageDetector {
 	function __construct($default=null){
 		$this->supported	= $this->get_supported_language_codes();
 		$this->known		= $this->parse_HTTP_ACCEPT_LANGUAGE();
-		$this->lang			= $this->get_preferred_language($default);
+		$this->lang			= $this->get_preferred_language(null, $default, true);
 	}
 	
 	
@@ -40,6 +40,22 @@ class LanguageDetector {
 		$pdores = $pdo->query("SELECT code FROM languages WHERE supported",\PDO::FETCH_NUM);
 		while ($r = $pdores->fetch()){
 			$codes[] = $r[0];
+		}
+		return $codes;
+	}
+	
+	
+	
+	/**
+	* print html options of supported languages
+	*/
+	function print_supported_language_options($supported=null, $selected=null){
+		global $pdo;
+		$codes = [];
+		//search for supported languages...
+		$pdores = $pdo->query("SELECT code, name FROM languages WHERE supported",\PDO::FETCH_ASSOC);
+		while ($r = $pdores->fetch()){
+			echo "<option value='{$r['code']}'".($selected === $r['code'] ? ' selected' : '').">{$r['name']}</option>";
 		}
 		return $codes;
 	}
@@ -170,11 +186,14 @@ class LanguageDetector {
 	* @param (string) $store_result [optional]	if true the preference will be stored in "lang" cookie.
 	*/
 	function get_preferred_language($supported=null, $default=null, $store_result=true){
+		
+		if (empty($supported)) $supported = &$this->supported;
+		if (empty($default)) $default = &$this->lang;
+		
 		//COOKIE value is preferred.
 		if (!empty($_COOKIE['lang']) && in_array($_COOKIE['lang'], $supported)) return $_COOKIE['lang'];
 		
 		//set default language.
-		if (empty($default)) $default = &$this->lang;
 		$lang = $this->filter_known_langs( null, $supported, $default );
 		
 		//store result

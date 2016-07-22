@@ -47,7 +47,7 @@ function saveArctic(){
 	//console.log('---- saveArctic ----');
 	BUSY.start();
 	$.post('database/article-quick-edit.php',$('#edit-article').serialize(),null,'json')
-		.success(function(json){
+		.done(function(json){
 			//console.log(json);
 			if (json.error) return alert("ERRORE:\n"+json.error);
 			//update input data
@@ -70,7 +70,7 @@ function saveArctic(){
 			//close
 			$('#quick-edit-art').modalbox('off');
 		})
-		.error(function(e){
+		.fail(function(e){
 			console.log(e);
 			alert("Oooops!");
 		})
@@ -99,14 +99,14 @@ function deleteArt(ids){
 		: ids);
 	//console.log(data);
 	$.post('database/article-garbage.php',data,null,'json')
-		.success(function(json){
+		.done(function(json){
 			//console.log(json);
 			if (json.error) return alert("ERRORE:\n"+json.error);
 			//delete from view...
 			ids = '#art-'+json.ids.join(',#art-');
 			$(ids).remove();
 		})
-		.error(function(e){
+		.fail(function(e){
 			console.log(e);
 			alert("Oooops!");
 		})
@@ -128,14 +128,14 @@ function resurrectArt(ids){
 	var data = ($.isArray(ids) ? {trash:ids} : ids);
 	//console.log(data);
 	$.post('database/article-resurrect.php',data,null,'json')
-		.success(function(json){
+		.done(function(json){
 			//console.log(json);
 			if (json.error) return alert("ERRORE:\n"+json.error);
 			//delete from view...
 			ids = '#art-'+json.ids.join(',#art-');
 			$(ids).remove();
 		})
-		.error(function(e){
+		.fail(function(e){
 			console.log(e);
 			alert("Oooops!");
 		})

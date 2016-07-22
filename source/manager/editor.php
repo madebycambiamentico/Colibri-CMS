@@ -170,18 +170,14 @@ if (isset($_GET['q'])){
 				<p><label><input type="checkbox" name="isindex" value="1" <?php echo ($id ? ($ARTICLE['isindex'] ? 'checked' : '') : '') ?>> Pagina iniziale del sito</label><br>
 				<label><input type="checkbox" name="isinmenu" value="1" <?php echo ($id ? ($ARTICLE['isinmenu'] ? 'checked' : '') : '') ?>> Mostra nel menu</label></p>
 				
-				<div <?php if (!$web['multilanguage']) echo 'style="display:none"' ?>>
+				<div <?php if (!CMS_LANGUAGE) echo 'style="display:none"' ?>>
 					<h4>Gestione lingue</h4>
 					<p>
 					<label><input type="checkbox" name="isindexlang" value="1" <?php echo ($id ? ($ARTICLE['isindexlang'] ? 'checked' : '') : '') ?>>
 					Pagina iniziale del sito per la lingua selezionata</label>
 					<select name="lang"><?php
-						$langs = [
-							'sigla' => ['it','en','de','fr'],
-							'estesa' => ['italiano','english','deutsch','française']
-						];
-						foreach ($langs['sigla'] as $o => $opt)
-							echo "<option value='{$opt}' ".($id ? ($ARTICLE['lang']==$opt ? 'selected' : '') : '').">{$langs['estesa'][$o]} ({$opt})</option>";
+						if (CMS_LANGUAGE)
+							$Language->print_supported_language_options(null, $ARTICLE['lang']);
 					?></select>
 					</p>
 				</div>

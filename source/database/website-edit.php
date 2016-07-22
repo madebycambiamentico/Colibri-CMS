@@ -38,8 +38,10 @@ $query = "UPDATE sito SET
 	email=?";
 $params = [];
 
+
 //id of current saved properties
 $id = intval($_POST['id'],10);
+
 
 //common properties
 $prop = [
@@ -58,6 +60,7 @@ unset($prop);
 
 $Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
+
 //control email
 $email = trim($_POST['email']);
 if ($email!==''){
@@ -66,6 +69,7 @@ if ($email!==''){
 	$email = $Encrypter->encrypt($email);
 }
 $params[] = $email;
+
 
 //recaptcha keys
 $recaptcha = [
@@ -82,7 +86,17 @@ elseif (empty($recaptcha['k'])){
 	$params[] = '';
 	$params[] = '';
 }
-// (else: do not update keys)
+//(else: do not update keys)
+
+
+//check the default site language code
+$def_lang = null;
+if (isset($_POST['multilanguage']) && isset($_POST['defaultlang'])){
+	$query .= ", default_lang = ?";
+	$params[] = $def_lang = $_POST['defaultlang'];
+}
+
+
 
 $query .= " WHERE id={$id}";
 
@@ -92,6 +106,17 @@ $query .= " WHERE id={$id}";
 $pdostat = $pdo->prepare($query) or jsonError('Errore durante modifica sito [prepare]');
 if (!$pdostat->execute($params)) jsonError('Errore durante modifica sito [execute]');
 if (!$pdostat->rowCount()) jsonError('Nessun sito da ripristinare');
+
+//update supported languages
+if (isset($_POST['multilanguage']) && isset($_POST['langs'])){
+	if (is_array($_POST['langs'])){
+		$pdo->query('UPDATE languages SET supported = 0') or jsonError('Errore durante reset lingue [query]');
+		$pdostat = $pdo->prepare('UPDATE languages SET supported = 1 WHERE code in (?'.str_repeat(",?", count($_POST['langs'])-1).')') or
+			jsonError('Errore durante aggiornamento lingue [prepare]');
+		if (!$pdostat->execute($_POST['langs'])) jsonError('Errore durante aggiornamento lingue [execute]');
+	}
+}
+
 jsonSuccess();
 
 

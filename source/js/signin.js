@@ -38,7 +38,7 @@ $(function(){
 		//send post request
 		if ( !checkform(function(){
 			$.post('database/user-request.php',$('#my-login').serialize(),null,'json')
-				.success(function(json){
+				.done(function(json){
 					console.log(json);
 					if (json.error !== false){
 						alert("ERRORE\n"+json.error);
@@ -48,7 +48,7 @@ $(function(){
 					else
 						location.assign('./');
 				})
-				.error(function(e){
+				.fail(function(e){
 					alert('Ooops!');
 					$loader.addClass('done');
 					LOGGING = false;

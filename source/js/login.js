@@ -48,7 +48,7 @@ $(function(){
 		//send post request
 		if ( !checkform(function(){
 			$.post('database/login.php',$('#my-login').serialize(),null,'json')
-				.success(function(json){
+				.done(function(json){
 					if (json.error !== false){
 						alert("ERRORE\n"+json.error);
 						$loader.addClass('done');
@@ -57,7 +57,7 @@ $(function(){
 					else
 						location.assign('./bacheca?logged');
 				})
-				.error(function(e){
+				.fail(function(e){
 					alert('Ooops!');
 					$loader.addClass('done');
 					LOGGING = false;

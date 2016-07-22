@@ -1,16 +1,16 @@
 /**
- * @author: nereo costacurta
- *
- * @project: colibrì CMS | madebycambiamentico
- * @description: popup box multi purpose. Small screen are filled, large screen have margin and can be set max height.
- *
- * @require: [jquery.js >= 1.11.3]
- *
- * @license: GPLv3
- * @copyright: (C)2016 nereo costacurta
-**/
- 
- (function(){
+* @author: nereo costacurta
+*
+* @project: colibrì CMS | madebycambiamentico
+* @description: popup box multi purpose. Small screen are filled, large screen have margin and can be set max height.
+*
+* @require: [jquery.js >= 1.11.3]
+*
+* @license: GPLv3
+* @copyright: (C)2016 nereo costacurta
+*/
+
+(function(){
 	var modalBkg = {
 		modals : [],
 		opened : 0,

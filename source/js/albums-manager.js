@@ -105,12 +105,12 @@ function deleteAlbum(id){
 		data: {id: id},
 		url: 'database/album-delete.php'
 	})
-	.success(function(e){
+	.done(function(e){
 		//console.log(e);
 		if (e.error) return alert("ERRORE:\n"+e.error);
 		$('#album-'+e.id).remove();
 	})
-	.error(function(e){
+	.fail(function(e){
 		console.log(e);
 		alert("Oooops!");
 	})
@@ -172,7 +172,7 @@ function albumLoadImages(id, which){
 	//lock form...
 	//TODO
 	$.get('database/album-get-images.php',{id: id, request: which},null,'json')
-	.success(function(e){
+	.done(function(e){
 		//console.log(e);
 		if (e.error) return alert("ERRORE:\n"+e.error);
 		//print images with loading feature
@@ -184,7 +184,7 @@ function albumLoadImages(id, which){
 		$('#ealb-all-images input').setAsImage();
 		updateView();
 	})
-	.error(function(e){
+	.fail(function(e){
 		console.log(e);
 		alert("Oooops!");
 	})
@@ -279,7 +279,7 @@ function saveAlbum(options){
 		data: $("#edit-album").serialize(),
 		url: path
 	})
-	.success(function(json){
+	.done(function(json){
 		//console.log(json);
 		if (json.error) return alert("ERRORE:\n"+json.error);
 		if (json.success == 'insert'){
@@ -291,7 +291,7 @@ function saveAlbum(options){
 			alert("Modifica album effettuata.");
 		}
 	})
-	.error(function(e){
+	.fail(function(e){
 		console.log(e);
 		alert("Oooops!");
 	})
