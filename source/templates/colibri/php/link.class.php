@@ -12,7 +12,7 @@
 **/
 
 
-class LINK{
+class Links{
 	//THIS CLASS RELY ON THE FACT THAT IT WILL BE USED WITH THE
 	//MAPPED ARTICLES, WITH ROOT SCRIPT >>>INDEX.PHP<<<
 	
@@ -23,11 +23,11 @@ class LINK{
 		global $Config;
 		return $Config->script_path . $filepath;
 	}
-	//shorthand LINK::file() for uploaded files with filemanager.
+	//shorthand Links::file() for uploaded files with filemanager.
 	static function uploaded($filepath){
 		return self::file('uploads/'.$filepath);
 	}
-	//shorthand LINK::file() for automatic created thumbs
+	//shorthand Links::file() for automatic created thumbs
 	static function thumb($filepath){
 		return self::file('img/thumbs/'.$filepath);
 	}
@@ -59,10 +59,10 @@ class LINK{
 		else:
 ?>
 <!--[if lte IE 8]>
-<script src="<?php echo LINK::file('js/jquery/jquery-1.11.3.min.js') ?>"></script>
+<script src="<?php echo Links::file('js/jquery/jquery-1.11.3.min.js') ?>"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
 <![endif]-->
-<!--[if gt IE 8]><!--><script src="<?php echo LINK::file('js/jquery/jquery-2.1.4.min.js') ?>"></script><!--<![endif]-->
+<!--[if gt IE 8]><!--><script src="<?php echo Links::file('js/jquery/jquery-2.1.4.min.js') ?>"></script><!--<![endif]-->
 <?php
 		endif;
 	}

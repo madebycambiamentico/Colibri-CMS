@@ -28,7 +28,7 @@ require_once __DIR__ . '/php/link.class.php';
 	
 	<?php
 		//main stylesheet
-		LINK::stylesheet('style.css');
+		Links::stylesheet('style.css');
 	?>
 	
 	<!-- custom stylesheet browser-sensitive or article-sensitive :) -->
@@ -41,16 +41,16 @@ require_once __DIR__ . '/php/link.class.php';
 	?>
 	/* customized main image from database */
 	.image-main{
-		background-image:url('<?php echo LINK::thumb('L1024/'.$cssurl) ?>');
+		background-image:url('<?php echo Links::thumb('L1024/'.$cssurl) ?>');
 	}
 	@media only screen and (max-width:768px){
 		.image-main{
-			background-image:url('<?php echo LINK::thumb('L768/'.$cssurl) ?>');
+			background-image:url('<?php echo Links::thumb('L768/'.$cssurl) ?>');
 		}
 	}
 	@media only screen and (max-width:520px){
 		.image-main{
-			background-image:url('<?php echo LINK::thumb('L520/'.$cssurl) ?>');
+			background-image:url('<?php echo Links::thumb('L520/'.$cssurl) ?>');
 		}
 	}
 	<?php
@@ -159,14 +159,14 @@ require_once __DIR__ . '/php/link.class.php';
 
 
 
-<?php LINK::getJQuery() ?>
+<?php Links::getJQuery() ?>
 
 <!-- plugins -->
 <?php
-	LINK::script('js/main.min.js');
+	Links::script('js/main.min.js');
 	
 	if (isset($YTIframeJsParams))
-		LINK::script('_YTiframe.js.php?'.$YTIframeJsParams);
+		Links::script('_YTiframe.js.php?'.$YTIframeJsParams);
 ?>
 
 </body>

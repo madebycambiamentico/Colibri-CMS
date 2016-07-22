@@ -28,7 +28,7 @@ require_once __DIR__ . '/php/link.class.php';
 	
 	<?php
 		//main stylesheet
-		LINK::stylesheet('style.css?v=1.2');
+		Links::stylesheet('style.css?v=1.2');
 	?>
 	
 	<!-- custom stylesheet browser-sensitive or article-sensitive :) -->
@@ -41,16 +41,16 @@ require_once __DIR__ . '/php/link.class.php';
 	?>
 	/* customized main image from database */
 	.image-main{
-		background-image:url('<?php echo LINK::thumb('L1024/'.$cssurl) ?>');
+		background-image:url('<?php echo Links::thumb('L1024/'.$cssurl) ?>');
 	}
 	@media only screen and (max-width:768px){
 		.image-main{
-			background-image:url('<?php echo LINK::thumb('L768/'.$cssurl) ?>');
+			background-image:url('<?php echo Links::thumb('L768/'.$cssurl) ?>');
 		}
 	}
 	@media only screen and (max-width:520px){
 		.image-main{
-			background-image:url('<?php echo LINK::thumb('L520/'.$cssurl) ?>');
+			background-image:url('<?php echo Links::thumb('L520/'.$cssurl) ?>');
 		}
 	}
 	<?php
@@ -60,8 +60,8 @@ require_once __DIR__ . '/php/link.class.php';
 	
 	<!-- plugins -->
 	<?php
-		LINK::stylesheet('plugins/autoadapt-mosaic-grid/autoadapt-2.min.css');
-		LINK::stylesheet('plugins/simplelightbox/simplelightbox.min.css');
+		Links::stylesheet('plugins/autoadapt-mosaic-grid/autoadapt-2.min.css');
+		Links::stylesheet('plugins/simplelightbox/simplelightbox.min.css');
 	?>
 </head>
 
@@ -127,8 +127,8 @@ require_once __DIR__ . '/php/link.class.php';
 					}
 					$img = htmlentities($image['src'],ENT_QUOTES);
 					echo '<div class="box">'.
-						'<a href="'.LINK::uploaded($img).'" target="_blank"><div class="overlay">'.htmlentities($image['descr']).'</div></a>'.
-						'<img src="'.LINK::thumb('300/'.$img).'">'.
+						'<a href="'.Links::uploaded($img).'" target="_blank"><div class="overlay">'.htmlentities($image['descr']).'</div></a>'.
+						'<img src="'.Links::thumb('300/'.$img).'">'.
 					'</div>';
 				}
 				$pdostat->closeCursor();
@@ -144,9 +144,9 @@ require_once __DIR__ . '/php/link.class.php';
 				//search all sub-pages with class "main page" (1), no limit (0), no full image (false)
 				$pdostat = \WebSpace\Query::query('subArt', [$pageid, 1, 0]);
 				while ($sp = $pdostat->fetch()){
-					$link = LINK::file(htmlentities($sp['remaplink'],ENT_QUOTES));
+					$link = Links::file(htmlentities($sp['remaplink'],ENT_QUOTES));
 					echo '<div class="article"><div class="sub-art-cont">'.
-						'<div class="image"><a href="'.$link.'"'.($sp['src'] ? ' style="background-image:url(\''.LINK::thumb('320x320/'.htmlentities($sp['src'],ENT_QUOTES)).'\')"' : '').'></a></div>'.
+						'<div class="image"><a href="'.$link.'"'.($sp['src'] ? ' style="background-image:url(\''.Links::thumb('320x320/'.htmlentities($sp['src'],ENT_QUOTES)).'\')"' : '').'></a></div>'.
 						'<div class="desc">'.
 							'<h2>'.htmlentities($sp['titolo']).'</h2>'.
 							'<p>'.$sp['inbreve'].'</p>'.
@@ -188,16 +188,16 @@ require_once __DIR__ . '/php/link.class.php';
 
 
 
-<?php LINK::getJQuery() ?>
+<?php Links::getJQuery() ?>
 
 <!-- plugins -->
 <?php
-	LINK::script('plugins/autoadapt-mosaic-grid/autoadapt-2.3.min.js');
-	LINK::script('plugins/simplelightbox/simplelightbox.min.js');
-	LINK::script('js/main.min.js?v=1.0');
+	Links::script('plugins/autoadapt-mosaic-grid/autoadapt-2.3.min.js');
+	Links::script('plugins/simplelightbox/simplelightbox.min.js');
+	Links::script('js/main.min.js?v=1.0');
 	
 	if (isset($YTIframeJsParams))
-		LINK::script('_YTiframe.js.php?'.$YTIframeJsParams);
+		Links::script('_YTiframe.js.php?'.$YTIframeJsParams);
 ?>
 
 <script>

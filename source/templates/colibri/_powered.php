@@ -27,7 +27,7 @@ if (!isset($web)){
 		<i>Colbrì Theme &copy;2016</i> by Nereo Costacurta<br>
 	</div>
 	<div class="actions">
-		<a href="<?php echo LINK::file('login') ?>">Login</a><!--
-	--><a href="<?php echo LINK::file('signin') ?>">Signin</a>
+		<a href="<?php echo Links::file('login') ?>">Login</a><!--
+	--><a href="<?php echo Links::file('signin') ?>">Signin</a>
 	</div>
 </div>

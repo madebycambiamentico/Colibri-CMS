@@ -252,8 +252,8 @@ here the colibrì background image
 
 
 <?php
-	LINK::getJQuery();
-	LINK::script('js/editor.js');
+	Links::getJQuery();
+	Links::script('js/editor.js');
 ?>
 
 </body>

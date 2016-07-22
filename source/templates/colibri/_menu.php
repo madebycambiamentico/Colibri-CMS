@@ -19,7 +19,7 @@ if (!isset($web)){
 ?>
 <div id="menu">
 	<div id="logo">
-		<a class="logo" href="<?php echo LINK::file(''); ?>"></a>
+		<a class="logo" href="<?php echo Links::file(''); ?>"></a>
 	</div>
 	<ul id="menus"><?php
 		$pdostat = \WebSpace\Query::query('menu');
@@ -27,7 +27,7 @@ if (!isset($web)){
 		$hassubmenu = false;
 		$lis = $pdostat->fetchAll();
 		foreach ($lis as $i => $li){
-			$href = LINK::file( htmlentities($li['remaplink'],ENT_QUOTES) );
+			$href = Links::file( htmlentities($li['remaplink'],ENT_QUOTES) );
 			if ($lastid != $li['parentid']){
 				//main menu
 				//close previous item

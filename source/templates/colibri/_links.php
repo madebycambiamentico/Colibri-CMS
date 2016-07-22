@@ -32,7 +32,7 @@ if (!isset($web)){
 		$img = htmlentities($sp['src'],ENT_QUOTES);
 		$link = 'target="_blank" href="'.htmlentities($sp['inbreve'],ENT_QUOTES).'"';
 		echo '<div class="article"><div class="sub-art-cont">'.
-			'<div class="image"><a '.$link.($img ? ' style="background-image:url(\''.LINK::thumb('320x200/'.$img).'\')"' : '').'></a></div>'.
+			'<div class="image"><a '.$link.($img ? ' style="background-image:url(\''.Links::thumb('320x200/'.$img).'\')"' : '').'></a></div>'.
 			'<div class="desc imgfix">'.
 				'<h3>'.htmlentities($sp['titolo']).'</h3>'.
 				'<p>'.$sp['corpo'].'</p>'.
