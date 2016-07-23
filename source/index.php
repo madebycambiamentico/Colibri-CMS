@@ -43,7 +43,8 @@ function STOPFORDEBUG($die=true){
 function noPageFound($str='Questa pagina non esiste.'){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	//STOPFORDEBUG(false);
-	global $Config, $web, $templatepath;
+	global $web;
+	echo \WebSpace\Template::custom($web['template'],'not-found.php');
 	if ($not_found_page = \WebSpace\Template::custom($web['template'],'not-found.php',true)){
 		include $not_found_page;
 		die('<!-- ERROR: '.htmlentities($str).' -->');
@@ -55,14 +56,14 @@ function noPageFound($str='Questa pagina non esiste.'){
 
 //global variables
 $pageid			= null;		//article id
-$page				= null;		//article complete database result
+$page				= null;		//article, complete database result
 $web				= null;		//content of `sito` database table
-$templatepath	= null;		//path to template folder without domain.
+//$templatepath	= null;		//path to template folder without domain.
 $Language		= null;		//contains preferred language (not null if site flagged multilanguage)
 
 
-
 //STOPFORDEBUG();
+
 
 //------------------------ search website properties ------------------------
 $pdostat = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1",PDO::FETCH_ASSOC);
@@ -76,7 +77,7 @@ if ($web['multilanguage']){
 }
 
 //set template url (absolute, no domain)
-$templatepath = \WebSpace\Template::path($web['template']);
+\WebSpace\Template::set_path_url($web['template']);
 
 
 
@@ -271,7 +272,9 @@ else{
 }
 $pdostat->closeCursor();
 
+
 //STOPFORDEBUG(true);
+
 
 require \WebSpace\Template::main( $web['template'] );
 

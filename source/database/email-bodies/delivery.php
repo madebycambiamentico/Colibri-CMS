@@ -56,7 +56,6 @@ if (isset($_GET['debug'])){
 require_once "../../config.php";
 require_once 'async_curl.fn.php';
 
-$Config->i_need_functions();
 
 $Encrypter = new Encrypter( CMS_ENCRYPTION_KEY );
 

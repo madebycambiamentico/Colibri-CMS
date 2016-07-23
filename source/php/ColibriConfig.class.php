@@ -63,16 +63,6 @@ class ColibriConfig{
 	
 	
 	/**
-	* link functions for database connection and many other marvelous things
-	*
-	* @see /database/functions.inc.php
-	*/
-	public function i_need_functions(){
-		
-	}
-	
-	
-	/**
 	* detect the caller script absolute path from installation directory.
 	*
 	* the result does NOT include the domain (e.g. "http://website.com").

@@ -1,7 +1,6 @@
 <?php
 
 require_once "../config.php";
-$Config->i_need_functions();
 
 $SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');

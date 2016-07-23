@@ -11,6 +11,7 @@
 * @method (public) insert_with_markers
 * @method (public) save_mod_rewrite_rules
 * @method (public) save_permission_rules_db
+* @method (public) set_CMS_key
 */
 
 class Setup {
@@ -77,6 +78,7 @@ class Setup {
 		$this->add_log("called <code>get_rewrite_rules_apache()</code>");
 		global $Config;
 		$rules =
+		"php_value session.use_strict_mode 1".				"\n".
 		"<IfModule mod_rewrite.c>".							"\n".
 			"AddType application/x-httpd-php .php".		"\n".
 			"RewriteEngine On".									"\n".
@@ -230,7 +232,7 @@ class Setup {
 	*/
 	public function save_mod_rewrite_rules(){
 		$this->add_log("called <code>save_mod_rewrite_rules()</code>");
-		$htaccess_file = CMS_INSTALL_DIR .'.htaccess';
+		$htaccess_file = CMS_INSTALL_DIR .'/.htaccess';
 
 		//If the file doesn't already exist check for write access to the directory
 		//and whether we have some rules. Else check for write access to the file.
@@ -254,7 +256,7 @@ class Setup {
 	public function save_permission_rules_db(){
 		$this->add_log("called <code>save_permission_rules_db()</code>");
 		global $Config;
-		$htaccess_file = CMS_INSTALL_DIR .$Config->database['dir'].'.htaccess';
+		$htaccess_file = $Config->database['dir'] . '.htaccess';
 
 		//If the file doesn't already exist check for write access to the directory
 		//and whether we have some rules. Else check for write access to the file.
@@ -276,7 +278,10 @@ class Setup {
 	*/
 	public function set_CMS_key(){
 		$this->add_log("called <code>set_CMS_key()</code>");
+		//check if caller is logged webmaster
+		//TODO...
 		//template
+		global $Config;
 		$template_file = __DIR__ . '/secret_key_template.txt';
 		$template = @file_get_contents($template_file);
 		if (false === $template){
@@ -284,7 +289,7 @@ class Setup {
 			return false;
 		}
 		//php file that will hold the key
-		$secret_file = CMS_INSTALL_DIR  . 'database/encryption_key.php';
+		$secret_file = $Config->database['dir'] . 'encryption_key.php';
 		//generate file
 		return $this->generate_CMS_key($secret_file, $template);
 	}
@@ -330,7 +335,7 @@ class Setup {
 			return $this->create_new_CMS_key($file, $template, $key);
 		else{
 			//check if old file content match
-			if (false === strpos($oldfile,"CMS_ENCRYPTION_KEY",1168)){
+			if (false === strpos($oldfile,"CMS_ENCRYPTION_KEY",1063)){
 				$this->error[] = "Missing CMS_ENCRYPTION_KEY in old php file.";
 				return false;
 			}

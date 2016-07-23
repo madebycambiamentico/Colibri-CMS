@@ -178,6 +178,8 @@ if (isset($_GET['q'])){
 					<select name="lang"><?php
 						if (CMS_LANGUAGE)
 							$Language->print_supported_language_options(null, $ARTICLE['lang']);
+						else
+							echo '<option value="en"></option>';
 					?></select>
 					</p>
 				</div>

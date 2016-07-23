@@ -3,7 +3,6 @@ if (!isset($_GET['id'])) die;
 
 
 require_once "../../config.php";
-$Config->i_need_functions();
 $Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 //control login

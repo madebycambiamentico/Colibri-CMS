@@ -35,7 +35,7 @@
 class Template{
 	
 	static $maps = [];	// will contain array of (int)idtype => (string)remapprefix
-	
+	static $path = '';	// will contain the absolute path to template folder (no domain included)
 	
 	/**
 	* return the single page template path
@@ -148,6 +148,10 @@ class Template{
 	static function path($tmplt='colibri'){
 		global $Config;
 		return $Config->script_path."templates/{$tmplt}/";
+	}
+	
+	static function set_path_url($tmplt='colibri'){
+		self::$path = self::path($tmplt);
 	}
 	
 	

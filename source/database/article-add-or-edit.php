@@ -2,7 +2,6 @@
 header('Content-Type: application/json');
 
 require_once "../config.php";
-$Config->i_need_functions();
 
 //control login
 $SessionManager = new \Colibri\SessionManager;
@@ -13,19 +12,18 @@ allow_user_from_class(1,true);
 if (!isset(
 		$_POST['id'],
 		$_POST['title'],
-		$_POST['type'],
-		$_POST['image'],
-		$_POST['map'],
-		$_POST['parent'],
 		$_POST['content'],
 		$_POST['description'],
+		$_POST['image'],
 		$_POST['wasindex'],
 		$_POST['wasindexlang'],
-		$_POST['lang'],
-		$_POST['parentlang'])
-	){
-		//echo '<pre>'.print_r($_POST,true).'</pre>';
-		jsonError('Variabili errate');
+		$_POST['parentlang'],
+		$_POST['map'],
+		$_POST['type'],
+		$_POST['parent'],
+		$_POST['lang']
+	)){
+		jsonError('Variabili errate '.print_r(array_keys($_POST),true));
 	}
 
 

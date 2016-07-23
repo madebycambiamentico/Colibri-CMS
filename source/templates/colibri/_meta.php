@@ -23,14 +23,14 @@ echo '<meta charset="UTF-8">
 	(preg_match("/Android [12]\.[0-9]/",$_SERVER['HTTP_USER_AGENT']) ? ',maximum-scale=1,user-scalable=no' : '').'">
 <meta name="description" content="'.htmlentities( $page['inbreve'], ENT_QUOTES).'">
 <meta property="og:site_name" content="'.htmlentities( $web['titolo'], ENT_QUOTES).'">
-<meta property="og:title" content="'.htmlentities( $web['titolo'].(ISINDEX ? '' : ' - '.$page['titolo']), ENT_QUOTES).'">
+<meta property="og:title" content="'.htmlentities( $web['titolo'].($page['isindex'] ? '' : ' - '.$page['titolo']), ENT_QUOTES).'">
 <meta property="og:type" content="article">
-<meta property="og:url" content="'.htmlentities( $Config->domain.$Config->script_path.$page['remaplink'], ENT_QUOTES).'">
+<meta property="og:url" content="'.htmlentities( $Config->domain . $Config->script_path . $page['remaplink'], ENT_QUOTES).'">
 <meta property="og:description" content="'.htmlentities( $page['inbreve'], ENT_QUOTES).'">';
 
 //main image
 if ($page['src']) echo "\n".
-	'<meta property="og:image" content="'.htmlentities( $Config->domain.$Config->script_path.'uploads/'.$page['src'], ENT_QUOTES).'">
+	'<meta property="og:image" content="'.htmlentities( $Config->domain . $Config->script_path . 'uploads/'.$page['src'], ENT_QUOTES).'">
 	<meta property="og:image:width" content="'.$page['width'].'">
 	<meta property="og:image:height" content="'.$page['height'].'">';
 

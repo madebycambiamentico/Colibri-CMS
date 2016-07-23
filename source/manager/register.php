@@ -14,9 +14,10 @@ if (!isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die;
 //TODO
 //should i allow logged user to register new members?
 //- maybe to quickly add a member which you know and you are talking right in front of you
+//  and doesn't have his own internet connection... or is too lazy...
 //- test purposes...
 //- if i disallow it is not so hard to logout and enter new members anyway...
-//so i will allow to request new membership even if user seems logged in.
+//CONCLUSION: i will allow to request new membership even if user seems logged in.
 
 
 

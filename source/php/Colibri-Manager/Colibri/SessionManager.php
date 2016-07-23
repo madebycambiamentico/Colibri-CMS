@@ -1,5 +1,7 @@
 <?php namespace Colibri;
 
+
+
 /*
 Copyright (c) 2009, Robert Hafner
 All rights reserved.
@@ -20,10 +22,11 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
+
 /**
  * This SessionManager starts the php session (regardless of which handler is set) and secures it by locking down
  * the cookie, restricting the session to a specific host and browser, and regenerating the ID.
- *
  */
 class SessionManager {
 	/**
@@ -33,6 +36,9 @@ class SessionManager {
 	 * @var array
 	 */
 	protected $aolProxies = array('195.93.', '205.188', '198.81.', '207.200', '202.67.', '64.12.9');
+	
+	
+	
 	/**
 	 * This function starts, validates and secures a session.
 	 *
@@ -69,10 +75,12 @@ class SessionManager {
 			session_start();
 		}
 	}
+	
+	
+	
 	/**
 	 * This function regenerates a new ID and invalidates the old session. This should be called whenever permission
 	 * levels for a user change.
-	 *
 	 */
 	static function regenerateSession() {
 		// If this session is obsolete it means there already is a new id
@@ -93,6 +101,9 @@ class SessionManager {
 		unset($_SESSION['OBSOLETE']);
 		unset($_SESSION['EXPIRES']);
 	}
+	
+	
+	
 	/**
 	 * This function is used to see if a session has expired or not.
 	 *
@@ -105,6 +116,9 @@ class SessionManager {
 			return false;
 		return true;
 	}
+	
+	
+	
 	/**
 	 * This function checks to make sure a session exists and is coming from the proper host. On new visits and hacking
 	 * attempts this function will return false.
