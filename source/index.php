@@ -58,7 +58,6 @@ function noPageFound($str='Questa pagina non esiste.'){
 $pageid			= null;		//article id
 $page				= null;		//article, complete database result
 $web				= null;		//content of `sito` database table
-//$templatepath	= null;		//path to template folder without domain.
 $Language		= null;		//contains preferred language (not null if site flagged multilanguage)
 
 
