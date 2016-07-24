@@ -7,8 +7,9 @@
  * @copyright: (C)2016 nereo costacurta
 **/
 
+//TODO: IMPLEMENT DELIVERY EMAIL SYSTEM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 require_once "config.php";
-$Config->i_need_functions();
 
 //control login
 $SessionManager = new \Colibri\SessionManager();
@@ -45,7 +46,7 @@ if (empty($phone)) $phone = "no phone number(s) given";
 
 
 //(autoload class)
-$ENCRYPTER = new Encrypter( CMS_ENCRYPTION_KEY );
+$ENCRYPTER = new \ColibriEncrypter( CMS_ENCRYPTION_KEY );
 
 //get email from system:
 $adminname = null;

@@ -13,7 +13,8 @@ class ColibriConfig{
 	//-----------------------------------------------------------
 	public $database			= [
 		'folder'		=> '/database/',			//database folder relative path form installation dir (e.g. /database/custom/). default: "/database/"
-		'file'		=> 'mbcsqlite3.db',		//database file name (e.g. myDB.db). default: "mbcsqlite3.db"
+		'file'		=> 'mbcsqlite3.db',		//database file name (e.g. myDB.db). default: "mbcsqlite3.db".
+														//from Colibrì 0.5.4 will be overwritten by random name.
 		'dir'			=> null,						//will be determined by __DIR__ + folder
 		'src'			=> null						//will be determined by __DIR__ + folder + name
 	];
@@ -28,9 +29,22 @@ class ColibriConfig{
 		$this->fix_script_url();
 		$this->domain = $this->get_domain();
 		$this->script_path = $this->get_current_script_path();
+		if (defined('CMS_DB_NAME')) $this->update_db(['file' => CMS_DB_NAME]);
+		else $this->update_db();
+		$this->register_autoloaders();
+	}
+	
+	
+	/**
+	* override database properties and update 'dir' and 'src'
+	*/
+	public function update_db($options=[]){
+		foreach ($options as $key => $dbval){
+			if (isset($this->database[$key]))
+				$this->database[$key] = $dbval;
+		}
 		$this->database['dir'] = CMS_INSTALL_DIR . $this->database['folder'];
 		$this->database['src'] = $this->database['dir'] . $this->database['file'];
-		$this->register_autoloaders();
 	}
 	
 	
