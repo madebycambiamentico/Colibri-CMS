@@ -4,11 +4,12 @@
 * manages active plugins in the website code.
 *
 * TODO...
-* plugins should have an "importance" flag to use as ordinator. for example an importance of 0 is the lowest,
+* (?) plugins could have an "importance" flag to use as ordinator. for example an importance of 0 is the lowest,
 * so the plugin will be loaded past all. This means however that the last parsing of any variable (if any) will be
-* made by that last plugin. flags can be global (for groups) or local (for positions) [read ahead].
+* made by that last plugin. (?)
+* flags can be global (for groups) or local (for positions) [read ahead].
 * -----------------------------------------------------------------------------
-* IT IS THE TEMPLATE DESIGNER DUTY TO DO THE CORRECT IMPLEMENTATION OF THIS PLUGIN MANAGER!!!
+* IT'S THE TEMPLATE DESIGNER DUTY TO DO THE CORRECT IMPLEMENTATION OF THIS PLUGIN MANAGER!!!
 * -----------------------------------------
 * plugins are divided in "groups": head, style, js, body, ethereal.
 * (the next suggestions are to be considered as coding standard to be followed)

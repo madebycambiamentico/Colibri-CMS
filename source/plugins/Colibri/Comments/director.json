@@ -1,0 +1,33 @@
+{
+	"author": "Colibri",
+	"plugin": "Comments",
+	"version": "1.0.0",
+	"installer": "setup.php",
+	"options": {
+		"editor": {
+			"js": "addon\/comments-editor.js",
+			"center": "addon\/comments-editor-C.inc.php",
+			"right": "addon\/comments-editor-R.inc.php",
+			"db": "addon\/comments-editor-db.inc.php"
+		},
+		"custom": "addon\/comment-options.php"
+	},
+	"template": {
+		"style": {
+			"auto": [
+				"css\/comments.css"
+			]
+		},
+		"js": {
+			"auto": [
+				"js\/comments.js"
+			]
+		},
+		"body": {
+			"bottom": [
+				"comments.php"
+			]
+		}
+	},
+	"require": "<i>Colibr\u00ec Comment plugin &copy;2016<\/i> will enable users to comment all your pages.<br>In the options you can choose if comments can be made by everyone, by users only, and even the minimum class of users that are allowed to comment.<br><b>The plugins require jquery 1 or 2, latest version!<\/b>"
+}
