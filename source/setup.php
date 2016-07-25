@@ -31,13 +31,13 @@ $Config = new ColibriConfig();
  START SETUP
 **************/
 
-//write htaccess and generate secret key
+//write htaccess, generate secret key, give random name to database.
 $rwapi = new \Colibri\Setup(true);
 if ($rwapi->check === false)
 	setup_error( $rwapi->get_errors().'<br>'.$rwapi->get_logs() );
 else{
-	setup_error( $rwapi->get_errors().'<br>'.$rwapi->get_logs() );
-	//header('Location: ./login?setup=ok');
+	header('refresh:15;url=./login?setup=ok');
+	setup_error( $rwapi->get_logs() );
 }
 
 ?>

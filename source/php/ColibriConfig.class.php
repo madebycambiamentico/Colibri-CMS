@@ -14,7 +14,7 @@ class ColibriConfig{
 	public $database			= [
 		'folder'		=> '/database/',			//database folder relative path form installation dir (e.g. /database/custom/). default: "/database/"
 		'file'		=> 'mbcsqlite3.db',		//database file name (e.g. myDB.db). default: "mbcsqlite3.db".
-														//from Colibrì 0.5.4 will be overwritten by random name.
+														//from Colibrì 0.6.0 will be overwritten by random name.
 		'dir'			=> null,						//will be determined by __DIR__ + folder
 		'src'			=> null						//will be determined by __DIR__ + folder + name
 	];

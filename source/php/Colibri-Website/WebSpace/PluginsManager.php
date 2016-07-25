@@ -48,6 +48,7 @@
 * ---------
 * - manual:
 *   1. no actions are taken by the PluginsManager. It's the template which manage positions and calls.
+*      So the template has hardcoded calls to plugins which have to be already intalled.
 *
 * @author Nereo Costacurta (http://colibricms.altervista.org)
 */
