@@ -27,7 +27,7 @@ function STOPFORDEBUG($die=true){
 	
 	echo '<br>'.(++$i).') $_SERVER:<pre>'.print_r($_SERVER,true).'</pre>';
 	
-	$die and die;
+	if ($die) die;
 }
 
 
@@ -44,12 +44,26 @@ function noPageFound($str='Questa pagina non esiste.'){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	//STOPFORDEBUG(false);
 	global $web;
-	echo \WebSpace\Template::custom($web['template'],'not-found.php');
+	echo \WebSpace\Template::custom($web['template'],'not-found.php',true);
 	if ($not_found_page = \WebSpace\Template::custom($web['template'],'not-found.php',true)){
 		include $not_found_page;
 		die('<!-- ERROR: '.htmlentities($str).' -->');
 	}
 	die($str);
+}
+
+
+/**
+* Get manager page path.
+*
+* @param (string) $page name of the page to acquire
+*/
+function get_manager_page($page){
+	//define language
+	global $Language;
+	define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
+	//return page path
+	return CMS_INSTALL_DIR . "/manager/{$page}.php";
 }
 
 
@@ -104,40 +118,32 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			goto anchor_main; break;
 		case 'signin':
 		case 'iscriviti':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/register.php'); exit; break;
+			require get_manager_page("signin"); exit;
 		case 'login':
 		case 'accedi':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/login.php'); exit; break;
-		case 'new':
+			require get_manager_page("login"); exit;
 		case 'editor':
 		case 'nuovo':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/editor.php'); exit; break;
+			require get_manager_page("editor"); exit;
 		case 'albums':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/albums.php'); exit; break;
+			require get_manager_page("albums"); exit;
 		case 'options':
 		case 'opzioni':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/options.php'); exit; break;
+			require get_manager_page("options"); exit;
 		case 'profile':
 		case 'profilo':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/profile.php'); exit; break;
+			require get_manager_page("profile"); exit;
 		case 'profiles':
 		case 'profili':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/profiles-manager.php'); exit; break;
+			require get_manager_page("profiles-manager"); exit;
 		case 'articles':
 		case 'articoli':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/articles.php'); exit; break;
+			require get_manager_page("articles"); exit;
 		case 'dashboard':
 		case 'bacheca':
-			define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
-			include('manager/bacheca.php'); exit; break;
+			require get_manager_page("dashboard"); exit;
+		case 'plugins':
+			require get_manager_page("plugins"); exit;
 		//default: continue script :)
 	}
 	

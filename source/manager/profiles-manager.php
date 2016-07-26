@@ -17,7 +17,7 @@ $SessionManager->sessionStart('colibri');
 allow_user_from_class(1);
 
 $Colibrì = new \Colibri\Template;
-
+$PlugManager = new \Colibri\PluginsManager(false, 'profiles-manager', ['active' => true]);
 $Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 ?><!DOCTYPE html>
@@ -34,6 +34,7 @@ $Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 	
 	<?php $Colibrì->getBaseCss() ?>
 	<link rel="stylesheet" href="<?php $Colibrì->link("css/profile.min.css") ?>">
+	<?php $PlugManager->run_plugins( 'style' ); ?>
 
 	<style type="text/css">
 	</style>
@@ -48,6 +49,8 @@ $Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 
 <!-- START popups -->
+
+<?php $PlugManager->run_plugins( 'popup' ); ?>
 
 <!-- END popups -->
 
@@ -319,6 +322,8 @@ if ($pdores = $pdo->query("SELECT u.id, u.nome, u.hasimage, (SELECT count(*) FRO
 
 
 
+			<?php $PlugManager->run_plugins( 'center' ); ?>
+
 		</div>
 		<!-- END main -->
 
@@ -396,6 +401,9 @@ $(function(){
 //end debug script...
 //-------------------------------------------------------------------
 </script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 
 </body>

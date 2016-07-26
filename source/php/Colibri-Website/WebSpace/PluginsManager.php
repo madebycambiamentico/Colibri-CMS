@@ -84,14 +84,14 @@ class PluginsManager{
 	
 	
 	/**
-	* store active plugins in memory
+	* store active plugins in memory for sequent call
 	*
 	* plugins must be registered and activated. it will be stored the folder path to the plugin.
 	* plugin may have multiple folder structure. loaders should be marked in their json section (TODO)
 	* If a plugin has been marked as "only_manual", then this will override all the plugin directives
 	* on their positions. this plugins can still be called by the load function.
 	*/
-	private function load_plugins(){
+	private function fetch_plugins(){
 		//TODO...
 		//search in database or fetch a generated json?
 	}
@@ -115,12 +115,12 @@ class PluginsManager{
 	* @return (bool)  Success of plugin inclusion.
 	*/
 	public function load_single_plugin( $plugin, $group, $pos = null, $fallback = true ){
-		$plugin_file = CMS_INSTALL_DIR . '/plugins/' . $plugin . '/' . $group . '-' . $pos . '.fn.php';
+		$plugin_file = \CMS_INSTALL_DIR . '/plugins/' . $plugin . '/' . $group . '-' . $pos . '.fn.php';
 		if ($pos && is_file($plugin_file)){
 			return (false === @include_once($plugin_file));
 		}
 		elseif ($allow_fallback){
-			$plugin_file = CMS_INSTALL_DIR . '/plugins/' . $plugin . '/' . $group . '.fn.php';
+			$plugin_file = \CMS_INSTALL_DIR . '/plugins/' . $plugin . '/' . $group . '.fn.php';
 			if (is_file($plugin_file)){
 				return (false === @include_once($plugin_file));
 			}

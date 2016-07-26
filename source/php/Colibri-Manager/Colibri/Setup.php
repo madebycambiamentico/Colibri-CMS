@@ -107,8 +107,9 @@ class Setup {
 		$this->add_log("called <code>get_rewrite_rules_apache()</code>");
 		global $Config;
 		$rules =
-		"php_value session.use_strict_mode 1".				"\n".
-		"<IfModule mod_rewrite.c>".							"\n".
+		"php_value session.use_strict_mode 1".				"\n".		//disable user to be able to choose session id
+		"Options -Indexes".										"\n".		//prevent directory listing
+		"<IfModule mod_rewrite.c>".							"\n".		//on any file request which is not a file/dir, redirect to index.php
 			"AddType application/x-httpd-php .php".		"\n".
 			"RewriteEngine On".									"\n".
 			"RewriteBase ".$Config->script_path.			"\n".
@@ -385,7 +386,7 @@ class Setup {
 	private function update_old_CMS_key($file, $template, $key){
 		$this->add_log("called <code>update_old_CMS_key()</code> for file <i>{$file}</i>");
 		if (!$this->is_user_webmaster ){
-			$this->add_error("Rename encryption key allowed only to logged webmasters.");
+			$this->add_error("Only webmaster can change encryption key!");
 			return false;
 		}
 		//update all database before changing file.
@@ -425,7 +426,10 @@ class Setup {
 		//update current db name if already exists the secret file
 		if (file_exists($secret_file)){
 			//user must be a webmaster to change db name!!!
-			if (!$this->is_user_webmaster) return false;
+			if (!$this->is_user_webmaster){
+				$this->add_error("Only webmaster can change DB name!");
+				return false;
+			}
 			//update current database name
 			$this->add_log("loading CMS_DB_NAME");
 			include $secret_file; //add CMS_DB_NAME

@@ -16,6 +16,7 @@ $SessionManager->sessionStart('colibri');
 allow_user_from_class(0); // everybody can see this page (guest and admins)
 
 $Colibrì = new \Colibri\Template;
+$PlugManager = new \Colibri\PluginsManager(false, 'dashboard', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -31,6 +32,7 @@ $Colibrì = new \Colibri\Template;
 	
 	<?php $Colibrì->getBaseCss() ?>
 	<link rel="stylesheet" href="<?php $Colibrì->link("css/profile.min.css") ?>">
+	<?php $PlugManager->run_plugins( 'style' ); ?>
 
 	<style type="text/css">
 	</style>
@@ -42,6 +44,12 @@ $Colibrì = new \Colibri\Template;
 
 
 <body class="tools-bkg">
+
+<!-- START popups -->
+
+<?php $PlugManager->run_plugins( 'popup' ); ?>
+
+<!-- END popups -->
 
 
 <!-- main editor -->
@@ -137,6 +145,9 @@ foreach ($TYPES as $tid => $t){
 	}
 }
 			?></div>
+		
+			<?php $PlugManager->run_plugins( 'center' ); ?>
+		
 		</div>
 		<!-- END main -->
 
@@ -184,6 +195,9 @@ $(function(){
 	updateView('#my-article',true);
 });
 </script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

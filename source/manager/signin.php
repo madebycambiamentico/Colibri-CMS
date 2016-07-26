@@ -22,6 +22,7 @@ if (!isset($Config)){ header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden"); die;
 
 
 $Colibrì = new \Colibri\Template;
+$PlugManager = new \Colibri\PluginsManager(false, 'signin', ['active' => true]);
 
 
 ?><!DOCTYPE html>
@@ -38,6 +39,7 @@ $Colibrì = new \Colibri\Template;
 
 	<link rel="stylesheet" href="<?php $Colibrì->link("php/mbc-filemanager/css/inputs.min.css") ?>">
 	<link rel="stylesheet" href="<?php $Colibrì->link("css/login.min.css") ?>">
+	<?php $PlugManager->run_plugins( 'style' ); ?>
 </head>
 
 
@@ -90,6 +92,9 @@ $Colibrì = new \Colibri\Template;
 
 <!-- main script -->
 <script src="js/signin.min.js"></script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

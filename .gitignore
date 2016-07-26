@@ -56,3 +56,4 @@ source/sitemap*.xml
 source/database/encryption_key*.php
 source/database/encryption_db_name*.php
 source/database/mbcsqlite3*.db
+source/plugin/*

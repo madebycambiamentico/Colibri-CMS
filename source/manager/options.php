@@ -16,6 +16,7 @@ $SessionManager->sessionStart('colibri');
 allow_user_from_class(2);
 
 $Colibrì = new \Colibri\Template;
+$PlugManager = new \Colibri\PluginsManager(false, 'options', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -29,7 +30,10 @@ $Colibrì = new \Colibri\Template;
 	<meta name="description" content="">
 	<meta name="author" content="Costacurta Nereo">
 	
-	<?php $Colibrì->getBaseCss() ?>
+	<?php
+		$Colibrì->getBaseCss();
+		$PlugManager->run_plugins( 'style' );
+	?>
 
 	<style type="text/css">
 	#all-templates{
@@ -122,7 +126,9 @@ if (!$web) die("Void properties!</body>");
 
 
 
-<!-- popups -->
+<!-- START popups -->
+
+<?php $PlugManager->run_plugins( 'popup' ); ?>
 
 <div class="popup-cont" id="templates-pop">
 	<div class="popup overthrow">
@@ -148,6 +154,8 @@ if (!$web) die("Void properties!</body>");
 		<br>
 	</div>
 </div>
+
+<!-- END popups -->
 
 
 
@@ -233,6 +241,8 @@ if (!$web) die("Void properties!</body>");
 				<p>Aiuto: 1'=60'', 5'=300'', 10'=600'', 15'=900'', 30'=1800, 1h=3600''.</p>
 				<input id="w-delivery-t" name="delivery[t]" type="number" value="<?php echo $web['delivery_delay'] ?>" min="0" max="3600" placeholder="cooldown invio e-mail (secondi)">
 			</div>
+			
+			<?php $PlugManager->run_plugins( 'center' ); ?>
 			
 			<div class="inputs center hide-on-cell">
 				<b class="btn save-arctic">Aggiorna sito</b>
@@ -342,6 +352,9 @@ closeConnection();
 <!-- main script -->
 <script src="js/common.js"></script>
 <script src="js/options.min.js"></script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

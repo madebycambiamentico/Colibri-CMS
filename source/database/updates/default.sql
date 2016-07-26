@@ -45,6 +45,28 @@ CREATE TABLE commenti_treepath (
 
 
 
+
+
+-- Trigger: insert_first_branch
+CREATE TRIGGER insert_first_branch AFTER INSERT ON commenti WHEN new.idcommento IS NULL BEGIN
+	INSERT INTO commenti_treepath (ancestor, descendant) VALUES (new.id,new.id);
+END;
+
+-- Trigger: check_comment_exists
+CREATE TRIGGER check_comment_exists BEFORE INSERT ON commenti WHEN new.idcommento IS NOT NULL BEGIN
+	SELECT CASE WHEN NOT EXISTS (SELECT id FROM commenti WHERE id = new.idcommento) THEN RAISE (IGNORE) END;
+END;
+
+-- Trigger: insert_tree_path
+CREATE TRIGGER insert_tree_path AFTER INSERT ON commenti WHEN new.idcommento IS NOT NULL BEGIN
+	INSERT INTO commenti_treepath (ancestor, descendant, depth)
+		SELECT t.ancestor, NEW.id, (t.depth+1) FROM commenti_treepath t WHERE t.descendant = new.idcommento
+		UNION ALL
+		SELECT NEW.id, NEW.id, 0;
+END;
+
+
+
 -- Table: languages
 CREATE TABLE languages (
 	code VARCHAR (5) PRIMARY KEY UNIQUE ON CONFLICT IGNORE,
@@ -222,28 +244,6 @@ INSERT INTO languages (code, name, supported) VALUES
 	('xh', 'Xhosa', 0),
 	('yi', 'Yiddish', 0),
 	('zu', 'Zulu', 0);
-
-
-
-
-
--- Trigger: insert_first_branch
-CREATE TRIGGER insert_first_branch AFTER INSERT ON commenti WHEN new.idcommento IS NULL BEGIN
-	INSERT INTO commenti_treepath (ancestor, descendant) VALUES (new.id,new.id);
-END;
-
--- Trigger: check_comment_exists
-CREATE TRIGGER check_comment_exists BEFORE INSERT ON commenti WHEN new.idcommento IS NOT NULL BEGIN
-	SELECT CASE WHEN NOT EXISTS (SELECT id FROM commenti WHERE id = new.idcommento) THEN RAISE (IGNORE) END;
-END;
-
--- Trigger: insert_tree_path
-CREATE TRIGGER insert_tree_path AFTER INSERT ON commenti WHEN new.idcommento IS NOT NULL BEGIN
-	INSERT INTO commenti_treepath (ancestor, descendant, depth)
-		SELECT t.ancestor, NEW.id, (t.depth+1) FROM commenti_treepath t WHERE t.descendant = new.idcommento
-		UNION ALL
-		SELECT NEW.id, NEW.id, 0;
-END;
 
 
 
