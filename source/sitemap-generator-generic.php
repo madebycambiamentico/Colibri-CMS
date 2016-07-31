@@ -1,7 +1,6 @@
 <?php
 
 require_once "config.php";
-$Config->i_need_functions();
 
 
 //include sitemap generator from template, if it has a custom one...

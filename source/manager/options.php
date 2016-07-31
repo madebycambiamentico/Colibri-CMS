@@ -30,75 +30,11 @@ $PlugManager = new \Colibri\PluginsManager(false, 'options', ['active' => true])
 	<meta name="description" content="">
 	<meta name="author" content="Costacurta Nereo">
 	
-	<?php
-		$Colibrì->getBaseCss();
-		$PlugManager->run_plugins( 'style' );
-	?>
+	<?php $Colibrì->getBaseCss(); ?>
+	<link rel="stylesheet" href="<?php $Colibrì->link("css/options.min.css") ?>">
+	<?php $PlugManager->run_plugins( 'style' ); ?>
 
 	<style type="text/css">
-	#all-templates{
-		line-height:0;
-	}
-	#all-templates input{
-		visibility:hidden;
-	}
-	.template{
-		max-width:256px;
-		margin:10px;
-		line-height:normal;
-		display:inline-block;
-	}
-	#my-template{
-		display:block;
-		margin:10px auto;
-	}
-	.template .image,
-	.template .imgcont{
-		display:block;
-		height:180px;
-		background:#222 no-repeat center;
-		background-size:cover;
-	}
-	.template p{
-		padding-top:4px;
-	}
-	#lang-options.hidden{
-		display:none;
-	}
-	#lang-open.hidden{
-		visibility:hidden;
-	}
-	#lang-codes{
-		display: flex;
-		flex-wrap: wrap;
-		/*text-align:justify;*/
-		line-height:0;
-	}
-	#lang-codes label i{
-		font-style:normal;
-		font-size:13px;
-	}
-	#lang-codes label{
-		flex: 1 1 auto;
-		height:20px;
-		line-height:20px;
-		display:inline-block;
-		margin:2px;
-		padding:3px 6px;
-		border:1px solid #ccc;
-		/*border-radius: 4px;*/
-		background:#e6e6e6;
-	}
-	#lang-codes label:hover{
-		border-color:#4e94e3;
-	}
-	#lang-codes input:checked + i{
-		/*text-decoration:underline;*/
-		font-weight: bold;
-	}
-	#lang-open{
-		vertical-align:middle;
-	}
 	</style>
 </head>
 
@@ -108,22 +44,6 @@ $PlugManager = new \Colibri\PluginsManager(false, 'options', ['active' => true])
 
 
 <body class="tools-bkg">
-
-<?php
-
-//find current web properties
-$web = null;
-$pdores = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC) or die("Errore durante ricerca proprietà web [query]");
-foreach ($pdores as $r){
-	$web = $r;
-}
-$pdores->closeCursor();
-if (!$web) die("Void properties!</body>");
-
-
-//echo '<pre>'.print_r($web,true).'</pre>';die;
-?>
-
 
 
 <!-- START popups -->
@@ -176,6 +96,10 @@ if (!$web) die("Void properties!</body>");
 		<!-- START main -->
 		<div class="main">
 			<h1>MBC - WebSite Manager</h1>
+			
+			<div class="inputs maxi tools center">
+				<p><a href="./plugins"><b class="sicon"><i class="options"></i></b> Gestione plugins</a></p>
+			</div>
 		
 			<div class="inputs maxi aligned">
 				<h4>Titolo del sito</h4>
@@ -276,12 +200,12 @@ if (!$web) die("Void properties!</body>");
 				<p>Chiave segreta (lascia vuoto per non cambiare):</p>
 				<input id="w-recap-2" name="rcptc[s]" type="text" value="" placeholder="secret key">
 			</div>
+		
+			<?php $PlugManager->run_plugins( 'right' ); ?>
 			
 			<div class="inputs center">
 				<b class="btn save-arctic">Aggiorna sito</b>
 			</div>
-			
-			<br><br>
 		
 			<div class="inputs maxi aligned">
 				<?php

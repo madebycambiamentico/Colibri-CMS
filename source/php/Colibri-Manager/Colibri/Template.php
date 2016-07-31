@@ -37,7 +37,7 @@ class Template {
 ?>
 	<div id="toolbar">
 		<i id="colibrì-icon"></i>
-		<a href="<?php self::link("bacheca") ?>" class="sicon"><i class="home"></i></a>
+		<a href="<?php self::link("dashboard") ?>" class="sicon"><i class="home"></i></a>
 		<b id="menu-toggle" class="sicon"><i class="list-3"></i></b>
 	</div>
 <?php
@@ -51,14 +51,19 @@ class Template {
 ?>
 	<ul class="menu">
 		<li><div id="colibrì"><code>v<?php echo $Config::VERSION . $Config::RELEASE; ?></code></div></li>
-		<li><a href="<?php self::link("bacheca") ?>"><b class="sicon"><i class="home"></i></b>Bacheca</a></li>
+		<li><a href="<?php self::link("dashboard") ?>"><b class="sicon"><i class="home"></i></b>Bacheca</a></li>
 		<li><a href="<?php self::link() ?>" target="_blank"><b class="sicon"><i class="eye"></i></b>Visualizza sito</a></li>
 		
 		<?php
 			//only webmasters
 			if ($_SESSION['uclass'] == 2):
 		?>
-		<li><a href="./options"><b class="sicon"><i class="options-3"></i></b>Gestione sito</a></li>
+		<li><a href="./options"><b class="sicon"><i class="options-3"></i></b>Gestione sito</a>
+			<ul class="sub-menu">
+				<li><a href="<?php self::link("options") ?>">Aspetto e Lingue</a></li>
+				<li><a href="<?php self::link("plugins") ?>">Plugins</a></li>
+			</ul>
+		</li>
 		<?php endif;
 			//only for administrators + webmasters
 			if ($_SESSION['uclass'] >= 1):

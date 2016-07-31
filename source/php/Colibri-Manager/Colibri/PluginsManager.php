@@ -9,14 +9,24 @@
 * made by that last plugin. (?)
 * -----------------------------------------
 * PLUGINS ARE PAGE-BASED. THIS CLASS PARSE ONLY A SET OF PLUGIN FOR A GIVEN PAGE!
-* Available pages are stored in "/manager/". The key name for every page is the english version in "/index.php".
+* Available pages are stored in "/manager/". The key name for every page is the file name (without extension)
+* Exception is the quick edit popup in articles list (TODO).
+* - albums
+* - dashboard
+* - editor
+* - options
+* - profile
+* - profiles-manager
+* - ... TODO (popups...)
 * -----------------------------------------
-* plugins are divided in "groups": style, js, center, right.
+* plugins are divided in "groups": style, js, center, right, db and postdb.
 * - "style" add stylesheet before the </head>, after standard page styles.
 * - "js" add deferred script links before </body>, after jQuery.
 * - "popup" add html to be used for popups. Designers should use \Colibri\Popups class ready templates, but custom html is permitted.
 * - "center" add html into the center panel in manager pages.
 * - "right" add html into the right panel in manager pages (or bottom for small screens).
+* - "db" to edit standard queries. you must read the Colibri code to know how to utilize that queries.
+* - "postdb" to add database queries of your own when standard queries has succeded
 *
 * @author Nereo Costacurta (http://colibricms.altervista.org)
 */
@@ -25,14 +35,15 @@ class PluginsManager{
 	
 	public $available = null;		//list of plugins to be loaded. it is an associative array "<plugin name>" => [ <properties> ]
 	
-	public $js				= [];		//list of plugins that add scripts
 	public $style			= [];		//list of plugins that add styles
+	public $js				= [];		//list of plugins that add scripts
 	public $popup			= [];		//list of plugins that add popups
 	public $center			= [];		//list of plugins that add something in center panel
 	public $right			= [];		//list of plugins that add something in right panel
 	public $db				= [];		//list of plugins that do something in database when form is submitted
+	public $postdb			= [];		//list of plugins that do something in database when form is submitted
 	
-	public $positions			= ['js', 'style', 'popup', 'center', 'right', 'db'];	//existent positions
+	public $positions			= ['js', 'style', 'popup', 'center', 'right', 'db', 'postdb'];	//existent positions
 	
 	
 	
@@ -48,6 +59,9 @@ class PluginsManager{
 	function __construct($update_json_list=true, $init_page=null, $filter=null){
 		if ($update_json_list){
 			$this->parse_plugins_folder($init_page, $filter, false);
+		}
+		elseif ($init_page){
+			$this->fetch_plugins($init_page, $filter);
 		}
 	}
 	
@@ -142,20 +156,26 @@ class PluginsManager{
 	/**
 	* get current saved list.json which contains plugin status.
 	*
+	* @param (bool) $update_available [optional] If true update $this->available from list.json. default: true.
+	*
 	* @return (array)		List of "<plugin path>" => <properties>
 	*							properties are: "custom" (the standalone page for that plugin), "installed" and "active"
 	*/
-	public function get_plugins_status(){
+	public function get_plugins_status($update_available=true){
 		//plugins can be ACTIVE or DEACTIVATED, INSTALLED or NOT INSTALLED.
 		//search in current json
 		$plugins_json = \CMS_INSTALL_DIR . "/plugin/list.json";
 		if (is_file($plugins_json)){
 			if ($plugins_json = @file_get_contents($plugins_json)){
 				//get json in array mode
-				if ($plugins_json = json_decode($plugins_json,true))
+				if ($plugins_json = json_decode($plugins_json,true)){
+					if ($update_available) $this->available = $plugins_json;
 					return $plugins_json;
-				else
+				}
+				else{
+					if ($update_available) $this->available = [];
 					return [];
+				}
 			}
 		}
 		return [];

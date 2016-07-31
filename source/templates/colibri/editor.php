@@ -16,7 +16,6 @@
 //-------------------------------------------------------------------------
 
 require_once "../../config.php";
-$Config->i_need_functions();
 
 //control login - uncomment to hide this page from public
 /*

@@ -231,7 +231,7 @@ var FM_LIST = {
 						$('#Limg-'+ofile.id).css('background-image',"url('img/thumbs/"+printAttr(ofile.d+ofile.f)+'?'+(new Date().getTime())+"')");
 					}
 				});
-				updateView()
+				updateView();
 			break;
 			default:
 		}

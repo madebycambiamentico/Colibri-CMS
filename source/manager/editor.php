@@ -146,23 +146,12 @@ if (isset($_GET['q'])){
 					</div>
 				</div>
 			</div>
-			
-			<?php /*
-			<ul class="inputs maxi aligned">
-				<li>Video in evidenza (opzionale)<br>[work in progress...]</li>
-			</ul>
-			<div class="inputs maxi aligned field-btn">
-				<input id="ealb-video" name="video" type="text" class="ronly" placeholder="video principale..." readonly><!--
-				--><b id="ealb-fm-2-del" class="btn tinymcefont">&#xe012;</b><!--
-				--><b id="ealb-fm-2" class="btn mid tinymcefont">&#xe034;</b>
-			</div>
-			*/ ?>
+		
+			<?php $PlugManager->run_plugins( 'center' ); ?>
 			
 			<div class="inputs center hide-on-cell">
 				<b class="btn save-arctic">Salva Articolo</b>
 			</div>
-		
-			<?php $PlugManager->run_plugins( 'center' ); ?>
 		
 		</div>
 		<!-- END main -->
@@ -268,6 +257,8 @@ if ($pdores = $pdo->query("SELECT id,titolo FROM articoli WHERE idarticolo = {$i
 			<!-- START album selection -->
 			<?php $Colibrì->getaAlbumEditor('<h4>Seleziona Album Fotografico</h4>'); ?>
 			<!-- END album selection -->
+		
+			<?php $PlugManager->run_plugins( 'right' ); ?>
 			
 			<div class="inputs center">
 				<b class="btn save-arctic">Salva Articolo</b>

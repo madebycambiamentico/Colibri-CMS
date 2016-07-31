@@ -29,7 +29,7 @@ body.modalbox-blocked{
 	bottom:5%;
 	height:90%;
 	/* top, max-height and height should be added dynamically */
-	transform: translateZ(0) translateY(20px);
+	transform: translateZ(0) translateY(-20px);
 	z-index:99999;
 	visibility:hidden;
 	opacity:0;
@@ -95,7 +95,7 @@ body.modalbox-blocked{
 .popup-cont.full .popup iframe{
 	border: none;
 	width: 100%;
-	height: 100%;
+	height: 99.5%;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	padding-top: 31px;
