@@ -1,0 +1,7 @@
+{
+    "Colibri\/Comments": {
+        "installed": true,
+        "active": true,
+        "custom": "comments-custom.php"
+    }
+}
