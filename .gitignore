@@ -60,5 +60,5 @@ Temporary Items
 source/sitemap*.xml
 source/database/encryption*.php
 source/database/mbcsqlite3*.db
-source/plugin/*.json
+source/plugin/list.json
 source/plugin/Colibri/Comment/scss/bourbon/*

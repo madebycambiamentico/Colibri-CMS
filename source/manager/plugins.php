@@ -90,7 +90,7 @@ EOD
 			<h1>MBC - Plugins Manager</h1>
 		
 			<div class="inputs maxi aligned">
-				<h4>Titolo del sito</h4>
+				<h4>Plugin disponibili</h4>
 				<div id="all-plugins"><?php
 					$plug_prefix_url = $Config->script_path . 'plugin/';
 					foreach($PlugManager->available as $plug_url => $plugin){

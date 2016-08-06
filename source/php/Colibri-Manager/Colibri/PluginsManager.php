@@ -67,13 +67,16 @@ class PluginsManager{
 	
 	
 	
-	private function reset_plugins(){
-		$this->plugins		= [];
-			$this->js		= [];
-			$this->style	= [];
-			$this->center	= [];
-			$this->right	= [];
-			$this->db		= [];
+	private function reset_plugins($hard=false){
+		$this->style			= [];		//list of plugins that add styles
+		$this->js				= [];		//list of plugins that add scripts
+		$this->popup			= [];		//list of plugins that add popups
+		$this->center			= [];		//list of plugins that add something in center panel
+		$this->right			= [];		//list of plugins that add something in right panel
+		$this->db				= [];		//list of plugins that do something in database when form is submitted
+		$this->postdb			= [];		//list of plugins that do something in database when form is submitted
+		if ($hard)
+			$this->available	= [];		//list of plugins to be loaded. it is an associative array "<plugin name>" => [ <properties> ]
 	}
 	
 	
@@ -98,7 +101,7 @@ class PluginsManager{
 		$plugins_json = $this->get_plugins_status();
 		$this->available = [];
 		//reset plugins if you have to fetch (again)
-		if ($page) $this->reset_plugins();
+		if ($page) $this->reset_plugins(true);
 		//-- authors:
 		$authors = array_slice( scandir(\CMS_INSTALL_DIR . "/plugin/"), 2 );
 		foreach ($authors as $i => $af){
@@ -217,9 +220,9 @@ class PluginsManager{
 	* store registered plugins in memory
 	*
 	* @param (string) $page			Manager page to search for plugins
-	* @param (string) $filter		Filters to apply: "installed", "active". default are both true.
-	*										Careful! If "active" filter is false => plugins fetched are only the de-activated ones!!!
-	*										(same goes for "installed" filter)
+	* @param (string) $filter		Filters to apply: "installed", "active". default: null (any status).
+	*										Careful! If "active" filter is false, then plugins fetched are only the de-activated ones! (same goes for "installed" filter)
+	*										If no filter is provided (or null), all plugins in any status will be fetched.
 	*/
 	public function fetch_plugins($page, $filter=null){
 		if (!empty($filter)){
@@ -235,13 +238,13 @@ class PluginsManager{
 		//reset plugins if you have to fetch (again)
 		$this->reset_plugins();
 		//current json containing installed + status of plugins
-		$plugins_json = $this->get_plugins_status();
+		$plugins_json = $this->available;
 		
 		foreach ($plugins_json as $plugin_name => $prop){
 			if (
 				!is_null($filter) &&
-				$this->available[$plugin_name]['installed'] !== $filter['installed'] &&
-				$this->available[$plugin_name]['active'] !== $filter['active']
+				($this->available[$plugin_name]['installed'] !== $filter['installed'] ||
+				$this->available[$plugin_name]['active'] !== $filter['active'])
 			){
 				continue;
 			}
