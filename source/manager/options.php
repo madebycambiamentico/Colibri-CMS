@@ -16,6 +16,7 @@ $SessionManager->sessionStart('colibri');
 allow_user_from_class(2);
 
 $Colibrì = new \Colibri\Template;
+$Pop = new \Colibri\Popups;
 $PlugManager = new \Colibri\PluginsManager(false, 'options', ['active' => true]);
 
 ?><!DOCTYPE html>
@@ -48,32 +49,40 @@ $PlugManager = new \Colibri\PluginsManager(false, 'options', ['active' => true])
 
 <!-- START popups -->
 
-<?php $PlugManager->run_plugins( 'popup' ); ?>
 
-<div class="popup-cont" id="templates-pop">
-	<div class="popup overthrow">
-		<div>
-		<h5></h5>
-		<div id="all-templates"></div>
-		</div>
-	</div>
-	<h4>Templates disponibili</h4>
+<?php
+
+	$PlugManager->run_plugins( 'popup' );
+
+	//--- TEMPLATES CHOICE
+	$Pop->generic(
+		'templates-pop',[],					//popup id and classes
+		'Templates disponibili',			//title
+		'',[],									//inner div id and classes
+		//inner div html
+		<<<HTML
+<div id="all-templates"></div>
+HTML
+	);
+	
+	
+	//--- LANGUAGES CHOICE
+	$Pop->generic(
+		'languages-pop',[],					//popup id and classes
+		'Templates disponibili',			//title
+		'',[],									//inner div id and classes
+		//inner div html
+		<<<HTML
+<br>
+<div id="lang-codes"></div>
+<br>
+<div class="inputs center">
+	<b class="btn" id="lang-apply">Applica</b>
 </div>
-
-
-<div class="popup-cont" id="languages-pop">
-	<h4>Lingue supportate dal sito</h4>
-	<div class="popup overthrow">
-		<br>
-		<br>
-		<div id="lang-codes"></div>
-		<br>
-		<div class="inputs center">
-			<b class="btn" id="lang-apply">Applica</b>
-		</div>
-		<br>
-	</div>
-</div>
+<br>
+HTML
+	);
+?>
 
 <!-- END popups -->
 

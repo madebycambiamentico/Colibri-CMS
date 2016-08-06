@@ -169,11 +169,13 @@ class PluginsManager{
 			if ($plugins_json = @file_get_contents($plugins_json)){
 				//get json in array mode
 				if ($plugins_json = json_decode($plugins_json,true)){
-					if ($update_available) $this->available = $plugins_json;
+					if ($update_available)
+						$this->available = $plugins_json;
 					return $plugins_json;
 				}
 				else{
-					if ($update_available) $this->available = [];
+					if ($update_available)
+						$this->available = [];
 					return [];
 				}
 			}

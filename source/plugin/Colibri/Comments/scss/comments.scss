@@ -1,0 +1,389 @@
+@import "bourbon/_bourbon";
+
+//configuration color
+$color-bkg:			(dark: #1d1d1d,	light: #eee);
+$color-font:		(dark: #ddd,		light: #000);
+$color-author:		(dark: #2588F6,	light: #3B56CC);
+$color-date:		(dark: #777,		light: #777);
+$color-line:		(dark: #eee,		light: #444);
+$color-line-btn:	(dark: #444,		light: #aaa);
+$color-img:			(dark: #fff,		light: #fff);
+$color-img-shdw:	(dark: #060606,	light: #666);
+$color-hr:			(dark: #777,		light: #ccc);
+$color-reply-bkg:	(dark: #4374FF,	light: #3B56CC);
+$color-reply-bkgh:(dark: #1C4ACE,	light: #1C4ACE);
+$color-reply-font:(dark: #fff,		light: #fff);
+$color-load-bg:	(dark: #ccc,		light: #ccc);
+
+//chose template
+$template: light;
+
+//variables
+$linebox-lp: 60px;					//total width space used for (small circle + image + lines)
+$line-b: 2px;							//line width (>= 2, better even (2+2*n)
+$circle-btn-w: 32px;					//PLUS CIRCLE: inner width (diameter)
+$circle-btn-incr: 6px;				//PLUS CIRCLE: increase of inner width on hover
+$circle-big-w: 32px+16px;			//INITIAL CIRCLE: inner width (diameter)
+$circle-w: 10px;						//SMALL CIRCLE: inner width (diameter)
+$circle-b: 2px;						//SMALL CIRCLE: border width
+$img-w: 32px;							//PROFILE IMAGE CIRCLE: inner width (diameter)
+$img-b: 1px;							//PROFILE IMAGE CIRCLE: border width
+
+//automatically computed variables
+$circle-half: $circle-w / 2 + $circle-b;
+$circle-big-half: $circle-big-w / 2 + $circle-b;
+$circle-btn-half: $circle-btn-w / 2;
+$img-half: $img-w / 2 + $img-b;
+$line-half: $line-b / 2;
+
+//dependant variables
+$cont-pad: ($circle-big-half + 5px) 10px 20px 10px;		//main container padding
+
+#colibri-comments{
+	font: normal 13px/1.3 'open sans',helvetica,arial,sans-serif;
+	background:		map-get($color-bkg, $template);
+	color:			map-get($color-font, $template);
+	border-top:		$line-b solid map-get($color-line, $template);
+}
+
+#cmt-all{
+	position:	relative;
+	padding:		$cont-pad;
+	max-width:	800px;
+	margin:		0 auto;
+	font-size:	13px;
+	
+	*{
+		padding:	0;
+		margin:	0;
+	}
+	
+	.cmt-1st-line{
+		position:	absolute;
+		border:		$line-half solid map-get($color-line, $template);
+		top:			0;
+		margin-left: - $line-half;
+		height:		nth($cont-pad, 1) + $line-half;
+		left:			nth($cont-pad, 4) + $circle-half;
+	}
+	
+	.cmt-1st-circle{
+		position:		absolute;
+		cursor:			pointer;
+		background:		url(../img/logo-32.png) #eee no-repeat center;
+		border:			$circle-b solid map-get($color-author, $template);
+		/*@include box-shadow(0 0 5px map-get($color-img-shdw, $template));*/
+		width:			$circle-big-w;
+		height:			$circle-big-w;
+		top:				- $circle-big-half - 1px;
+		margin-left:	- $circle-big-half;
+		left:				nth($cont-pad, 4) + $circle-half;
+		@include transform(rotate(0deg));
+		@include transition(transform 0.4s);
+		@include border-radius(50%);
+		
+		&:hover{
+			width:			$circle-big-w + $circle-btn-incr;
+			height:			$circle-big-w + $circle-btn-incr;
+			line-height:	$circle-big-w + $circle-btn-incr;
+			top:				- $circle-big-half - $circle-btn-incr / 2 - 1px;
+			margin-left:	- $circle-big-half - $circle-btn-incr / 2;
+			@include transform(rotate(360deg));
+		}
+	}
+	
+	.cmt-1st-circle-btn{
+		position:			absolute;
+		cursor:				pointer;
+		background:			#eee;
+		width:				$circle-btn-w;
+		height:				$circle-btn-w;
+		line-height:		$circle-btn-w;
+		font-size:			26px;
+		text-align:			center;
+		color:				#222;
+		top:					- $circle-btn-half - 1px;
+		margin-left:		- $circle-btn-half;
+		left:					nth($cont-pad, 4) + $circle-half + $circle-big-half + $circle-btn-half + 16px;
+		@include border-radius(50%);
+		@include box-shadow(0 0 5px map-get($color-img-shdw, $template));
+		
+		&:hover{
+			width:			$circle-btn-w + $circle-btn-incr;
+			height:			$circle-btn-w + $circle-btn-incr;
+			line-height:	$circle-btn-w + $circle-btn-incr;
+			top:				- $circle-btn-half - $circle-btn-incr / 2 - 1px;
+			margin-left:	- $circle-btn-half - $circle-btn-incr / 2;
+		}
+	}
+	
+	.cmt-box{
+		.cmt-box{
+			margin-left: $linebox-lp - $img-half - $circle-half;
+		}
+	}
+	
+	.cmt-comment{
+		position:		relative;
+		padding:			4px 8px 16px $linebox-lp + 8px;
+		text-align:		justify;
+		
+		a.cmt-author{
+			color:			map-get($color-author, $template);
+			font-weight:	600;
+		}
+		
+		i.cmt-date{
+			font-size:		smaller;
+			padding:			0 4px;
+			color:			map-get($color-date, $template);
+		}
+		
+		hr{
+			border:				none;
+			border-bottom:		$line-half solid map-get($color-hr, $template);
+			padding-top:		8px;
+		}
+		
+		a.cmt-reply{
+			cursor:				pointer;
+			color:				map-get($color-reply-font, $template);
+			background:			map-get($color-reply-bkg, $template);
+			display:				block;
+			position:			absolute;
+			$temp-height:		22px;
+			height:				$temp-height;
+			line-height:		$temp-height;
+			font-size:			11px;
+			text-transform:	uppercase;
+			padding:				0 8px;
+			right:				0;
+			bottom:				16px - $temp-height / 2;
+			@include border-radius(4px);
+			
+			&:hover{
+				background: map-get($color-reply-bkgh, $template);
+			}
+			&:hover + hr{
+				border-color: map-get($color-reply-bkgh, $template)
+			}
+		}
+
+		& li {
+			list-style-position: inside;
+			text-indent: -1em;
+			padding-left: 1.2em;
+		}
+		/*& ul li{
+			list-style-type: circle;
+		}*/
+		
+		& + .cmt-boxes > .cmt-link{
+			display:			none;
+			position:		absolute;
+			border:			$line-half solid map-get($color-line, $template);
+			top:				0;
+			bottom:			0;
+			margin-left:	- $line-half;
+			left:				$circle-half;
+		}
+		&.cmt-hasnext + .cmt-boxes > .cmt-link{
+			display:			block;
+		}
+		
+		&.cmt-hasnext > .cmt-lines .cmt-toparent{
+			height: 100%;
+		}
+		
+		&.cmt-haschild > .cmt-lines .cmt-tochild ~ .cmt-circle{
+			cursor:					pointer;
+			background-color:		map-get($color-line, $template);
+		}
+	}
+	
+	
+	.cmt-lines{
+		position:	absolute;
+		top:			0;
+		left:			0;
+		width:		$linebox-lp;
+		height:		100%;
+		
+		p{
+			position:	absolute;
+			border:		$line-half solid map-get($color-line, $template);
+		}
+		
+		.cmt-toprofile{
+			top:				$img-half;
+			margin-top:		- $line-half;
+			left:				$circle-half;
+			width:			$linebox-lp - $circle-half - $img-half;
+		}
+		
+		.cmt-toparent{
+			top:				0;
+			margin-left:	- $line-half;
+			left:				$circle-half;
+			height:			$img-half - $line-b;
+		}
+		
+		.cmt-tochild{
+			display:			none;
+			top:				$img-half;
+			bottom:			0;
+			margin-left:	- $line-half;
+			left:				$linebox-lp - $img-half;
+		}
+		
+		.cmt-circle{
+			background:		map-get($color-bkg, $template);
+			border-width:	$circle-b;
+			width:			$circle-w;
+			height:			$circle-w;
+			top:				$img-half;
+			margin-top:		- $circle-half;
+			left:				0;
+			@include border-radius($circle-half);
+			@include transform(scale(0.4));
+			@include transition(transform 0.4s 0.1s);
+		}
+		
+		img{
+			position:		absolute;
+			background:		map-get($color-img, $template);
+			border:			$img-b solid map-get($color-line, $template);
+			width:			$img-w;
+			height:			$img-w;
+			top:				0;
+			left:				$linebox-lp - 2 * $img-half;
+			@include border-radius($img-half);
+			@include box-shadow(0 0 5px map-get($color-img-shdw, $template));
+		}
+	}
+	
+	&.no-reply .cmt-1st-circle-btn{
+		display:none;
+	}
+	
+	&.closed, &.empty{
+		padding-top:		0;
+		padding-bottom:	0;
+	}
+	&.closed .cmt-box,
+	&.closed .cmt-1st-line,
+	&.empty .cmt-box,
+	&.empty .cmt-1st-line{
+		display:none;
+	}
+	.cmt-box > .cmt-boxes{
+		position:	relative;
+		display:		none;
+	}
+	
+	//circle animation
+	&.fancy > .cmt-box > .cmt-comment .cmt-circle,
+	.cmt-box.fancy > .cmt-boxes > .cmt-box > .cmt-comment .cmt-circle{
+		@include transform(scale(1.0));
+	}
+	
+	//opened message - highlighted circle and open childrens
+	.cmt-box.open > .cmt-comment .cmt-circle{
+		//border-color:			map-get($color-author, $template);
+		background-color:		map-get($color-bkg, $template)!important;
+		@include transform(scale(1.45)!important);
+		
+		&::before,
+		&::after{
+			content:" ";
+			display:			block;
+			position:		absolute;
+			//top:				0;
+			//left:				0;
+			background:		map-get($color-bkg, $template);
+			width:			2 * $circle-half + 2px;
+			height:			$line-b;
+			margin:			(- $line-b / 2) 0 0 (- $circle-b - 1px)
+		}
+		&::after{
+			@include transform(translateY($circle-w / 2) rotate(45deg));
+		}
+		&::before{
+			@include transform(translateY($circle-w / 2) rotate(-45deg));
+		}
+	}
+	.cmt-box.open > .cmt-boxes,
+	.cmt-box.open > .cmt-comment.cmt-haschild .cmt-tochild{
+		display:block;
+	}
+}
+
+.cmt-loader{
+	height:					4px;
+	width:					100%;
+	position:				relative;
+	overflow:				hidden;
+	background-color:		map-get($color-load-bg, $template);
+	
+	.loading &::before{
+		display:				block;
+		position:			absolute;
+		content:				" ";
+		left:					-200px;
+		width:				200px;
+		height:				4px;
+		background-color: map-get($color-author, $template);
+		@include animation(cmt-loading 2s linear infinite);
+	}
+}
+
+.popup-cont .cmt-loader{
+	position:absolute;
+	top:31px;
+	left:0;
+}
+
+.popup-cont.cmt-form{
+	& .cmt-logo{
+		width:			128px;
+		height:			128px;
+		background:		url(../logo.png) no-repeat center;
+		margin:			0 auto 16px;
+	}
+	& p{
+		padding:0 0 8px;
+	}
+	& .cmt-ac{
+		text-align: center;
+	}
+	& .cmt-btn{
+		cursor:pointer;
+		font:				normal 13px/1.3 'open sans',helvetica,arial,sans-serif;
+		text-transform: uppercase;
+		font-weight:	600;
+		display:			inline-block;
+		background:		#3274D8;
+		border:			none;
+		color:			#fff;
+		padding:			6px 12px;
+		margin-top:		16px;
+		@include border-radius(4px);
+		
+		&:hover{
+			background: #4B91FB
+		}
+		
+		&:active{
+			background: #2B5CA7
+		}
+	}
+}
+
+@include keyframes(cmt-loading){
+	from {left: -200px; width: 200px;}
+	50%  {width: 30%;}
+	70%  {width: 70%;}
+	80%  {left: 50%;}
+	95%  {left: 120%;}
+	to   {left: 100%;}
+}

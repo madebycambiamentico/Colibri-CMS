@@ -46,9 +46,14 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+#Compass.app files
+.sass-cache
+*.rb
+
 # Probably anything zipped is only a container of debugs
 # so ignore all zipped files in colibrì cms.
 *.zip
+*.7z
 
 # Colibrì CMS private files
 *.htaccess
@@ -56,4 +61,5 @@ source/sitemap*.xml
 source/database/encryption_key*.php
 source/database/encryption_db_name*.php
 source/database/mbcsqlite3*.db
-source/plugin/Colibri*
+source/plugin/*.json
+source/plugin/Colibri/Comment/scss/bourbon/*

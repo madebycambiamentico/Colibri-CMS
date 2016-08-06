@@ -34,8 +34,11 @@ class Setup {
 	}
 	
 	private function check_login(){
-		$SessionManager = new \Colibri\SessionManager();
-		$SessionManager->sessionStart('colibri');
+		global $SessionManager;
+		if (!isset($SessionManager){
+			$SessionManager = new \Colibri\SessionManager();
+			$SessionManager->sessionStart('colibri');
+		}
 		if (isset($_SESSION['uid']) && $_SESSION['uclass'] >= 2){
 			return true;
 		}

@@ -1,0 +1,45 @@
+{
+    "author": "Colibri",
+    "title": "Comments",
+    "version": "1.0.0",
+    "options": {
+        "editor": {
+            "right": "manager\/comments-editor-R.inc.php",
+            "db": "manager\/comments-editor-db.inc.php"
+        },
+        "options": {
+            "right": "manager\/comments-options-R.inc.php",
+            "db": "manager\/comments-options-db.inc.php"
+        },
+        "custom": "manager\/comments-custom.php"
+    },
+    "template": {
+        "ethereal": {
+            "top": [
+                "template\/comments-session.inc.php"
+            ]
+        },
+        "style": {
+            "auto": [
+                "\/css\/modalbox.min.css",
+                "TinyEditor\/style.min.css",
+                "css\/comments.dark.min.css"
+            ]
+        },
+        "js": {
+            "auto": [
+                "\/js\/simple-modal-box.min.js",
+                "js\/comments.min.js"
+            ]
+        },
+        "body": {
+            "auto": [
+                "template\/comments.inc.php"
+            ],
+            "bottom": [
+                "template\/comments.modalbox.inc.php"
+            ]
+        }
+    },
+    "require": "<i>Colibr\u00ec Comment plugin &copy;2016<\/i> will enable users to comment all your pages.<br>In the options you can choose if comments can be made by everyone, by users only, and even the minimum class of users that are allowed to comment.<br><b>The plugins require jquery 1 or 2, latest version!<\/b>"
+}

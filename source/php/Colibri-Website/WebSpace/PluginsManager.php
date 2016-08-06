@@ -61,15 +61,17 @@
 *   1. no actions are taken by the PluginsManager. It's the template which manage positions and calls.
 *      So the template has hardcoded calls to plugins which have to be already intalled.
 * -----------------------------------------
-* Positions should contain an array of relative path from plugin folder for each file to be loaded in that position.
-* Exception are the groups "style" and "js" in which you can specify any external url starting with "http(s)://"
+* Positions should contain an array of relative path from plugin folder, for each file to be loaded in that position.
+* Exceptions are the groups "style" and "js" in which:
+* - you can specify any external url starting with "http(s)://", or
+* - you can specify an existing file from installation dir using url starting with "/".
 *
 * @author Nereo Costacurta (http://colibricms.altervista.org)
 */
 
 class PluginsManager{
 	
-	private $plugins			= null;	//list of plugins to be loaded. it is an associative array "<plugin name>" => [ <properties> ]
+	public $plugins			= null;	//list of plugins to be loaded. it is an associative array "<plugin name>" => [ <properties> ]
 		private $head			= null;	//list of plugins that do something in <head>
 		private $style			= null;	//list of plugins that add styles
 		private $js				= null;	//list of plugins that add scripts
@@ -156,9 +158,12 @@ class PluginsManager{
 											//external url (http://...)
 											if ( preg_match("#^http[s]?://#",$file) )
 												$this->{$group}[$pos][] = $file;
-											//local url
+											//local url (rel. path from installation dir)
+											elseif ($file[0] === '/')
+												$this->{$group}[$pos][] = $Config->script_path . substr($file,1);
+											//local url (rel. path from plugin dir)
 											else
-												$this->{$group}[$pos][] = $Config->script_path . $file;
+												$this->{$group}[$pos][] = $Config->script_path . "plugin/{$plug_folder}/" . $file;
 										}
 									break;
 									//other files are INCLUDED (should be php files)
@@ -195,7 +200,7 @@ class PluginsManager{
 	* print css stylesheet link
 	*/
 	public function print_css($css){
-		echo '<link rel="stlesheet" href="'.htmlentities($css,ENT_QUOTES).'">';
+		echo '<link rel="stylesheet" type="text/css" href="'.htmlentities($css,ENT_QUOTES).'">';
 	}
 	
 	
