@@ -58,8 +58,7 @@ Temporary Items
 # Colibrì CMS private files
 *.htaccess
 source/sitemap*.xml
-source/database/encryption_key*.php
-source/database/encryption_db_name*.php
+source/database/encryption*.php
 source/database/mbcsqlite3*.db
 source/plugin/*.json
 source/plugin/Colibri/Comment/scss/bourbon/*
