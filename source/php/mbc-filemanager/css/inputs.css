@@ -130,11 +130,11 @@ ul.list>li::before{
 	line-height: 20px;
 	font-size: 14px;
 	padding: 4px 12px;
-	color: #333;
-	text-shadow: 0px 1px 1px #fff;
-	background-color: #f0f0f0;
-	background-image: linear-gradient(to bottom, #FFF, #E6E6E6);
-	border: 1px solid #B3B3B3;
+	color: #fff;
+	text-shadow: 0px 1px 1px #171E6B;
+	background-color: #495FFF;
+	background-image: linear-gradient(to bottom, #2DBCFF, #495FFF);
+	border: 1px solid #566AFF;
 	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset, 0px 1px 2px rgba(0, 0, 0, 0.05);
 	border-radius: 4px;
 	vertical-align: bottom;
@@ -164,15 +164,14 @@ ul.list>li::before{
 	border-radius: 0px 0px;
 }
 .inputs .btn:hover{
-	background-color: #f9f9f9;
-	background-image: linear-gradient(to bottom, #FFF, #f0f0f0);
-	border-color: #93A9CF;
+	background-color: #6C7EFF;
+	background-image: linear-gradient(to bottom, #70D1FF, #6C7EFF);
 }
 .inputs .btn:active{
 	top:1px;
-	background-color: #ddd;
-	background-image: linear-gradient(to bottom, #D9E0E4, #eee);
-	border-color: #919FB6;
+	background-color: #495FFF;
+	background-image: linear-gradient(to bottom, #495FFF, #2DBCFF);
+	border-color: #93A9CF;
 }
 .inputs .btn.red:hover{
 	background-color: #c00;

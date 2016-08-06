@@ -17,6 +17,7 @@ allow_user_from_class(1);
 
 $Colibrì = new \Colibri\Template;
 $Pop = new \Colibri\Popups;
+$PlugManager = new \Colibri\PluginsManager(false, 'albums', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -30,7 +31,10 @@ $Pop = new \Colibri\Popups;
 	<meta name="description" content="">
 	<meta name="author" content="Costacurta Nereo">
 	
-	<?php $Colibrì->getBaseCss() ?>
+	<?php
+		$Colibrì->getBaseCss();
+		$PlugManager->run_plugins( 'style' );
+	?>
 
 	<style type="text/css">
 	</style>
@@ -46,8 +50,9 @@ $Pop = new \Colibri\Popups;
 
 <!-- START popups -->
 
-<?php $Pop->getForAlbums() ?>
+<?php $PlugManager->run_plugins( 'popup' ); ?>
 
+<?php $Pop->getForAlbums() ?>
 
 <?php $Pop->getForFileManager() ?>
 
@@ -76,7 +81,13 @@ $Pop = new \Colibri\Popups;
 	
 		<!-- START album editor -->
 		<div class="main">
-			<?php $Colibrì->getaAlbumEditor(); ?>
+			<?php
+			
+				$Colibrì->getaAlbumEditor();
+				
+				$PlugManager->run_plugins( 'center' );
+			
+			?>
 		</div>
 		<!-- END album editor -->
 		
@@ -130,6 +141,9 @@ closeConnection();
 <!-- main script -->
 <script src="js/common.js"></script>
 <script src="js/albums-manager.min.js"></script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

@@ -17,6 +17,7 @@ allow_user_from_class(0); // allow everybody to change his profile (if logged in
 
 $Colibrì = new \Colibri\Template;
 $Pop = new \Colibri\Popups;
+$PlugManager = new \Colibri\PluginsManager(false, 'profile', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -33,6 +34,7 @@ $Pop = new \Colibri\Popups;
 	<?php $Colibrì->getBaseCss() ?>
 	<link rel="stylesheet" href="<?php $Colibrì->link("php/mbc-filemanager/js/dropzone-4.2.0/dist/fallback.css") ?>">
 	<link rel="stylesheet" href="<?php $Colibrì->link("css/profile.min.css") ?>">
+	<?php $PlugManager->run_plugins( 'style' ); ?>
 
 	<style type="text/css">
 	</style>
@@ -47,6 +49,8 @@ $Pop = new \Colibri\Popups;
 
 
 <!-- START popups -->
+
+<?php $PlugManager->run_plugins( 'popup' ); ?>
 
 <div class="popup-cont" id="upload-files">
 	<h4>Carica o Sovrascrivi i files</h4>
@@ -151,6 +155,9 @@ if ($pdores = $pdo->query("SELECT * FROM utenti WHERE id = ".$_SESSION['uid']." 
 	endforeach;
 	if (!$hasrows) logout('nouser');//should not happen...
 }
+
+$PlugManager->run_plugins( 'center' );
+
 ?>
 		</div>
 		<!-- END main -->
@@ -185,6 +192,9 @@ if ($pdores = $pdo->query("SELECT * FROM utenti WHERE id = ".$_SESSION['uid']." 
 				<p><textarea id="my-password-hint" class="short" placeholder="Suggerimento..."><?php echo htmlentities($r['passhint']); ?></textarea></p>
 			</div>
 			
+			
+			<?php $PlugManager->run_plugins( 'right' ); ?>
+			
 			<div class="inputs center">
 				<br>
 				<b id="savePass" class="btn">Salva modifiche Password</b>
@@ -218,6 +228,9 @@ closeConnection();
 <!-- main script -->
 <script src="js/common.js"></script>
 <script src="js/profile.min.js"></script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 
 </body>

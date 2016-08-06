@@ -16,6 +16,11 @@ if (!isset($Config)){
 	die;
 }
 
+$PlugManager = new \WebSpace\PluginsManager;
+
+$PlugManager->run_plugins('ethereal','top');
+$PlugManager->run_plugins('ethereal','auto');
+
 //load template classes (custom)
 require_once __DIR__ . '/php/link.class.php';
 
@@ -24,43 +29,62 @@ require_once __DIR__ . '/php/link.class.php';
 <html lang="<?php echo CMS_LANGUAGE ?>">
 <head>
 	<title><?php echo htmlentities($web['titolo']); ?></title>
-	<?php include __DIR__ . '/_meta.php' ?>
-	
 	<?php
+		$PlugManager->run_plugins('head','top');
+		
+		include __DIR__ . '/_meta.php';
+		
+		$PlugManager->run_plugins('head','auto');
+		
 		//main stylesheet
 		Links::stylesheet('style.css');
+		$PlugManager->run_plugins('style','top');
 	?>
 	
 	<!-- custom stylesheet browser-sensitive or article-sensitive :) -->
 	<!--[if lte IE 9]><style type="text/css">#contactform label{display:block}</style><![endif]-->
-	<style type="text/css">
 	<?php
 		if ($page['src']):
 			$cssurl = addslashes(str_replace(['(',')'],['\\(','\\)'], $page['src']));
 			//you should add @media for multiple sizes (mobile-friendly)
 	?>
-	/* customized main image from database */
-	.image-main{
-		background-image:url('<?php echo Links::thumb('L1024/'.$cssurl) ?>');
-	}
-	@media only screen and (max-width:768px){
+	<style type="text/css">
+		/* customized main image from database */
 		.image-main{
-			background-image:url('<?php echo Links::thumb('L768/'.$cssurl) ?>');
+			background-image:url('<?php echo Links::thumb('L1024/'.$cssurl) ?>');
 		}
-	}
-	@media only screen and (max-width:520px){
-		.image-main{
-			background-image:url('<?php echo Links::thumb('L520/'.$cssurl) ?>');
+		@media only screen and (max-width:768px){
+			.image-main{
+				background-image:url('<?php echo Links::thumb('L768/'.$cssurl) ?>');
+			}
 		}
-	}
+		@media only screen and (max-width:520px){
+			.image-main{
+				background-image:url('<?php echo Links::thumb('L520/'.$cssurl) ?>');
+			}
+		}
+	</style>
 	<?php
 		endif;
 	?>
-	</style>
+	<!-- plugins -->
+	<?php
+	
+		//styles
+		$PlugManager->run_plugins('style','auto');
+		$PlugManager->run_plugins('style','bottom');
+		
+		//javascript
+		$PlugManager->run_plugins('js','top');
+		
+		//others
+		$PlugManager->run_plugins('head','bottom');
+	?>
 </head>
 
 
 <body>
+<?php $PlugManager->run_plugins('body','top'); ?>
 
 <div id="mapmark"></div>
 
@@ -144,15 +168,19 @@ require_once __DIR__ . '/php/link.class.php';
 </div>
 
 
-<?php include __DIR__ . '/_quotation.php' ?>
 
-<?php include __DIR__ . '/_news.php' ?>
-
-<?php include __DIR__ . '/_links.php' ?>
-
-<?php include __DIR__ . '/_powered.php' ?>
-
-<?php include __DIR__ . '/_contact.php' ?>
+<?php
+	$PlugManager->run_plugins('body','auto');
+	
+	include __DIR__ . '/_quotation.php';
+	include __DIR__ . '/_news.php';
+	include __DIR__ . '/_links.php';
+	include __DIR__ . '/_powered.php';
+	
+	$PlugManager->run_plugins('body','bottom');
+	
+	include __DIR__ . '/_contact.php';
+?>
 
 
 
@@ -165,9 +193,15 @@ require_once __DIR__ . '/php/link.class.php';
 <?php
 	Links::script('js/main.min.js');
 	
-	if (isset($YTIframeJsParams))
+	if (isset($YTIframeJsParams)){
 		Links::script('_YTiframe.js.php?'.$YTIframeJsParams);
+	}
+	
+	$PlugManager->run_plugins('js','auto');
+	$PlugManager->run_plugins('js','bottom');
 ?>
 
 </body>
 </html>
+
+<?php $PlugManager->run_plugins('ethereal','bottom'); ?>

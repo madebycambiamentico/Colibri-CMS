@@ -16,6 +16,8 @@ $SessionManager->sessionStart('colibri');
 allow_user_from_class(2);
 
 $Colibrì = new \Colibri\Template;
+$Pop = new \Colibri\Popups;
+$PlugManager = new \Colibri\PluginsManager(false, 'options', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -29,72 +31,11 @@ $Colibrì = new \Colibri\Template;
 	<meta name="description" content="">
 	<meta name="author" content="Costacurta Nereo">
 	
-	<?php $Colibrì->getBaseCss() ?>
+	<?php $Colibrì->getBaseCss(); ?>
+	<link rel="stylesheet" href="<?php $Colibrì->link("css/options.min.css") ?>">
+	<?php $PlugManager->run_plugins( 'style' ); ?>
 
 	<style type="text/css">
-	#all-templates{
-		line-height:0;
-	}
-	#all-templates input{
-		visibility:hidden;
-	}
-	.template{
-		max-width:256px;
-		margin:10px;
-		line-height:normal;
-		display:inline-block;
-	}
-	#my-template{
-		display:block;
-		margin:10px auto;
-	}
-	.template .image,
-	.template .imgcont{
-		display:block;
-		height:180px;
-		background:#222 no-repeat center;
-		background-size:cover;
-	}
-	.template p{
-		padding-top:4px;
-	}
-	#lang-options.hidden{
-		display:none;
-	}
-	#lang-open.hidden{
-		visibility:hidden;
-	}
-	#lang-codes{
-		display: flex;
-		flex-wrap: wrap;
-		/*text-align:justify;*/
-		line-height:0;
-	}
-	#lang-codes label i{
-		font-style:normal;
-		font-size:13px;
-	}
-	#lang-codes label{
-		flex: 1 1 auto;
-		height:20px;
-		line-height:20px;
-		display:inline-block;
-		margin:2px;
-		padding:3px 6px;
-		border:1px solid #ccc;
-		/*border-radius: 4px;*/
-		background:#e6e6e6;
-	}
-	#lang-codes label:hover{
-		border-color:#4e94e3;
-	}
-	#lang-codes input:checked + i{
-		/*text-decoration:underline;*/
-		font-weight: bold;
-	}
-	#lang-open{
-		vertical-align:middle;
-	}
 	</style>
 </head>
 
@@ -105,49 +46,45 @@ $Colibrì = new \Colibri\Template;
 
 <body class="tools-bkg">
 
+
+<!-- START popups -->
+
+
 <?php
 
-//find current web properties
-$web = null;
-$pdores = $pdo->query("SELECT * FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC) or die("Errore durante ricerca proprietà web [query]");
-foreach ($pdores as $r){
-	$web = $r;
-}
-$pdores->closeCursor();
-if (!$web) die("Void properties!</body>");
+	$PlugManager->run_plugins( 'popup' );
 
-
-//echo '<pre>'.print_r($web,true).'</pre>';die;
+	//--- TEMPLATES CHOICE
+	$Pop->generic(
+		'templates-pop',[],					//popup id and classes
+		'Templates disponibili',			//title
+		'',[],									//inner div id and classes
+		//inner div html
+		<<<HTML
+<div id="all-templates"></div>
+HTML
+	);
+	
+	
+	//--- LANGUAGES CHOICE
+	$Pop->generic(
+		'languages-pop',[],					//popup id and classes
+		'Templates disponibili',			//title
+		'',[],									//inner div id and classes
+		//inner div html
+		<<<HTML
+<br>
+<div id="lang-codes"></div>
+<br>
+<div class="inputs center">
+	<b class="btn" id="lang-apply">Applica</b>
+</div>
+<br>
+HTML
+	);
 ?>
 
-
-
-<!-- popups -->
-
-<div class="popup-cont" id="templates-pop">
-	<div class="popup overthrow">
-		<div>
-		<h5></h5>
-		<div id="all-templates"></div>
-		</div>
-	</div>
-	<h4>Templates disponibili</h4>
-</div>
-
-
-<div class="popup-cont" id="languages-pop">
-	<h4>Lingue supportate dal sito</h4>
-	<div class="popup overthrow">
-		<br>
-		<br>
-		<div id="lang-codes"></div>
-		<br>
-		<div class="inputs center">
-			<b class="btn" id="lang-apply">Applica</b>
-		</div>
-		<br>
-	</div>
-</div>
+<!-- END popups -->
 
 
 
@@ -168,6 +105,10 @@ if (!$web) die("Void properties!</body>");
 		<!-- START main -->
 		<div class="main">
 			<h1>MBC - WebSite Manager</h1>
+			
+			<div class="inputs maxi tools center">
+				<p><a href="./plugins"><b class="sicon"><i class="options"></i></b> Gestione plugins</a></p>
+			</div>
 		
 			<div class="inputs maxi aligned">
 				<h4>Titolo del sito</h4>
@@ -234,6 +175,8 @@ if (!$web) die("Void properties!</body>");
 				<input id="w-delivery-t" name="delivery[t]" type="number" value="<?php echo $web['delivery_delay'] ?>" min="0" max="3600" placeholder="cooldown invio e-mail (secondi)">
 			</div>
 			
+			<?php $PlugManager->run_plugins( 'center' ); ?>
+			
 			<div class="inputs center hide-on-cell">
 				<b class="btn save-arctic">Aggiorna sito</b>
 			</div>
@@ -266,12 +209,12 @@ if (!$web) die("Void properties!</body>");
 				<p>Chiave segreta (lascia vuoto per non cambiare):</p>
 				<input id="w-recap-2" name="rcptc[s]" type="text" value="" placeholder="secret key">
 			</div>
+		
+			<?php $PlugManager->run_plugins( 'right' ); ?>
 			
 			<div class="inputs center">
 				<b class="btn save-arctic">Aggiorna sito</b>
 			</div>
-			
-			<br><br>
 		
 			<div class="inputs maxi aligned">
 				<?php
@@ -342,6 +285,9 @@ closeConnection();
 <!-- main script -->
 <script src="js/common.js"></script>
 <script src="js/options.min.js"></script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

@@ -1,30 +1,55 @@
 /**
-* @author: nereo costacurta
+* manage popup boxes
 *
-* @project: colibrì CMS | madebycambiamentico
-* @description: popup box multi purpose. Small screen are filled, large screen have margin and can be set max height.
+* popup boxes affected by default have class "popup-cont".
+* to create modalbox you need to setup your html with this teplate:
+*		<div class="popup-cont" id="#custom_id#">
+*			<h4>#custom_title#</h4>
+*			<div class="popup">
+*				<h5></h5>
+*				#custom_content#
+*			</div>
+*		</div>
+* replace #...# with content of your choice
+* to add popup functionality to other element use $(<selector>).modalbox();
+* edit events:
+*		$(element).modalbox(null,{
+*			open :   function(){...},
+*			close :  function(){...},
+*			resize : function(){...}
+*		},true);
+* open close or toggle a modalbox
+*		$(element).modalbox();			// toggle modalbox
+*		$(element).modalbox('open');	// open m.b.
+*		$(element).modalbox('close');	// close m.b.
+* About the default style: small screen are filled, large screen have margin. to customize edit modalbox.css
 *
 * @require: [jquery.js >= 1.11.3]
 *
+* @author: nereo costacurta
 * @license: GPLv3
 * @copyright: (C)2016 nereo costacurta
 */
 
 (function(){
+	//dark background + array of enabled modal boxes
 	var modalBkg = {
 		modals : [],
 		opened : 0,
+		//show dark background
 		open : function(){
 			if (modalBkg.opened) return false;
 			modalBkg.dom.addClass('open');
 			$('body').addClass('modalbox-blocked');
 		},
+		//hide dark background
 		close : function(){
 			if (!modalBkg.opened){
 				modalBkg.dom.removeClass('open');
 				$('body').removeClass('modalbox-blocked');
 			}
 		},
+		//close modalboxes all at once and hide background
 		closeall : function(){
 			if (modalBkg.opened){
 				$.each(modalBkg.modals,function(){
@@ -38,29 +63,41 @@
 	modalBkg.dom = $('<div id="popup-bkg">')
 		.click(modalBkg.closeall)
 		.appendTo('body');
-		
-	function Modal(elem, options, customCallbacks, iscroller){
+	
+	/**
+	* Create and store instance of siple modalbox
+	*
+	* @param (jQuery) elem							The element to attach events.
+	* @param (object) options [optional]		Set custom options: 'maxH', 'maxW'. Options can be added from attribute 'data-h' and 'data-w' too.
+	*														Provided dimensions should be with valid measure units (%, px, cm...).
+	* @param (object) callbacks [optional]		Take 3 params: 'open', 'close', 'resize'. the function passed will be called on that events.
+	* @param (IScroll) iscroller [optional]	Add IScroll entity as "iscroll" to be accessed later by code (if provided)
+	*/
+	function Modal(elem, options, callbacks, iscroller){
 		var self = this;
 		self.isOpen = false;
 		self.O = $.extend({
-			maxH : 0
+			maxH : elem.attr('data-h') ? elem.data('data-h') : 0,
+			maxW : elem.attr('data-w') ? elem.data('data-w') : 0
 		},options);
 		self.on = $.extend({
 			open : $.noop,
 			close : $.noop,
 			resize : $.noop
-		},customCallbacks);
+		},callbacks);
 		self.iscroll = iscroller;
 		
 		//custom id for this element -> searchable in modalBkg.modals[...]
 		var modalid = modalBkg.modals.length;
 		
+		//if iScroll installed, refresh scroller if sizes changed or bad behavior happen...
 		self.refresh = function(){
 			if (self.iscroll) setTimeout(function () {
 				self.iscroll.refresh();
 			}, 0);
 		}
 		
+		//show modalbox, call on.open()
 		self.open = function(){
 			if (self.isOpen) return false;
 			self.isOpen = true;
@@ -73,6 +110,7 @@
 			self.refresh();
 		}
 		
+		//hide modalbox, call on.close()
 		self.close = function(){
 			if (!self.isOpen) return false;
 			$(window).off('resize.mb-'+modalid)
@@ -83,51 +121,90 @@
 			self.on.close(self);
 		}
 		
+		//add max-width and/or max-height to modalbox.
+		self.updateRender = function(){
+			if (self.O.maxH){
+				elem.css('max-height',self.O.maxH)
+			}
+			if (self.O.maxW){
+				elem.css('max-width',self.O.maxW)
+			}
+		}
+		
+		
 		elem.addClass('ready')
-			.append( $('<div class="pop-x">&times;</div>').click(function(){self.close()}) )
+			.append(
+				// X button (close)
+				$('<div class="pop-x">&times;</div>')
+					.click(function(){self.close()})
+			);
+		//set max height if provided
+		self.updateRender();
 	}
 	
-	/*
+	/**
 	* jquery call method: open/close/toggle, and/or edit options and properties
 	*
-	* (object|undefined)			opt -> modal options:
-	*										(int) maxH >= 0, if 0 box height automatic
-	* (object|bool|undefined)	callbacks ->
-	*										if (true|undefined): allow dialog toggle.
-	*										if (false): modalbox not called
-	*										else modal callbacks on...
-	*											(function) open
-	*											(function) resize
-	*											(function) close
-	* (bool)							stopscript -> if true dialog box will not toggle
+	* @param (string|object) opt [optional]
+	*		case 1) modalbox not setup: see Modal param "options"
+	*		case 2) modalbox already setup: accept "open" (force open modalbox), "close" (force close modalbox),
+	*					object to extend Modal param options (deprecated).
+	* @param (object) callbacks [optional]
+	*		case 1) modalbox not setup: see Modal param "callbacks"
+	*		case 2) modalbox already setup: accept 3 functions: 'open', 'close', 'resize'.
+	*					the function passed will be called on that events.
+	* @param (bool) stopscript [optional]
+	*		case 1) modalbox not setup: ignored.
+	*		case 2) modalbox already setup:
+	*					- if true no action to the modalbox will be taken.
+	*					- (default) else the modalbox will be toggled (opened/closed)
+	*
+	* @return (jQuery) the jquery elements passed
 	*/
 	$.fn.modalbox = function(opt,callbacks,stopscript){
 		return this.each(function(){
 			if ('modalbox' in this){
+				var mb = this.modalbox;
 				switch(opt){
 					//close
-					case 'off': this.modalbox.close(); break;
+					case 'close': case 'off':
+						mb.close();
+					break;
 					//open
-					case 'on': this.modalbox.open(); break;
+					case 'open': case 'on':
+						mb.open();
+					break;
 					//toggle
 					default:
-						if (opt !== undefined){
-							//update options in this Modal... before toggle!
-							$.extend(this.modalbox.O, opt);
-							if (callbacks === false) return true;
+						//update options in this Modal... before toggle!
+						if (opt){
+							$.extend(mb.O, opt);
+							mb.updateRender();
 						}
-						if (callbacks !== undefined){
-							//update callbacks in this Modal... before toggle!
-							$.extend(this.modalbox.on, callbacks);
+						
+						//update callbacks in this Modal... before toggle!
+						if (callbacks){
+							$.extend(mb.on, callbacks);
 						}
+						
+						//toggle allowed?
 						if (stopscript) return true;
-						if (this.modalbox.isOpen) this.modalbox.close();
-						else this.modalbox.open();
+						
+						//toggle
+						if (mb.isOpen)
+							mb.close();
+						else
+							mb.open();
 				}
 			}
 			else{
-				this.modalbox = new Modal($(this), opt, callbacks, ('IScroll' in window ? new IScroll(this,{click:true}) : null));
-				modalBkg.modals.push(this.modalbox);
+				var mb = this.modalbox = new Modal(
+					$(this),
+					opt,
+					callbacks,
+					('IScroll' in window ? new IScroll(this,{click:true}) : null)
+				);
+				modalBkg.modals.push(mb);
 			}
 		})
 	}

@@ -17,6 +17,7 @@ allow_user_from_class(1);
 
 $Colibrì = new \Colibri\Template;
 $Pop = new \Colibri\Popups;
+$PlugManager = new \Colibri\PluginsManager(false, 'editor', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -30,7 +31,10 @@ $Pop = new \Colibri\Popups;
 	<meta name="description" content="">
 	<meta name="author" content="Costacurta Nereo">
 	
-	<?php $Colibrì->getBaseCss() ?>
+	<?php
+		$Colibrì->getBaseCss();
+		$PlugManager->run_plugins( 'style' );
+	?>
 
 	<style type="text/css">
 	</style>
@@ -45,6 +49,8 @@ $Pop = new \Colibri\Popups;
 
 
 <!-- START popups -->
+
+<?php $PlugManager->run_plugins( 'popup' ); ?>
 
 <?php $Pop->getForAlbums() ?>
 
@@ -140,17 +146,8 @@ if (isset($_GET['q'])){
 					</div>
 				</div>
 			</div>
-			
-			<?php /*
-			<ul class="inputs maxi aligned">
-				<li>Video in evidenza (opzionale)<br>[work in progress...]</li>
-			</ul>
-			<div class="inputs maxi aligned field-btn">
-				<input id="ealb-video" name="video" type="text" class="ronly" placeholder="video principale..." readonly><!--
-				--><b id="ealb-fm-2-del" class="btn tinymcefont">&#xe012;</b><!--
-				--><b id="ealb-fm-2" class="btn mid tinymcefont">&#xe034;</b>
-			</div>
-			*/ ?>
+		
+			<?php $PlugManager->run_plugins( 'center' ); ?>
 			
 			<div class="inputs center hide-on-cell">
 				<b class="btn save-arctic">Salva Articolo</b>
@@ -260,6 +257,8 @@ if ($pdores = $pdo->query("SELECT id,titolo FROM articoli WHERE idarticolo = {$i
 			<!-- START album selection -->
 			<?php $Colibrì->getaAlbumEditor('<h4>Seleziona Album Fotografico</h4>'); ?>
 			<!-- END album selection -->
+		
+			<?php $PlugManager->run_plugins( 'right' ); ?>
 			
 			<div class="inputs center">
 				<b class="btn save-arctic">Salva Articolo</b>
@@ -297,8 +296,8 @@ closeConnection();
 <script src="js/albums-manager.min.js"></script>
 <script src="js/article-manager.min.js"></script>
 
-<script>
-</script>
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

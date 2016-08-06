@@ -1,0 +1,15 @@
+@mixin box-shadow($property: none) {
+  // none | <transform-function>
+  @include prefixer(box-shadow, $property, webkit moz spec);
+}
+
+@mixin transform-origin($axes: 50%) {
+  // x-axis - left | center | right  | length | %
+  // y-axis - top  | center | bottom | length | %
+  // z-axis -                          length
+  @include prefixer(transform-origin, $axes, webkit moz spec);
+}
+
+@mixin transform-style($style: flat) {
+  @include prefixer(transform-style, $style, webkit moz spec);
+}

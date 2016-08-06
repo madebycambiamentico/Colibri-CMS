@@ -21,6 +21,7 @@ if (isLoggedIn()){
 }
 
 $Colibrì = new \Colibri\Template;
+$PlugManager = new \Colibri\PluginsManager(false, 'login', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -36,6 +37,7 @@ $Colibrì = new \Colibri\Template;
 
 	<link rel="stylesheet" href="<?php $Colibrì->link("php/mbc-filemanager/css/inputs.min.css") ?>">
 	<link rel="stylesheet" href="<?php $Colibrì->link("css/login.min.css") ?>">
+	<?php $PlugManager->run_plugins( 'style' ); ?>
 </head>
 
 
@@ -62,7 +64,7 @@ $Colibrì = new \Colibri\Template;
 		<input type="hidden" name="p" id="my-hashed-pass">
 		<p><input type="password" id="my-password" placeholder="Password..."></p>
 		<br>
-		</div>
+	</div>
 	
 	<div class="inputs center">
 		<b id="send-me" class="btn">Accedi</b>
@@ -81,6 +83,9 @@ $Colibrì = new \Colibri\Template;
 
 <!-- main script -->
 <script src="js/login.min.js"></script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

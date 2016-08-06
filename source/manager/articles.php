@@ -17,6 +17,7 @@ allow_user_from_class(1);
 
 $Colibrì = new \Colibri\Template;
 $Pop = new \Colibri\Popups;
+$PlugManager = new \Colibri\PluginsManager(false, 'articles', ['active' => true]);
 
 ?><!DOCTYPE html>
 
@@ -30,7 +31,10 @@ $Pop = new \Colibri\Popups;
 	<meta name="description" content="">
 	<meta name="author" content="Costacurta Nereo">
 	
-	<?php $Colibrì->getBaseCss() ?>
+	<?php
+		$Colibrì->getBaseCss();
+		$PlugManager->run_plugins( 'style' );
+	?>
 
 	<style type="text/css">
 	</style>
@@ -45,6 +49,8 @@ $Pop = new \Colibri\Popups;
 
 
 <!-- START popups -->
+
+<?php $PlugManager->run_plugins( 'popup' ); ?>
 
 <div class="popup-cont" id="quick-edit-art">
 	<h4>Modifica veloce articolo</h4>
@@ -248,6 +254,9 @@ if ($pdores = $pdo->query($query, PDO::FETCH_ASSOC)){
 	$pdores->closeCursor();
 }
 			?></div>
+		
+		<?php $PlugManager->run_plugins( 'center' ); ?>
+		
 		</div>
 		<!-- END main -->
 
@@ -331,6 +340,9 @@ closeConnection();
 	var artTypes = $.parseJSON('<?php echo json_encode($TYPES) ?>');
 </script>
 <script src="js/articles-list-manager.min.js"></script>
+
+<!-- 3rd party scripts -->
+<?php $PlugManager->run_plugins( 'js' ); ?>
 
 </body>
 </html>

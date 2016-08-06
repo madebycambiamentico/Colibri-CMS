@@ -1,0 +1,91 @@
+.te {
+	border: 1px solid #bbb;
+	padding: 0 1px 1px;
+	font: 13px helvetica,arial,serif;
+	margin: 25px auto;
+}
+.te *{
+	padding:0;
+	margin:0;
+}
+.te iframe {
+	display: block;
+	border: none;
+}
+.teheader {
+	border-bottom: 1px solid #bbb;
+	background: url(images/header-bg.gif) repeat;
+	padding-top: 1px;
+	line-height: 0;
+}
+.teheader select {
+	float: left;
+	margin-top: 5px
+}
+.tefont {
+	margin-left: 12px
+}
+.tesize {
+	margin: 0 3px
+}
+.testyle {
+	margin-right: 12px
+}
+.tedivider {
+	display: inline-block;
+	width: 1px;
+	height: 30px;
+	background: #ccc
+}
+.tecontrol {
+	display: inline-block;
+	width: 34px;
+	height: 30px;
+	cursor: pointer;
+	background-image: url(images/icons.png)
+}
+.tecontrol:hover {
+	background-color: #fff;
+	background-position: 30px 0
+}
+.tefooter {
+	height: 32px;
+	border-top: 1px solid #bbb;
+	background: #f5f5f5
+}
+.toggle {
+	float: left;
+	background: url(images/icons.png) -34px 2px no-repeat;
+	padding: 9px 13px 0 31px;
+	height: 23px;
+	border-right: 1px solid #ccc;
+	cursor: pointer;
+	color: #666
+}
+.toggle:hover {
+	background-color: #fff
+}
+.resize {
+	float: right;
+	height: 32px;
+	width: 32px;
+	background: url(images/resize.gif) 15px 15px no-repeat;
+	cursor: s-resize
+}
+/* textarea element */
+textarea.tesource{
+	border:none;
+	font:13px monospace;
+	resize:none;
+}
+textarea.tesource.no-support{
+	display:block;
+	width:90%;
+	height:250px;
+	max-width:500px;
+	margin: 25px auto;
+	border: 1px solid #bbb;
+	padding:4px;
+	font:14px helvetica,arial,serif;
+	resize:vertical;
+}

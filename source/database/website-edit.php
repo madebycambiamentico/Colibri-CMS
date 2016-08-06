@@ -8,6 +8,7 @@ $SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 
+$PlugManager = new \Colibri\PluginsManager(false, 'options', ['active' => true]);
 
 
 //control variables
@@ -96,6 +97,13 @@ if (isset($_POST['multilanguage']) && isset($_POST['defaultlang'])){
 }
 
 
+//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+// allow plugins to do some magick to query
+// they could add something to $query
+// in form ", <custom_column> = ?". update $params!!!
+$PlugManager->run_plugins( 'db' );
+//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 
 $query .= " WHERE id={$id}";
 
@@ -115,6 +123,12 @@ if (isset($_POST['multilanguage']) && isset($_POST['langs'])){
 		if (!$pdostat->execute($_POST['langs'])) jsonError('Errore durante aggiornamento lingue [execute]');
 	}
 }
+
+//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+// allow plugins to do some magick when the normal query
+// has already run succesfully
+$PlugManager->run_plugins( 'postdb' );
+//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 jsonSuccess();
 

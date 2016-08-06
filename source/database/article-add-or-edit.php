@@ -8,6 +8,8 @@ $SessionManager = new \Colibri\SessionManager;
 $SessionManager->sessionStart('colibri');
 allow_user_from_class(1,true);
 
+$PlugManager = new \Colibri\PluginsManager(false, 'editor', ['active' => true]);
+
 //controllo generale variabili
 if (!isset(
 		$_POST['id'],
@@ -38,7 +40,7 @@ $corpo		= trim($_POST['content']);
 $type			= intval($_POST['type'],10);
 if (empty($titolo) || empty($map) || empty($_POST['type']))
 	jsonError("Controlla di aver correttamente assegnato titolo e contenuto");
-if (in_array($titolo,$reserved_titles))
+if (in_array($titolo,$reserved_titles) || is_file(CMS_INSTALL_DIR.'/'.$map))
 	jsonError("Questo titolo è riservato! Cambialo.");
 
 	
@@ -113,6 +115,14 @@ if ($id){
 		$query .= ", idimage = (SELECT id FROM immagini WHERE src = ? LIMIT 1)";
 		$params[] = $image;
 	}
+	
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	// allow plugins to do some magick to query
+	// they could add something to $query
+	// in form ", <custom_column> = ?". update $params!!!
+	$PlugManager->run_plugins( 'db' );
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	
 	$query .= " WHERE id = {$id}";
 	//exit($query);
 	//UPDATE
@@ -136,6 +146,12 @@ if ($id){
 		}
 	}
 	
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	// allow plugins to do some magick when the normal query
+	// has already run succesfully
+	$PlugManager->run_plugins( 'postdb' );
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	
 	jsonSuccess(["success" => "update", 'id' => intval($id,10)]);
 }
 else{
@@ -148,16 +164,32 @@ else{
 	if (!empty($image)){
 		$params[] = $image;
 	}
-	$query = "INSERT INTO articoli
-		(titolo, corpo, inbreve, remaplink, lang, idowner, ideditor, isindex, isinmenu, idtype, idarticolo, idalbum, isindexlang, idarticololang".
-			(empty($image) ? '' : ', idimage').")
-		VALUES(?, ?, ?, ?, ?, {$userid}, {$userid}, {$isindex}, {$isinmenu}, {$type}, {$idparent}, {$idalbum}, {$isindexlang}, {$idparentlang}".
-			(empty($image) ? '' : ", (SELECT id FROM immagini WHERE src = ? LIMIT 1)").")";
+	$query_insert = "INSERT INTO articoli (titolo, corpo, inbreve, remaplink, lang, idowner, ideditor, isindex, isinmenu, idtype, idarticolo, idalbum, isindexlang, idarticololang".
+			(empty($image) ? '' : ', idimage');
+	$query_values = " VALUES(?, ?, ?, ?, ?, {$userid}, {$userid}, {$isindex}, {$isinmenu}, {$type}, {$idparent}, {$idalbum}, {$isindexlang}, {$idparentlang}".
+			(empty($image) ? '' : ", (SELECT id FROM immagini WHERE src = ? LIMIT 1)");
+	
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	// allow plugins to do some magick to query
+	// they could add something to $query_insert and $query_vaulues
+	// in form ", <custom_column>" and ",?". update $params!!!
+	$PlugManager->run_plugins( 'db' );
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	
+	$query_insert .= ")";
+	$query_values .= ")";
 	//exit($query);
 	//INSERT
 	$pdostat = $pdo->prepare($query) or jsonError('Errore durante inserimento articolo [prepare]');
 	if (!$pdostat->execute($params)) jsonError('Errore durante inserimento articolo [execute]');
 	if (!$id = $pdo->lastInsertId()) jsonError('Nessun inserimento effettuato (0)"');
+	
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	// allow plugins to do some magick when the normal query
+	// has already run succesfully
+	$PlugManager->run_plugins( 'postdb' );
+	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	
 	jsonSuccess(["success" => "insert", 'id' => intval($id,10)]);
 }
 

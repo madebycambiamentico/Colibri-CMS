@@ -16,52 +16,72 @@ if (!isset($Config)){
 	die;
 }
 
+$PlugManager = new \WebSpace\PluginsManager;
+
+$PlugManager->run_plugins('ethereal','top');
+$PlugManager->run_plugins('ethereal','auto');
+
 //load template classes (custom)
 require_once __DIR__ . '/php/link.class.php';
 
 ?><!DOCTYPE html>
 
-<html lang="it-IT">
+<html lang="<?php echo CMS_LANGUAGE ?>">
 <head>
 	<title><?php echo htmlentities($web['titolo'].' - '.$page['titolo']); ?></title>
-	<?php include \WebSpace\Template::custom($web['template'],'_meta.php') ?>
-	
 	<?php
+		$PlugManager->run_plugins('head','top');
+		
+		include __DIR__ . '/_meta.php';
+		
+		$PlugManager->run_plugins('head','auto');
+		
 		//main stylesheet
-		Links::stylesheet('style.css?v=1.2');
+		Links::stylesheet('style.css');
+		$PlugManager->run_plugins('style','top');
 	?>
 	
 	<!-- custom stylesheet browser-sensitive or article-sensitive :) -->
 	<!--[if lte IE 9]><style type="text/css">#contactform label{display:block}</style><![endif]-->
-	<style type="text/css">
 	<?php
 		if ($page['src']):
 			$cssurl = addslashes(str_replace(['(',')'],['\\(','\\)'], $page['src']));
 			//you should add @media for multiple sizes (mobile-friendly)
 	?>
-	/* customized main image from database */
-	.image-main{
-		background-image:url('<?php echo Links::thumb('L1024/'.$cssurl) ?>');
-	}
-	@media only screen and (max-width:768px){
+	<style type="text/css">
+		/* customized main image from database */
 		.image-main{
-			background-image:url('<?php echo Links::thumb('L768/'.$cssurl) ?>');
+			background-image:url('<?php echo Links::thumb('L1024/'.$cssurl) ?>');
 		}
-	}
-	@media only screen and (max-width:520px){
-		.image-main{
-			background-image:url('<?php echo Links::thumb('L520/'.$cssurl) ?>');
+		@media only screen and (max-width:768px){
+			.image-main{
+				background-image:url('<?php echo Links::thumb('L768/'.$cssurl) ?>');
+			}
 		}
-	}
+		@media only screen and (max-width:520px){
+			.image-main{
+				background-image:url('<?php echo Links::thumb('L520/'.$cssurl) ?>');
+			}
+		}
+	</style>
 	<?php
 		endif;
 	?>
-	</style>
 	
 	<!-- plugins -->
 	<?php
+	
+		//styles
 		Links::stylesheet('plugins/autoadapt-mosaic-grid/autoadapt-2.min.css');
 		Links::stylesheet('plugins/simplelightbox/simplelightbox.min.css');
+		$PlugManager->run_plugins('style','auto');
+		$PlugManager->run_plugins('style','bottom');
+		
+		//javascript
+		$PlugManager->run_plugins('js','top');
+		
+		//others
+		$PlugManager->run_plugins('head','bottom');
 	?>
 </head>
 
@@ -71,12 +91,13 @@ require_once __DIR__ . '/php/link.class.php';
 
 
 <body>
+<?php $PlugManager->run_plugins('body','top'); ?>
 
 <div id="mapmark"></div>
 
 
 
-<?php include \WebSpace\Template::custom($web['template'],'_menu.php') ?>
+<?php include __DIR__ . '/_menu.php'; ?>
 
 
 
@@ -94,7 +115,7 @@ require_once __DIR__ . '/php/link.class.php';
 			}
 			//print header...
 			if ($video){
-				include \WebSpace\Template::custom($web['template'],'_YTiframe.php');
+				include __DIR__ . '/_YTiframe.php';
 			}
 			elseif ($page['src']){
 				echo '<div class="image-main"><div class="image-sizer web"></div></div>';
@@ -162,26 +183,19 @@ require_once __DIR__ . '/php/link.class.php';
 
 </div>
 
-<?php include \WebSpace\Template::custom($web['template'],'_quotation.php') ?>
-
-<?php include \WebSpace\Template::custom($web['template'],'_news.php') ?>
-
-<?php include \WebSpace\Template::custom($web['template'],'_links.php') ?>
-
-<?php include \WebSpace\Template::custom($web['template'],'_powered.php') ?>
-
-<?php include \WebSpace\Template::custom($web['template'],'_contact.php') ?>
-
 
 
 <?php
-	/*
-	ob_start();
-		var_dump($page);
-	$output = ob_get_contents();
-	ob_end_clean();
-	echo '<pre style="width:100%;word-wrap:break-word;white-space:pre-wrap;background:#666;color:#fff;">'htmlentities($output).'</pre>';
-	*/
+	$PlugManager->run_plugins('body','auto');
+	
+	include __DIR__ . '/_quotation.php';
+	include __DIR__ . '/_news.php';
+	include __DIR__ . '/_links.php';
+	include __DIR__ . '/_powered.php';
+	
+	$PlugManager->run_plugins('body','bottom');
+	
+	include __DIR__ . '/_contact.php';
 ?>
 
 
@@ -194,13 +208,18 @@ require_once __DIR__ . '/php/link.class.php';
 <?php
 	Links::script('plugins/autoadapt-mosaic-grid/autoadapt-2.3.min.js');
 	Links::script('plugins/simplelightbox/simplelightbox.min.js');
-	Links::script('js/main.min.js?v=1.0');
+	Links::script('js/main.min.js');
 	
-	if (isset($YTIframeJsParams))
+	if (isset($YTIframeJsParams)){
 		Links::script('_YTiframe.js.php?'.$YTIframeJsParams);
+	}
 ?>
 
 <script>
+/**
+* initialize gallery and lightbox.
+* needs "autoadapt mosaic grid 2.3" and "simple lightbox"
+*/
 $(function(){
 	//gallery
 	$('#main-album').adaptiveGallery({
@@ -213,5 +232,12 @@ $(function(){
 });
 </script>
 
+<?php
+	$PlugManager->run_plugins('js','auto');
+	$PlugManager->run_plugins('js','bottom');
+?>
+
 </body>
 </html>
+
+<?php $PlugManager->run_plugins('ethereal','bottom'); ?>
