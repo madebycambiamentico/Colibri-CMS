@@ -2,8 +2,8 @@
 
 class ColibriConfig{
 	//constants - static
-	const VERSION				= "0.5.3";		//current Colibry System Version
-	const RELEASE				= "&beta;m";	//release (alpha, beta, multilang, release candidate...)
+	const VERSION				= "0.6";		//current Colibry System Version
+	const RELEASE				= "&geta;";	//release (alpha, beta, multilang, release candidate...)
 	//variables
 	public $domain				= "";				//site domain. will be detected automatically
 	public $script_path		= "/"; 			//absolute path to caller script. will be detected automatically
