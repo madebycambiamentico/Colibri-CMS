@@ -35,7 +35,7 @@ class Setup {
 	
 	private function check_login(){
 		global $SessionManager;
-		if (!isset($SessionManager){
+		if (!isset($SessionManager)){
 			$SessionManager = new \Colibri\SessionManager();
 			$SessionManager->sessionStart('colibri');
 		}

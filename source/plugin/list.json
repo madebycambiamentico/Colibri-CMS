@@ -2,6 +2,6 @@
     "Colibri\/Comments": {
         "installed": true,
         "active": true,
-        "custom": "template\/comments-custom.php"
+        "custom": "manager\/comments-custom.php"
     }
 }
