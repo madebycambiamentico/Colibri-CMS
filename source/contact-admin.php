@@ -7,7 +7,10 @@
  * @copyright: (C)2016 nereo costacurta
 **/
 
-//TODO: IMPLEMENT DELIVERY EMAIL SYSTEM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/*
+* the user should know that his mail has been sent!
+* this script should not be putted in standard delivery mail one...
+*/
 
 require_once "config.php";
 
@@ -26,17 +29,17 @@ if (!isset(
 
 //control inputs
 $subject	= trim($_POST['subject']);
-$email	= trim($_POST['email']);
-$phone	= trim($_POST['phone']);
-$msgtxt	= trim($_POST['message']);
+$user_email	= trim($_POST['email']);
+$phone	= htmlentities(trim($_POST['phone']));
+$msgtxt	= htmlentities(trim($_POST['message']));
 
 if (empty($msgtxt))
 	jsonError("No message received, sorry. Type the message before send it.");
-if (empty($email) && empty($phone))
+if (empty($user_email) && empty($phone))
 	jsonError("You need to fill at least one of this fileds: email or phone number");
 //email validation
-if ($email!==''){
-	if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+if ($user_email!==''){
+	if (filter_var($user_email, FILTER_VALIDATE_EMAIL) === false)
 		jsonError('This is not an email');
 }
 
@@ -46,44 +49,50 @@ if (empty($phone)) $phone = "no phone number(s) given";
 
 
 //(autoload class)
-$ENCRYPTER = new \ColibriEncrypter( CMS_ENCRYPTION_KEY );
+$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 //get email from system:
-$adminname = null;
-$adminemail = null;
-if ($pdores = $pdo->query("SELECT autore, email, recaptcha_secret FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC)){
+$admin_name = null;
+$admin_email = null;
+if ($pdores = $pdo->query("SELECT autore, email, recaptcha_key, recaptcha_secret FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC)){
 	if($r = $pdores->fetch()){
 		
 		//verify recaptcha...
 		if (!empty($r['recaptcha_secret'])){
 			
-			$ReCaptcha = new \ReCaptcha\ReCaptcha([
-				'secret_key' => $Encrypter->decrypt($r['recaptcha_secret'])
-			]);
+			$ReCaptcha = new \ReCaptcha\ReCaptcha(
+				$r['recaptcha_key'],
+				$Encrypter->decrypt($r['recaptcha_secret']),
+				$_SERVER['REMOTE_ADDR']
+			);
+			
+			if (empty($_POST['g-recaptcha-response'])) jsonError("POST['g-recaptcha-response'] mancante");
+			
 			$ReCaptcha->validate() or jsonError($ReCaptcha->error);
 		}
 		
 		//set admin email + name
-		$adminname = $r["autore"];
+		$admin_name = $r["autore"];
 		if ($r['email']){
-			$adminemail = $ENCRYPTER->decrypt($r['email']);
+			$admin_email = $Encrypter->decrypt($r['email']);
+			//will check after...
 		}
 	}
 	$pdores->closeCursor();
 }
-if (!$adminemail) jsonError("The site administrator didn't set properly his email and cannot be reached.\nWe are sorry for the inconvenience.\nFeel free to report us of this error using any other contact tool, we will be very grateful.");
-if (!$adminname) $adminname = 'Colibrì System';
+if (!$admin_email || filter_var($admin_email, FILTER_VALIDATE_EMAIL) === false) jsonError("The site administrator didn't set properly his email and cannot be reached.\nWe are sorry for the inconvenience.\nFeel free to report us of this error using any other contact tool, we will be very grateful.");
+if (!$admin_name) $admin_name = 'Colibrì System';
 
 
 //find user if is logged in, then take name and email*
 //* (if not already set: the user could prefere to comunicate with different ones)
-$sendername = null;
+$user_name = null;
 if (isLoggedIn()){
 	if ($pdores = $pdo->query("SELECT nome, email FROM utenti WHERE id=".$_SESSION['uid']." LIMIT 1", PDO::FETCH_ASSOC)){
 		foreach ($pdores as $r){
-			$sendername = $r["nome"];
-			if (empty($email) && $r['email']){
-				$email = $ENCRYPTER->decrypt($r['email']);
+			$user_name = $r["nome"];
+			if (empty($user_email) && $r['email']){
+				$user_email = $Encrypter->decrypt($r['email']);
 			}
 		}
 		$pdores->closeCursor();
@@ -97,59 +106,45 @@ if (isLoggedIn()){
 	PHPMailer SENDER
 **********************/
 
-require_once __DIR__ . '/php/PHPMailer/PHPMailerAutoload.php';
-//require_once __DIR__ . '/php/html2text/html2text.php';
+require_once __DIR__ . '/database/email-bodies/user-email-sender.inc.php';
 
-//send to admin...
+//send to admin and user in BCC
 
-$mail = new PHPMailer;
-$mail->CharSet = 'UTF-8';
-$mail->IsMail();
+$sender = [
+	'name' => 'Colibrì e-mail delivery System',
+	'email' => 'colibri@delivery.system'
+];
 
-if (!empty($email)){
-	if ($sendername){
-		$mail->setFrom($email, $sendername);
-		$mail->addReplyTo($email, $sendername);
-	}
-	else{
-		$mail->setFrom($email);
-		$mail->addReplyTo($email);
-	}
-}
-else{
-	$mail->setFrom('noreply@colibrimailer.cms','Colibrì System');
-}
+$recipients = [
+	[//admin
+		'name' => empty($admin_name) ? null : $admin_name,
+		'email' => $admin_email
+	],
+	[//user
+		'name' => empty($user_name) ? null : $user_name,
+		'email' => $user_email
+	]
+];
 
-$mail->addAddress($adminemail, $adminname);
+$user_email = htmlentities($user_email,ENT_QUOTES);
+$user_name = $user_name ? htmlentities($user_name) : "[nessun nome]";
+$html = "<p>Soggetto: <i>".htmlentities($subject)."</i></p>".
+			"<p>Da: <b>{$user_name}</b> <a href=\"mailto:{$user_email}\">{$user_email}</a></p>".
+			"<p>Telefono: <i>{$phone}</i></p>".
+			"<p>Messaggio: {$msgtxt}</p>".
+			"<br><hr><br><b>Una copia del messaggio verrà recapitata anche all'utente scrivente.</b>";
 
-$mail->Subject = $subject;
-
-$mail->Body    = "Phone Number: {$phone}\n\n".$msgtxt;
-
-if(!$mail->send()) {
-	jsonError( 'Message could not be sent. Mailer Error: '.$mail->ErrorInfo );
-} else {
-	if (!empty($email)){
-		//try to send copy to sender :)
-		$mail = new PHPMailer;
-		$mail->CharSet = 'UTF-8';
-		$mail->IsMail();
-		$mail->setFrom($adminemail, $adminname);
-		$mail->Subject = 'Email copy from '.$_SERVER['HTTP_HOST'];
-		if ($sendername)
-			$mail->addAddress($email, $sendername);
-		else
-			$mail->addAddress($email);
-		$mail->Body    = "This is your sent message copy:\n\n".
-			"Phone Number: {$phone}\n\n{$msgtxt}".
-			"\n\nThank you for contacting us.\n{$adminname}";
-		if(!$mail->send()) {
-			jsonError( "The message has been sent, but we couldn't reach your email: ".$mail->ErrorInfo );
-		} else {
-			jsonSuccess();
-		}
-	}
+if ( phpmailer_send_email(
+	$sender,
+	null,									//reply to
+	$recipients,
+	"Contatto amministratore",		//subject
+	$html,
+	false,								//die on error?
+	false									//BCC ?
+))
 	jsonSuccess();
-}
+else
+	jsonError();
 
 ?>

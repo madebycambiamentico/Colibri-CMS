@@ -164,6 +164,7 @@ else{
 	if (!empty($image)){
 		$params[] = $image;
 	}
+	
 	$query_insert = "INSERT INTO articoli (titolo, corpo, inbreve, remaplink, lang, idowner, ideditor, isindex, isinmenu, idtype, idarticolo, idalbum, isindexlang, idarticololang".
 			(empty($image) ? '' : ', idimage');
 	$query_values = " VALUES(?, ?, ?, ?, ?, {$userid}, {$userid}, {$isindex}, {$isinmenu}, {$type}, {$idparent}, {$idalbum}, {$isindexlang}, {$idparentlang}".
@@ -178,10 +179,11 @@ else{
 	
 	$query_insert .= ")";
 	$query_values .= ")";
+	$query = $query_insert . $query_values;
 	//exit($query);
 	//INSERT
 	$pdostat = $pdo->prepare($query) or jsonError('Errore durante inserimento articolo [prepare]');
-	if (!$pdostat->execute($params)) jsonError('Errore durante inserimento articolo [execute]');
+	if (!$pdostat->execute($params)) jsonError('Errore durante inserimento articolo [execute]'.print_r($params,true));
 	if (!$id = $pdo->lastInsertId()) jsonError('Nessun inserimento effettuato (0)"');
 	
 	//'''''''''''''''''''''''''''''''''''''''''''''''''''''''
