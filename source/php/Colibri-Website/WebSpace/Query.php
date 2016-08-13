@@ -24,7 +24,7 @@ class Query{
 			'query' => "SELECT A.*, {$imageselect} FROM articoli A
 		LEFT JOIN immagini B ON A.idimage = B.id
 		WHERE A.remaplink = ? ".
-			($costraindate ? "AND (A.data LIKE ? OR A.dataedit LIKE ?) " : "").
+			($costraindate ? "AND (A.datacreaz LIKE ? OR A.dataedit LIKE ?) " : "").
 			($lang ? " AND A.lang = '{$lang}' " : '').
 			"AND NOT A.isgarbage
 		LIMIT 1",
@@ -68,8 +68,8 @@ class Query{
 		$lang_filter = $lang ? " AND A.lang = '{$lang}'" : '';
 		return [
 			'query' => "SELECT A.*, {$imageselect} FROM articoli A
-		LEFT JOIN immagini B ON A.idimage = immagini.id
-		WHERE (A.data LIKE ? OR A.dataedit LIKE ?) AND NOT A.isgarbage {$lang_filter}
+		LEFT JOIN immagini B ON A.idimage = B.id
+		WHERE (A.datacreaz LIKE ? OR A.dataedit LIKE ?) AND NOT A.isgarbage {$lang_filter}
 		LIMIT 1",
 			'type' => 1 //prepared
 		];
@@ -92,12 +92,12 @@ class Query{
 	
 	static function getAlbum($albid=0, $fullimage=false){
 		$imageselect = $fullimage ?
-			"immagini.width, immagini.height, immagini.src, immagini.descr" :
-			"immagini.src";
+			"B.width, B.height, B.src, B.descr" :
+			"B.src";
 		return [
-			'query' => "SELECT {$imageselect} FROM immagini
-		INNER JOIN link_album_immagini ON link_album_immagini.idalbum = {$albid} AND link_album_immagini.idimage = immagini.id
-		ORDER BY immagini.data DESC",
+			'query' => "SELECT {$imageselect} FROM immagini B
+		INNER JOIN link_album_immagini C ON C.idalbum = {$albid} AND C.idimage = B.id
+		ORDER BY B.data DESC",
 			'type' => 0 //query
 		];
 	}

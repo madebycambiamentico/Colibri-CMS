@@ -62,7 +62,7 @@ function checkLoadImage(){
 				$('<img>').load(function(){
 					self.children('label').css('background-image','url("'+src+'")');
 					setTimeout(function(){ self.addClass('loaded').removeClass('wait') },30);
-				}).fail(function(e){
+				}).error(function(e){
 					console.log(e)
 				})[0].src = src;
 				purge++
