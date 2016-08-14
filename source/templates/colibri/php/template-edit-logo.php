@@ -2,7 +2,6 @@
 header('Content-Type: application/json');
 
 require_once "../../../config.php";
-$Config->i_need_functions();
 closeConnection();
 
 //control login

@@ -23,14 +23,19 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
 	jsonError('e-mail non accettabile');
 
 
-if ($pdores = $pdo->query("SELECT recaptcha_secret FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC)){
+if ($pdores = $pdo->query("SELECT recaptcha_key, recaptcha_secret FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC)){
 	if($r = $pdores->fetch()){
+		//verify recaptcha...
 		if (!empty($r['recaptcha_secret'])){
-			//verify recaptcha...
-			//require_once "../php/Colibri-ReCaptcha/autoloader.php";
-			$ReCaptcha = new \ReCaptcha\ReCaptcha([
-				'secret_key' => $Encrypter->decrypt($r['recaptcha_secret'])
-			]);
+			
+			$ReCaptcha = new \ReCaptcha\ReCaptcha(
+				$r['recaptcha_key'],
+				$Encrypter->decrypt($r['recaptcha_secret']),
+				$_SERVER['REMOTE_ADDR']
+			);
+			
+			if (empty($_POST['g-recaptcha-response'])) jsonError("POST['g-recaptcha-response'] mancante");
+			
 			$ReCaptcha->validate() or jsonError($ReCaptcha->error);
 		}
 	}

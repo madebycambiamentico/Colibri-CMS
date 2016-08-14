@@ -54,8 +54,10 @@ $Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 //get email from system:
 $admin_name = null;
 $admin_email = null;
-if ($pdores = $pdo->query("SELECT autore, email, recaptcha_key, recaptcha_secret FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC)){
+if ($pdores = $pdo->query("SELECT autore, email, recaptcha_key, recaptcha_secret, titolo FROM sito ORDER BY id DESC LIMIT 1", PDO::FETCH_ASSOC)){
 	if($r = $pdores->fetch()){
+		
+		$website_title = htmlentities($r['titolo'],ENT_QUOTES);
 		
 		//verify recaptcha...
 		if (!empty($r['recaptcha_secret'])){
@@ -128,11 +130,13 @@ $recipients = [
 
 $user_email = htmlentities($user_email,ENT_QUOTES);
 $user_name = $user_name ? htmlentities($user_name) : "[nessun nome]";
-$html = "<p>Soggetto: <i>".htmlentities($subject)."</i></p>".
+$html =	"<h3>Comunicazione <span style='color:#cc0000'>{$website_title}</span></h3><hr>".
+			"<p>Soggetto: <i>".htmlentities($subject)."</i></p>".
 			"<p>Da: <b>{$user_name}</b> <a href=\"mailto:{$user_email}\">{$user_email}</a></p>".
 			"<p>Telefono: <i>{$phone}</i></p>".
 			"<p>Messaggio: {$msgtxt}</p>".
-			"<br><hr><br><b>Una copia del messaggio verrà recapitata anche all'utente scrivente.</b>";
+			"<hr><b>Una copia del messaggio verrà recapitata anche all'utente scrivente.</b>".
+			"<p style='font-size:smaller'>This is an automatically generated e-mail, please do not reply directly to this message.<br>For any needs, please contact us at <a href='mailto:{$recipients[0]['email']}?subject={$website_title} - YOUR_NAME_HERE'>{$recipients[0]['email']}</a> with subject \"{$website_title} - <b>YOUR NAME</b>\"</p>";
 
 if ( phpmailer_send_email(
 	$sender,

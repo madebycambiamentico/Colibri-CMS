@@ -5,7 +5,6 @@ if (!isset($_POST['markx'],$_POST['marky']))
 	die("Variabili errate");
 
 require_once "../../../config.php";
-$Config->i_need_functions();
 closeConnection();
 
 //control login

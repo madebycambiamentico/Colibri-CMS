@@ -57,7 +57,7 @@ require_once "../../config.php";
 require_once 'async_curl.fn.php';
 
 
-$Encrypter = new Encrypter( CMS_ENCRYPTION_KEY );
+$Encrypter = new \Colibri\Encrypter( CMS_ENCRYPTION_KEY );
 
 
 
