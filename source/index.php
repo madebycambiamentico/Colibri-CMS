@@ -44,7 +44,7 @@ function noPageFound($str='Questa pagina non esiste.'){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	//STOPFORDEBUG(false);
 	global $web;
-	echo \WebSpace\Template::custom($web['template'],'not-found.php',true);
+	//echo \WebSpace\Template::custom($web['template'],'not-found.php',true);
 	if ($not_found_page = \WebSpace\Template::custom($web['template'],'not-found.php',true)){
 		include $not_found_page;
 		die('<!-- ERROR: '.htmlentities($str).' -->');
@@ -174,7 +174,7 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		//control if there's really a date, else probably a wrong url
 		$artDate = $fixPathPieces[0].'-'.$fixPathPieces[1].'-'.$fixPathPieces[2];
 		if (!preg_match("/\d{4}-\d{2}-\d{2}/",$artDate))
-			noPageFound();
+			noPageFound("Richiesta data non corretta");
 		
 		//search article(s)
 		if (isset($fixPathPieces[3])){
@@ -242,7 +242,7 @@ define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
 //if index with "translate" GET request, then redirect to translated page (if exists), or redirect to home in other case.
 if (CMS_LANGUAGE && isset($_GET['translate'])){
 	$translate = intval($_GET['translate'],10);
-	$pdores = $pdo->query("SELECT isindex, isindexlang, remaplink FROM articoli WHERE lang='{".CMS_LANGUAGE."}' AND idarticololang={$translate} LIMIT 1",PDO::FETCH_ASSOC) or
+	$pdores = $pdo->query("SELECT isindex, isindexlang, remaplink FROM articoli WHERE lang='".CMS_LANGUAGE."' AND idarticololang={$translate} LIMIT 1",PDO::FETCH_ASSOC) or
 		noPageFound('Error querying translated page [cod 002]');
 	//-------------------------
 	//translated page available

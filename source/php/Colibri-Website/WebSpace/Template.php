@@ -37,6 +37,22 @@ class Template{
 	static $maps = [];	// will contain array of (int)idtype => (string)remapprefix
 	static $path = '';	// will contain the absolute path to template folder (no domain included)
 	
+	
+	static function init(){
+		//get remapprefix to be used when searching a template page...
+		global $Config, $pdo;
+		if (empty(self::$maps) && isset($Config) && isset($pdo)){
+			if ($pdores = $pdo->query("SELECT * FROM view_template_maps", \PDO::FETCH_ASSOC)){
+				$maps = [];
+				while ($r = $pdores->fetch()){
+					$maps[$r['id']] = $r['remap'];
+				}
+				$pdores->closeCursor();
+				Template::$maps = $maps;
+			}
+		}
+	}
+	
 	/**
 	* return the single page template path
 	*
@@ -49,6 +65,7 @@ class Template{
 	* @return (string)	the file path
 	*/
 	static function single($id=0, $type=0, $tmplt='colibri'){
+		self::init();
 		$path = self::cpath($tmplt);
 		$template = "{$path}/for_id_{$id}.php";
 		if (!is_file($template)){
@@ -77,6 +94,7 @@ class Template{
 	* @return (string)	the file path
 	*/
 	static function multi($type=0, $tmplt='colibri'){
+		self::init();
 		$path = self::cpath($tmplt);
 		if (isset(self::$maps[$type]))
 			$template = "{$path}/multi_".self::$maps[$type].".php";
@@ -104,6 +122,7 @@ class Template{
 	* @return (string)	the file path
 	*/
 	static function main($tmplt='colibri'){
+		self::init();
 		$path = self::cpath($tmplt);
 		$template = $path;
 		if (!is_file($template)){
@@ -164,19 +183,6 @@ class Template{
 	*/
 	static function cpath($tmplt='colibri'){
 		return \CMS_INSTALL_DIR ."/templates/{$tmplt}/";
-	}
-}
-
-
-//get remapprefix to be used when searching a template page...
-if (isset($Config) && isset($pdo)){
-	if ($pdores = $pdo->query("SELECT * FROM view_template_maps", PDO::FETCH_ASSOC)){
-		$maps = [];
-		while ($r = $pdores->fetch()){
-			$maps[$r['id']] = $r['remap'];
-		}
-		$pdores->closeCursor();
-		Template::$maps = $maps;
 	}
 }
 
