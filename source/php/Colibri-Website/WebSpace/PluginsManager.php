@@ -64,7 +64,7 @@
 * Positions should contain an array of relative path from plugin folder, for each file to be loaded in that position.
 * Exceptions are the groups "style" and "js" in which:
 * - you can specify any external url starting with "http(s)://", or
-* - you can specify an existing file from installation dir using url starting with "/".
+* - you can specify an existing file from *installation* folder using url starting with "/".
 *
 * @author Nereo Costacurta (http://colibricms.altervista.org)
 */
@@ -159,8 +159,12 @@ class PluginsManager{
 											if ( preg_match("#^http[s]?://#",$file) )
 												$this->{$group}[$pos][] = $file;
 											//local url (rel. path from installation dir)
-											elseif ($file[0] === '/')
-												$this->{$group}[$pos][] = $Config->script_path . substr($file,1);
+											elseif ($file[0] === '/'){
+												if ($file[1] === '/')
+													$this->{$group}[$pos][] = $file;
+												else
+													$this->{$group}[$pos][] = $Config->script_path . substr($file,1);
+											}
 											//local url (rel. path from plugin dir)
 											else
 												$this->{$group}[$pos][] = $Config->script_path . "plugin/{$plug_folder}/" . $file;

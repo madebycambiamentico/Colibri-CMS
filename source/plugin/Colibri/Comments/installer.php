@@ -5,8 +5,8 @@
 *
 * edit the database preparing for this plugin (Colibri > Comments)
 * - add table "comments" and "comments_treepath".
-* - edit table "sito" to add on/off variable
-* - edit table "articoli" to add local on/off variable (?)
+* - edit table "sito" to add global on/off variable
+* - edit table "articoli" to add local on/off variable
 * UN-INSTALLATION: not supported
 *
 * @param (bool) $_POST['install'] [optional] Ask to perform installation or unintallation

@@ -1,0 +1,26 @@
+{
+    "author": "Colibri",
+    "title": "Highlightjs",
+    "version": "1.0.0",
+    "options": {
+        "editor": {
+            "right": "manager\/highlight-R.inc.php",
+            "db": "manager\/highlight-db.inc.php"
+        },
+        "custom": "manager\/highlight-custom.php"
+    },
+    "template": {
+        "style": {
+            "auto": [
+                "\/\/cdnjs.cloudflare.com\/ajax\/libs\/highlight.js\/9.6.0\/styles\/default.min.css"
+            ]
+        },
+        "js": {
+            "auto": [
+                "\/\/cdnjs.cloudflare.com\/ajax\/libs\/highlight.js\/9.6.0\/highlight.min.js",
+                "js\/main.js"
+            ]
+        }
+    },
+    "require": "<i>Colibr\u00ec Highlightjs plugin \u00a92016<\/i> will highlight code on your pages.<br>Default library is hosted by <a href='\/\/cdnjs.cloudflare.com\/'>cdnjs.cloudflare.com<\/a>, but you can change this option to local files in the customization page of this plugin."
+}

@@ -177,7 +177,7 @@ closeConnection();
 
 <!-- main script -->
 <script src="js/common.js"></script>
-<script src="js/plugins.min.js"></script>
+<script src="js/plugins.js"></script>
 
 </body>
 </html>

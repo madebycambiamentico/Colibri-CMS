@@ -1,4 +1,4 @@
-(function(){
+var Plugins = (function(){
 
 //------------------------ START lazy plugin info loader
 //uses isInWindow() from common.js
@@ -106,7 +106,7 @@ function pluginBox(_box,_modalbox,_modalboxiframe){
 		start: function(what){
 			if (!what) what = "occupato...";
 			what = self.plugin.author+" "+self.plugin.title + " " + what;
-			console.log(what);
+			console.info('Plugin busy: '+what);
 			working = true;
 			self.$loader.html(what);
 			self.$box.addClass('loading');
@@ -118,13 +118,13 @@ function pluginBox(_box,_modalbox,_modalboxiframe){
 	}
 	
 	function setInstalled(){
-		console.log("completing (de)installation for plugin "+self.plugin.author+" > "+self.plugin.title);
+		console.info("completing (de)installation for plugin "+self.plugin.author+" > "+self.plugin.title);
 		$.post('plugin/toggle-install.php', {p : self.plugin.idx}, null, 'json')
 			.done(function(json){
 				if (json.error)
 					return alert("Errore\n"+json.error);
 				installed = json.installed;
-				console.log("plugin "+self.plugin.author+" > "+self.plugin.title+" has been "+(installed ? '' : 'un-')+"installed.");
+				console.info("plugin "+self.plugin.author+" > "+self.plugin.title+" has been "+(installed ? '' : 'un-')+"installed.");
 				//toggle css class
 				if (installed)
 					self.$box.removeClass('install');
@@ -166,7 +166,7 @@ function pluginBox(_box,_modalbox,_modalboxiframe){
 				if (json.error)
 					return alert("Errore\n"+json.error);
 				active = json.active;
-				console.log("plugin "+self.plugin.author+" > "+self.plugin.title+" has been "+(active ? '' : 'de-')+"activated.");
+				console.info("plugin "+self.plugin.author+" > "+self.plugin.title+" has been "+(active ? '' : 'de-')+"activated.");
 				//toggle css class
 				if (active)
 					self.$box.addClass('active');
@@ -266,4 +266,6 @@ $(function(){
 	$(this).on('scroll.lazy resize.lazy',checkLoadPlugin);
 	checkLoadPlugin();
 });
+
+return pluginBoxes;
 })();
