@@ -2,7 +2,7 @@
 
 class ColibriConfig{
 	//constants - static
-	const VERSION				= "0.6.0";		//current Colibry System Version
+	const VERSION				= "0.6.1";		//current Colibry System Version
 	const RELEASE				= "&gamma;";	//release (alpha, beta, multilang, release candidate...)
 	//variables
 	public $domain				= "";				//site domain. will be detected automatically
