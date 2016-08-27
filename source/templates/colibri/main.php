@@ -67,6 +67,7 @@ require_once __DIR__ . '/php/link.class.php';
 	<?php
 		endif;
 	?>
+	
 	<!-- plugins -->
 	<?php
 	
@@ -102,8 +103,8 @@ require_once __DIR__ . '/php/link.class.php';
 		<?php
 			//search for videos
 			$video = null;
-			if ($pageid){
-				$pdostat = $pdo->query("SELECT * FROM youtube WHERE idarticolo={$pageid}",PDO::FETCH_ASSOC);
+			if ($page['id']){
+				$pdostat = $pdo->query("SELECT * FROM youtube WHERE idarticolo={$page['id']}",PDO::FETCH_ASSOC);
 				$video = $pdostat->fetch();
 			}
 			//print header...

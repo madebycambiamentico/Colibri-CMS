@@ -28,7 +28,7 @@ require_once __DIR__ . '/php/link.class.php';
 
 <html lang="<?php echo CMS_LANGUAGE ?>">
 <head>
-	<title><?php echo htmlentities($web['titolo'].' - '.$page['titolo']); ?></title>
+	<title><?php echo htmlentities($web['titolo']); ?> - Ricerca per Data</title>
 	<?php
 		$PlugManager->run_plugins('head','top');
 		
@@ -72,8 +72,6 @@ require_once __DIR__ . '/php/link.class.php';
 	<?php
 	
 		//styles
-		Links::stylesheet('plugins/autoadapt-mosaic-grid/autoadapt-2.min.css');
-		Links::stylesheet('plugins/simplelightbox/simplelightbox.min.css');
 		$PlugManager->run_plugins('style','auto');
 		$PlugManager->run_plugins('style','bottom');
 		
@@ -107,17 +105,8 @@ require_once __DIR__ . '/php/link.class.php';
 	
 		<!-- main image -->
 		<?php
-			//search for videos
-			$video = null;
-			if ($page['id']){
-				$pdostat = $pdo->query("SELECT * FROM youtube WHERE idarticolo={$page['id']}",PDO::FETCH_ASSOC);
-				$video = $pdostat->fetch();
-			}
 			//print header...
-			if ($video){
-				include __DIR__ . '/_YTiframe.php';
-			}
-			elseif ($page['src']){
+			if ($page['src']){
 				echo '<div class="image-main"><div class="image-sizer web"></div></div>';
 			}
 			else{
@@ -127,82 +116,41 @@ require_once __DIR__ . '/php/link.class.php';
 		
 		
 		<!-- main article -->
-		<div id="main-article" class="inside imgfix"><?php
-			echo '<h1>'.htmlentities($page['titolo']).'</h1>';
-			echo $page['corpo'];
-		?></div>
+		<div id="main-article" class="inside imgfix">
+			<h1>Ricerca per data <i><?php echo htmlentities($_GET['date']) ?></i></h1>
+			<p>I risultati della tua ricerca sono esposti qui in basso.</p>
+			<p>Ricordati che la ricerca per data viene fatte secondo anno (4 cifre), mese (2 cifre) o giorno (2 cifre) nella forma rispettivamente <i>YYYY</i> o <i>YYYY-MM</i> o <i>YYYY-MM-DD</i></p>
+		</div>
 		
 		
-		<!-- gallery -->
-		<?php
-			//GALLERY
-			if ($page['idalbum']){
-				$pdostat = \WebSpace\Query::query(
-					'album',
-					[ 'id' => $page['idalbum'] ]
-				);
-				$hasrows = false;
-				while ($image = $pdostat->fetch()){
-					if (!$hasrows){
-						echo '<h3 class="inside">Galleria</h3>'.
-							'<a name="gallery"></a>'.//anchor for #gallery
-							'<div id="main-album" class="adaptiveGallery inside">';
-						$hasrows = true;
-					}
-					$img = htmlentities($image['src'],ENT_QUOTES);
-					echo '<div class="box">'.
-						'<a href="'.Links::uploaded($img).'" target="_blank"><div class="overlay">'.htmlentities($image['descr']).'</div></a>'.
-						'<img src="'.Links::thumb('300/'.$img).'">'.
-					'</div>';
-				}
-				$pdostat->closeCursor();
-				if ($hasrows) echo '</div>';
-			}
-			
-		?>
-		
-		
-		<!-- sub-articles -->
+		<!-- result of article search -->
 		<div id="sub-articles" class="article-cont">
 			<?php
-			
-				//search all sub-pages
-				$pdostat = \WebSpace\Query::query(
-					'arts',
-					[ 'parentid' => $page['id'], 'type' => 1, 'depth' => 2, 'lang' => CMS_LANGUAGE ]
-				);
-				$articles = $pdostat->fetchAll();
-				for ($i=0; $i<count($articles); $i++){
-					$sp = $articles[$i];
-					$link = Links::file( htmlentities($sp['remaplink'],ENT_QUOTES) );
-					$img = htmlentities($sp['src'],ENT_QUOTES);
+				$i = 0;
+				//$pdostatPAGES first item is already fetched (into $page_n)
+				if ($page_n){
+				do{
+					$link = Links::file( htmlentities($page_n['remaplink'],ENT_QUOTES) );
+					$img = htmlentities($page_n['src'],ENT_QUOTES);
 					echo '<div class="article"><div class="sub-art-cont">'.
 						'<div class="image"><a href="'.$link.'"'.
-							($sp['src'] ? ' style="background-image:url(\''. Links::thumb( '320x200/'.$img ) .'\')"' : '').
+							($page_n['src'] ? ' style="background-image:url(\''. Links::thumb( '320x200/'.$img ) .'\')"' : '').
 						'></a></div>'.
 						'<div class="desc">'.
-							'<h2>'.htmlentities($sp['titolo']).'</h2>'.
-							'<p>'.$sp['inbreve'].'</p>'.
-							'<div class="sub-art-goto"><a href="'.$link.'">'.htmlentities($sp['titolo']).'</a></div>';
-							
-							//add all sub-articles
-							$j = $i;
-							while (++$i && isset($articles[$i])){
-								if (strlen($articles[$i]['breadcrumbs']) > strlen($articles[$j]['breadcrumbs']))
-									echo '<div class="subs-art-goto">'.
-										'<a href="'.htmlentities($articles[$i]['remaplink'],ENT_QUOTES).'">'.
-											htmlentities($articles[$i]['titolo']).
-										'</a></div>';
-								else{
-									--$i;
-									break;
-								}
-							}
-					echo
+							'<p style="font-size:smaller">Created on '.$page_n['datacreaz'].'<br>Edited on '.$page_n['dataedit'].'</p>'.
+							'<h2>'.htmlentities($page_n['titolo']).'</h2>'.
+							'<p>'.$page_n['inbreve'].'</p>'.
+							'<div class="sub-art-goto"><a href="'.$link.'">'.htmlentities($page_n['titolo']).'</a></div>'.
 						'</div>'.
 					'</div></div>';
 				}
+				while( $page_n = $pdostatPAGES->fetch(PDO::FETCH_ASSOC) );
+				
 				$pdostat->closeCursor();
+				}
+				else{
+					echo '<b>Nessun risultato</b> trovato corrispondente alla tua ricerca!';
+				}
 			?>
 		</div>
 	
@@ -233,33 +181,7 @@ require_once __DIR__ . '/php/link.class.php';
 
 <!-- plugins -->
 <?php
-	Links::script('plugins/autoadapt-mosaic-grid/autoadapt-2.3.min.js');
-	Links::script('plugins/simplelightbox/simplelightbox.min.js');
 	Links::script('js/main.min.js');
-	
-	if (isset($YTIframeJsParams)){
-		Links::script('_YTiframe.js.php?'.$YTIframeJsParams);
-	}
-?>
-
-<script>
-/**
-* initialize gallery and lightbox.
-* needs "autoadapt mosaic grid 2.3" and "simple lightbox"
-*/
-$(function(){
-	//gallery
-	$('#main-album').adaptiveGallery({
-		pad: 3,
-		maxD: 300,
-		minN: 1,
-		popSpeed: 0
-	});
-	$('#main-album a').simpleLightbox();
-});
-</script>
-
-<?php
 	$PlugManager->run_plugins('js','auto');
 	$PlugManager->run_plugins('js','bottom');
 ?>

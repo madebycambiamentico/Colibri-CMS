@@ -44,7 +44,7 @@ class Query{
 			'query' => "SELECT a.*, {$imageselect} FROM articoli a
 		LEFT JOIN immagini b ON a.idimage = b.id
 		WHERE a.id = {$o['id']} AND NOT a.isgarbage {$lang_filter}",
-			'type' => 0 //query
+			'prepare' => 0 //query
 		];
 	}
 	
@@ -73,11 +73,11 @@ class Query{
 			'query' => "SELECT A.*, {$imageselect} FROM articoli A
 		LEFT JOIN immagini B ON A.idimage = B.id
 		WHERE A.remaplink = ? ".
-			($costraindate ? "AND (A.datacreaz LIKE ? OR A.dataedit LIKE ?) " : "").
-			($lang ? " AND A.lang = '{$o['lang']}' " : '').
+			($o['datecostrain'] ? "AND (A.datacreaz LIKE ? OR A.dataedit LIKE ?) " : "").
+			($o['lang'] ? " AND A.lang = '{$o['lang']}' " : '').
 			"AND NOT A.isgarbage
 		LIMIT 1",
-			'type' => 1 //prepared
+			'prepare' => 1 //prepared
 		];
 	}
 	
@@ -108,7 +108,7 @@ class Query{
 		LEFT JOIN immagini B ON A.idimage = B.id
 		WHERE A.titolo = ? AND NOT A.isgarbage {$lang_filter}
 		LIMIT 1",
-			'type' => 1 //prepared
+			'prepare' => 1 //prepared
 		];
 	}
 	
@@ -117,7 +117,7 @@ class Query{
 	* method "byType": search by article type, optional results limit, image and filtering by language.
 	*
 	* @param array $options containing associative variables:
-	*    @param int  'type'      => (optional) the article type id. default: 1 (main);
+	*    @param int  'type'      => the article type id. default: 1 (main);
 	*    @param int  'limit'     => (optional) limit of the query. if 0 no limit are applied. default: 0;
 	*    @param bool 'fullimage' => (optional) whether to get the article main image properties (H, W, descr). default: false;
 	*    @param bool 'lang'      => (optional) filter by language. default: null;
@@ -140,7 +140,7 @@ class Query{
 		WHERE A.idtype = {$o['type']} AND NOT A.isgarbage {$lang_filter}
 		ORDER BY A.dataedit DESC".
 		($o['limit'] ? " LIMIT {$o['limit']}" : ''),
-			'type' => 0 //query
+			'prepare' => 0 //query
 		];
 	}
 	
@@ -151,27 +151,48 @@ class Query{
 	* <date> can be in form "YYYY%", "YYYY-MM%", "YYYY-MM-DD%" for ranging all year, a month, or a specific day.
 	*
 	* @param array $options containing associative variables:
-	*    @param bool 'fullimage'    => (optional) whether to get the article main image properties (H, W, descr). default: false;
-	*    @param bool 'lang'         => (optional) filter by language. default: null;
+	*    @param int   'type'      => (optional) the article type id. if 0 no filter is applied. default: 0;
+	*    @param array 'skiptype'  => (optional) the article type ids to be skipped. default: [];
+	*    @param bool  'fullimage' => (optional) whether to get the article main image properties (H, W, descr). default: false;
+	*    @param bool  'lang'      => (optional) filter by language. default: null;
 	*
 	* @return array containing results to fetch on an associative array.
 	*/
 	static function byDate($options = []){
 		//extend option array
-		$o = array_merge(['fullimage' => false, 'lang' => null], $options);
+		$o = array_merge(['type' => 0, 'skiptypes' => [], 'fullimage' => false, 'lang' => null, 'dates' => 'both'], $options);
 		//control options...
 		//*no controls*
 		//create query...
+		$skip_types = empty($o['skiptypes']) ? '' : (
+			count($o['skiptypes'])===1 ?
+				"AND A.idtype != {$o['skiptypes'][0]}" :
+				"AND A.idtype NOT IN (".implode(',',$o['skiptypes']).")"
+		);
+		$type_filter = $o['type'] ? "AND A.idtype = '{$o['type']}'" : '';
 		$imageselect = $o['fullimage'] ?
 			"B.width, B.height, B.src, B.descr" :
 			"B.src";
 		$lang_filter = $o['lang'] ? " AND A.lang = '{$o['lang']}'" : '';
+		$data_filter = $o['dates'] === 'both' ?
+			'(A.datacreaz LIKE ? OR A.dataedit LIKE ?)' :
+			$o['dates'] === 'edit' ?
+			'A.dataedit LIKE ?' :
+			'A.datacreaz LIKE ?';
 		return [
-			'query' => "SELECT A.*, {$imageselect} FROM articoli A
-		LEFT JOIN immagini B ON A.idimage = B.id
-		WHERE (A.datacreaz LIKE ? OR A.dataedit LIKE ?) AND NOT A.isgarbage {$lang_filter}
-		LIMIT 1",
-			'type' => 1 //prepared
+			'query' => "
+SELECT
+	A.*,
+	{$imageselect}
+FROM articoli A
+LEFT JOIN immagini B ON A.idimage = B.id
+WHERE
+	{$data_filter}
+	AND NOT A.isgarbage
+	{$type_filter}
+	{$skip_types}
+	{$lang_filter}",
+			'prepare' => 1 //prepared
 		];
 	}
 	
@@ -180,12 +201,13 @@ class Query{
 	* method "arts": search articles, filtered by optional article type, results limit, image and filtering by language.
 	*
 	* @param array $options containing associative variables:
-	*    @param int  'parentid'  => (optional) the parent article id.
-	*    @param int  'type'      => (optional) the child article type id. if 0 no type filter si applied. default: 1 (main);
-	*    @param int  'level'     => (optional) depth level of the articles. if 0 no depth filter is applied. default: 2;
-	*    @param int  'limit'     => (optional) limit of the query. if 0 no limit are applied. default: 0;
-	*    @param bool 'fullimage' => (optional) whether to get the article main image properties (H, W, descr). default: false;
-	*    @param bool 'lang'      => (optional) filter by language. default: null;
+	*    @param int   'parentid'  => (optional) the parent article id.
+	*    @param array 'skipids'   => (optional) the article ids to be skipped. default: [];
+	*    @param int   'type'      => (optional) the child article type id. if 0 no type filter si applied. default: 1 (main);
+	*    @param int   'level'     => (optional) depth level of the articles. if 0 no depth filter is applied. default: 2;
+	*    @param int   'limit'     => (optional) limit of the query. if 0 no limit are applied. default: 0;
+	*    @param bool  'fullimage' => (optional) whether to get the article main image properties (H, W, descr). default: false;
+	*    @param bool  'lang'      => (optional) filter by language. default: null;
 	*
 	* @return array containing results to fetch on an associative array.
 	*/
@@ -235,7 +257,7 @@ WHERE
 	{$depth_filter}
 GROUP BY art.id
 ORDER BY breadcrumbs",
-			'type' => 0 //query
+			'prepare' => 0 //query
 		];
 	}
 	
@@ -269,7 +291,7 @@ ORDER BY breadcrumbs",
 		WHERE A.idarticolo = {$o['parentid']} AND NOT A.isgarbage {$type_filter} {$lang_filter}
 		ORDER BY A.dataedit DESC".
 		($o['limit'] ? " LIMIT {$o['limit']}" : ''),
-			'type' => 0 //query
+			'prepare' => 0 //query
 		];
 	}
 	
@@ -294,14 +316,14 @@ ORDER BY breadcrumbs",
 				case 0:
 					return [
 						'query' => "SELECT * FROM view_menu",
-						'type' => 0 //query
+						'prepare' => 0 //query
 					];
 				break;
 				default:
 					if (in_array($o['level'],[1,2,3]))
 						return [
 							'query' => "SELECT * FROM view_menu_{$o['level']}_levels",
-							'type' => 0 //query
+							'prepare' => 0 //query
 						];
 					else
 						return [
@@ -324,7 +346,7 @@ WHERE tree.ancestor IN (
 	AND tree.depth < {$o['level']}
 GROUP BY art.id
 ORDER BY breadcrumbs",
-							'type' => 0 //query
+							'prepare' => 0 //query
 						];
 				break;
 			}
@@ -353,7 +375,7 @@ WHERE tree.ancestor IN (
 	{$depth_filter}
 GROUP BY art.id
 ORDER BY breadcrumbs",
-				'type' => 0 //query
+				'prepare' => 0 //query
 			];
 		}
 	}
@@ -383,7 +405,7 @@ ORDER BY breadcrumbs",
 			LEFT JOIN immagini b ON a.idimage = b.id
 			WHERE a.isindex AND NOT a.isgarbage
 			ORDER BY a.dataedit DESC LIMIT 1",
-				'type' => 0 //query
+				'prepare' => 0 //query
 			];
 		}
 		else{
@@ -392,7 +414,7 @@ ORDER BY breadcrumbs",
 			LEFT JOIN immagini b ON a.idimage = b.id
 			WHERE (a.isindex OR a.isindexlang) AND a.lang='{$o['lang']}' AND NOT a.isgarbage
 			ORDER BY a.dataedit DESC LIMIT 1",
-				'type' => 0 //query
+				'prepare' => 0 //query
 			];
 		}
 	}
@@ -420,7 +442,7 @@ ORDER BY breadcrumbs",
 			'query' => "SELECT {$imageselect} FROM immagini B
 		INNER JOIN link_album_immagini C ON C.idalbum = {$o['id']} AND C.idimage = B.id
 		ORDER BY B.data DESC",
-			'type' => 0 //query
+			'prepare' => 0 //query
 		];
 	}
 	
@@ -447,10 +469,10 @@ ORDER BY breadcrumbs",
 		//run the sql request
 		//NB - \PDO has the prefix "\" to access a global defined class, since this class is called from a function scope.
 		global $pdo;
-		if ($query['type'] == 1){
+		if ($query['prepare'] == 1){
 			//------------------
 			//PREPARED STATEMENT
-			$pdostat = $pdo->prepare($query['query'],\PDO::FETCH_ASSOC)
+			$pdostat = $pdo->prepare($query['query'])
 				or trigger_error("Errore durante {$action} {$subject} [prepare]", E_USER_ERROR);
 			if (!$pdostat->execute($queryparams))
 				trigger_error("Errore durante {$action} {$subject} [execute]", E_USER_ERROR);
