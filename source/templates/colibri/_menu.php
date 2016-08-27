@@ -1,15 +1,12 @@
 <?php
 
 /*
- * @template Colibrì 2016 v.1.0
- * main menu -- this is not a required file for standard templates.
- * @author Nereo Costacurta
- *
- * @require: /index.php (this is not a standalone page!)
- *
- * @license GPLv3
- * @copyright: (C)2016 nereo costacurta
-**/
+* add MENU section on the standard template Colibrì 2016.
+*
+* @author Nereo Costacurta
+* @license GPLv3
+* @copyright: (C)2016 nereo costacurta
+*/
 
 if (!isset($web)){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
@@ -22,43 +19,43 @@ if (!isset($web)){
 		<a class="logo" href="<?php echo Links::file(''); ?>"></a>
 	</div>
 	<ul id="menus"><?php
-		$pdostat = \WebSpace\Query::query('menu');
-		$lastid = false;
-		$hassubmenu = false;
-		$lis = $pdostat->fetchAll();
-		foreach ($lis as $i => $li){
-			$href = Links::file( htmlentities($li['remaplink'],ENT_QUOTES) );
-			if ($lastid != $li['parentid']){
-				//main menu
-				//close previous item
-				if (false != $lastid) echo ($hassubmenu ? '</ul></li>' : '</li>');
-				//update last id
-				$lastid = $li['parentid'];
-				//detect if this item has submenu
-				if (isset($lis[$i+1])){
-					if ($lis[$i+1]['parentid'] == $lastid)
-						$hassubmenu = true;
-					else
-						$hassubmenu = false;
-				}
-				else
-					$hassubmenu = false;
-				//print item (and start submenu if needed)
-				if (!$hassubmenu){
-					echo '<li id="menu-'.$lastid.'" class="single">'.
-						'<a href="'.$href.'">'.htmlentities($li['titolo']).'</a>';
-				}
-				else{
-					echo '<li id="menu-'.$lastid.'">'.
-						'<a href="'.$href.'">'.htmlentities($li['titolo']).'</a>'.
-						'<i data-id="'.$lastid.'"></i><ul class="sub" id="submenu-'.$lastid.'">';
-				}
+	
+		$pdostat = \WebSpace\Query::query(
+			'menu',
+			[ 'level' => 2 ]
+		);
+		
+		$articles = $pdostat->fetchAll();
+		
+		for ($i=0; $i<count($articles); $i++){
+			$sp = $articles[$i];
+			$link = Links::file( htmlentities($sp['remaplink'],ENT_QUOTES) );
+			$hassubmenu = isset($articles[$i]) && strlen($articles[$i]['breadcrumbs']) > strlen($articles[$j]['breadcrumbs']);
+			
+			if ($hassubmenu){
+				echo
+				'<li class="single">'.
+					'<a href="'.$link.'">'.htmlentities($li['titolo']).'</a>'.
+					'<ul class="sub">';
+					//add all sub-articles
+					$j = $i;
+					while (++$i && isset($articles[$i])){
+						if (strlen($articles[$i]['breadcrumbs']) > strlen($sp['breadcrumbs']))
+							$link = Links::file( htmlentities($sp['remaplink'],ENT_QUOTES) );
+							echo '<li><a href="'.$link.'">'.htmlentities($articles[$i]['titolo']).'</a></li>';
+						else{
+							--$i;
+							break;
+						}
+					}
+				echo
+					'</ul>'.
+				'</li>';
 			}
 			else{
-				//sub menu
-				echo '<li><a href="'.$href.'">'.htmlentities($li['titolo']).'</a></li>';
+				echo '<li class="single"><a href="'.$link.'">'.htmlentities($sp['titolo']).'</a></li>';
 			}
 		}
-		if (false != $lastid) echo ($hassubmenu ? '</ul></li>' : '</li>');
+		
 	?></ul>
 </div>

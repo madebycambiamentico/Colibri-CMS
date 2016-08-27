@@ -181,7 +181,11 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			//---------------------------------------------
 			//strict map + creation date + edit date + full image
 			$map = $fixPathPieces[3] . (isset($fixPathPieces[4]) ? '/'.$fixPathPieces[4] : '');
-			$pdostat = \WebSpace\Query::query('byMap', [true, true, CMS_LANGUAGE], [$map, $artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query(
+				'byMap',
+				[ 'datecostrain' => true, 'lang' => CMS_LANGUAGE ],
+				[ $map, $artDate.'%', $artDate.'%' ]
+			);
 			if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 003]');
 			$pdostat->closeCursor();
@@ -194,7 +198,11 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		else{
 			//---------------------------------------------
 			//all articles by creation date + edit date
-			$pdostat = \WebSpace\Query::query('byDate', [false, CMS_LANGUAGE], [$artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query(
+				'byDate',
+				[ 'lang' => CMS_LANGUAGE ],
+				[ $artDate.'%', $artDate.'%' ]
+			);
 			if (!$page = $pdostat->fetchAll(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 004]');
 			$pdostat->closeCursor();
@@ -210,8 +218,12 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		//strict map + full image
 		$map = $fixPathPieces[0] . (isset($fixPathPieces[1]) ? '/'.$fixPathPieces[1] : '');
 		
-		$pdostat = \WebSpace\Query::query('byMap', [false, true, CMS_LANGUAGE], [$map]);
-		if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
+		$pdostat = \WebSpace\Query::query(
+			'byMap',
+			[ 'datecostrain' => false, 'lang' => CMS_LANGUAGE ],
+			[ $map ]
+		);
+		if (!$page = $pdostat->fetch())
 			noPageFound('Nessuna pagina trovata [cod 005] ('.$map.')/'.CMS_LANGUAGE);
 		$pdostat->closeCursor();
 		$pageid = $page['id'];
@@ -264,7 +276,10 @@ if (CMS_LANGUAGE && isset($_GET['translate'])){
 
 //search for index page
 //(?)else fill with dummy empty array(?)
-$pdostat = \WebSpace\Query::query('index',[true, CMS_LANGUAGE]);
+$pdostat = \WebSpace\Query::query(
+	'index',
+	[ 'fullimage' => true, 'lang' => CMS_LANGUAGE ]
+);
 if ($page = $pdostat->fetch()){
 	$pdostat->closeCursor();
 	$pageid = $page['id'];

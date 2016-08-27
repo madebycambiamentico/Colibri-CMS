@@ -1,15 +1,12 @@
 <?php
 
 /*
- * @template Colibrì 2016 v.1.0
- * breaking news -- this is not a required file for standard templates.
- * @author Nereo Costacurta
- *
- * @require: /index.php (this is not a standalone page!)
- *
- * @license GPLv3
- * @copyright: (C)2016 nereo costacurta
-**/
+* add NEWS section on the standard template Colibrì 2016.
+*
+* @author Nereo Costacurta
+* @license GPLv3
+* @copyright: (C)2016 nereo costacurta
+*/
 
 if (!isset($web)){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
@@ -20,29 +17,37 @@ if (!isset($web)){
 
 <!-- news -->
 <?php
-	//search all news (idtype=2), max 6, no full image (false)
-	$pdostat = \WebSpace\Query::query('byType', [2, 6]);
-	$hasrows = false;
+	//search all links (idtype=3), no limit, no full image (false)
+	$pdostat = \WebSpace\Query::query(
+		'byType',
+		[ 'type' => 2 ]
+	);
+	
+	$doonce = true;
+	
 	while ($sp = $pdostat->fetch()){
-		if (!$hasrows){
+		if ($doonce){
 			//---------------------------------------------
 			echo '<div id="news"><div class="article-cont">';
-			$hasrows = true;
+			$doonce = false;
 		}
-		$link = Links::file(htmlentities($sp['remaplink'],ENT_QUOTES));
+		
 		$img = htmlentities($sp['src'],ENT_QUOTES);
+		$link = 'target="_blank" href="'.htmlentities($sp['inbreve'],ENT_QUOTES).'"';
 		echo '<div class="article"><div class="sub-art-cont">'.
-			'<div class="image"><a href="'.$link.'"'.($img ? ' style="background-image:url(\''.Links::thumb('320x200/'.$img).'\')"' : '').'></a></div>'.
+			'<div class="image"><a '.$link.($img ? ' style="background-image:url(\''. Links::thumb('320x200/'.$img) .'\')"' : '').'></a></div>'.
 			'<div class="desc imgfix">'.
 				'<h3>'.htmlentities($sp['titolo']).'</h3>'.
 				'<p>'.$sp['corpo'].'</p>'.
 			'</div>'.
 		'</div></div>';
 	}
+	
 	$pdostat->closeCursor();
-	if ($hasrows){
+	if (!$doonce){
 		echo '</div></div>';
 		//---------------------------------------------
 	}
+	
 ?>
 	
