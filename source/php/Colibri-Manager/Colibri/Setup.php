@@ -299,108 +299,6 @@ class Setup {
 	
 	
 	/**
-	* Generate a random key used in encryption
-	*
-	* Always writes to the file if it exists and is writable to ensure that we
-	* blank out old code.
-	*
-	* @see generate_CMS_key()
-	*
-	* @return (true|false)		success on creating the secret file.
-	*/
-	public function set_CMS_key(){
-		$this->add_log("called <code>set_CMS_key()</code>");
-		//check if caller is logged webmaster
-		//TODO...
-		//template
-		global $Config;
-		$template_file = __DIR__ . '/secret_key_template.txt';
-		$template = @file_get_contents($template_file);
-		if (false === $template){
-			$this->add_error("Missing secret key template file");
-			return false;
-		}
-		
-		//php file that will hold the key
-		$secret_file = $Config->database['dir'] . 'encryption_key.php';
-		
-		//update current db name if already exists the secret file
-		if (file_exists($secret_file)){
-			//user must be a webmaster to change db name!!!
-			if (!$this->is_user_webmaster) return false;
-			//update current database name
-			include $secret_file; //add CMS_ENCRYPTION_KEY
-		}
-		
-		//generate file
-		return $this->generate_CMS_key($secret_file, $template);
-	}
-	
-	
-	/**
-	* Generate a random key used in encryption
-	*
-	* Always writes to the file if it exists and is writable to ensure that we
-	* blank out old code.
-	*
-	* @see create_new_CMS_key()
-	* @see update_old_CMS_key()
-	*
-	* @return (true|false)		success on creating the secret file.
-	*/
-	private function generate_CMS_key($file, $template){
-		$this->add_log("called <code>generate_CMS_key()</code> for file <i>{$file}</i>");
-		
-		//check variables
-		if (empty($file) || empty($template)) return false;
-		
-		//check if file can be written. create file if not exists.
-		$oldfile = null;
-		if (!defined('CMS_ENCRYPTION_KEY')){
-			if (false === @file_put_contents($file,"")){
-				$this->add_error("Cannot generate secret key php file.");
-				return false;
-			}
-		}
-		
-		//generate random string
-		$RL_factory = new \RandomLib\Factory;
-		$RL_generator = $RL_factory->getMediumStrengthGenerator();
-		$key = $RL_generator->generateString(64);
-		//$this->add_log("generated key: {$key}");
-		
-		if (!defined('CMS_ENCRYPTION_KEY')){
-			return $this->create_new_CMS_key($file, $template, $key);
-		}
-		else{
-			return $this->update_old_CMS_key($file, $template, $key);
-		}
-	}
-	
-	
-	private function create_new_CMS_key($file, $template, $key){
-		$this->add_log("called <code>create_new_CMS_key()</code> for file <i>{$file}</i>");
-		//create file / overwrite
-		$new_php_code = str_replace('##random_generated_key_here##', $key, $template);
-		return !( false === @file_put_contents($file,$new_php_code, LOCK_EX) );
-	}
-	
-	
-	private function update_old_CMS_key($file, $template, $key){
-		$this->add_log("called <code>update_old_CMS_key()</code> for file <i>{$file}</i>");
-		if (!$this->is_user_webmaster ){
-			$this->add_error("Only webmaster can change encryption key!");
-			return false;
-		}
-		//update all database before changing file.
-		//usin CMS_ENCRYPTION_KEY
-		//TODO...
-		$this->add_error("<code>update_old_CMS_key()</code> not yet implemented.");
-		return true;
-	}
-	
-	
-	/**
 	* Assign a random name to database
 	*
 	* Always writes to the file if it exists and is writable to ensure that we
@@ -436,11 +334,9 @@ class Setup {
 			//update current database name
 			$this->add_log("loading CMS_DB_NAME");
 			include $secret_file; //add CMS_DB_NAME
-			$Config->update_db( ['file' => \CMS_DB_NAME] );
 			$secret_file = $Config->database['dir'] . 'encryption_db_name.php';
 		}
 		else{
-			//old Colibri version doesn't already have secret_db_name_template.txt...
 			//check if database already exists... if exists then only webmaster are allowed to edit.
 			if (file_exists($Config->database['src']) && filesize($Config->database['src']) != 0 && !$this->is_user_webmaster){
 				clearstatcache();//filesize remains in memory?
@@ -452,6 +348,7 @@ class Setup {
 		
 		//generate/rename file
 		$new_db_name = $this->generate_CMS_db_name($secret_file, $template);
+		$Config->update_db( ['file' => $new_db_name] );
 		
 		//generate/rename database
 		if (false !== $new_db_name){
@@ -563,6 +460,149 @@ class Setup {
 				return false;
 			}
 		}
+	}
+	
+	
+	/**
+	* Generate a random key used in encryption
+	*
+	* Always writes to the file if it exists and is writable to ensure that we
+	* blank out old code. DB SHOULD ALREADY BEEN SET
+	*
+	* @see generate_CMS_key()
+	*
+	* @return (true|false)		success on creating the secret file.
+	*/
+	public function set_CMS_key(){
+		$this->add_log("called <code>set_CMS_key()</code>");
+		//check if caller is logged webmaster
+		//TODO...
+		//template
+		global $Config;
+		$template_file = __DIR__ . '/secret_key_template.txt';
+		$template = @file_get_contents($template_file);
+		if (false === $template){
+			$this->add_error("Missing secret key template file");
+			return false;
+		}
+		
+		//php file that will hold the key
+		$secret_file = $Config->database['dir'] . 'encryption_key.php';
+		
+		//update current db name if already exists the secret file
+		if (file_exists($secret_file)){
+			//user must be a webmaster to change db name!!!
+			if (!$this->is_user_webmaster) return false;
+			//update current database name
+			include $secret_file; //add CMS_ENCRYPTION_KEY
+		}
+		
+		//generate file
+		return $this->generate_CMS_key($secret_file, $template);
+	}
+	
+	
+	/**
+	* Generate a random key used in encryption
+	*
+	* Always writes to the file if it exists and is writable to ensure that we
+	* blank out old code.
+	*
+	* @see create_new_CMS_key()
+	* @see update_old_CMS_key()
+	*
+	* @return (true|false)		success on creating the secret file.
+	*/
+	private function generate_CMS_key($file, $template){
+		$this->add_log("called <code>generate_CMS_key()</code> for file <i>{$file}</i>");
+		
+		//check variables
+		if (empty($file) || empty($template)) return false;
+		
+		//check if file can be written. create file if not exists.
+		$oldfile = null;
+		if (!defined('CMS_ENCRYPTION_KEY')){
+			if (false === @file_put_contents($file,"")){
+				$this->add_error("Cannot generate secret key php file.");
+				return false;
+			}
+		}
+		
+		//generate random string
+		$RL_factory = new \RandomLib\Factory;
+		$RL_generator = $RL_factory->getMediumStrengthGenerator();
+		$key = $RL_generator->generateString(64);
+		//$this->add_log("generated key: {$key}");
+		
+		if (!defined('CMS_ENCRYPTION_KEY')){
+			if ($this->create_new_CMS_key($file, $template, $key))
+				return $this->generateAdmin($key);
+			else
+				return false;
+		}
+		else{
+			return $this->update_old_CMS_key($file, $template, $key);
+		}
+	}
+	
+	
+	/*
+	* Using a template, creates the file containing the secret key
+	*/
+	private function create_new_CMS_key($file, $template, $key){
+		$this->add_log("called <code>create_new_CMS_key()</code> for file <i>{$file}</i>");
+		//create file / overwrite
+		$new_php_code = str_replace('##random_generated_key_here##', $key, $template);
+		return !( false === @file_put_contents($file,$new_php_code, LOCK_EX) );
+	}
+	
+	
+	/*
+	* After a database have been generated, adds "sito" and "admin" first values into it.
+	*/
+	private function generateAdmin($key){
+		$this->add_log("generating admin user and first site properties <code>generateAdmin()</code>");
+		global $Config;
+		
+		//define constant CMS_ENCRYPTION_KEY
+		require_once CMS_INSTALL_DIR . '/database/encryption_key.php';
+
+		//define constant CMS_DB_NAME
+		require_once CMS_INSTALL_DIR . '/database/encryption_db_name.php';
+		
+		//connect
+		require_once CMS_INSTALL_DIR . '/database/functions.inc.php';
+		
+		//define password salt and hash... default = colibrì
+		//this is the password as sended via form by a user
+		$hashed_password = hash('sha512', 'colibrì');
+		//password stored in database are hashed with salt
+		$RL_factory = new \RandomLib\Factory;
+		$RL_generator = $RL_factory->getMediumStrengthGenerator();
+		$database_random_salt = hash('sha512', $RL_generator->generateString(32));
+		$database_password = hash('sha512', $hashed_password.$database_random_salt);
+		
+		//add admin... insert
+		if (
+			$pdo->query("INSERT INTO utenti (id,classe,nome,salt,pass) VALUES (1,2,'admin','{$database_random_salt}','{$database_password}')") &&
+			$pdo->query("INSERT INTO sito (id) VALUES (1)")
+		)
+			return true;
+		else
+			return false;
+	}
+	
+	
+	private function update_old_CMS_key($file, $template, $key){
+		$this->add_log("called <code>update_old_CMS_key()</code> for file <i>{$file}</i>");
+		if (!$this->is_user_webmaster ){
+			$this->add_error("Only webmaster can change encryption key!");
+			return false;
+		}
+		//update all database before changing file using CMS_ENCRYPTION_KEY
+		//TODO...
+		$this->add_error("<code>update_old_CMS_key()</code> not yet implemented.");
+		return true;
 	}
 }
 ?>

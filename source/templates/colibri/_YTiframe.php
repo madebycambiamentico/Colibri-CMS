@@ -1,14 +1,13 @@
 <?php
 
 /*
- * @template Colibrì 2016 v.1.0 -- youtube loader for main page
- * @author Nereo Costacurta
- *
- * @require: /index.php (this is not a standalone page!)
- *
- * @license GPLv3
- * @copyright: (C)2016 nereo costacurta
-**/
+* add YOUTUBE VIDEO section on the standard template Colibrì 2016,
+* replacing the big image section.
+*
+* @author Nereo Costacurta
+* @license GPLv3
+* @copyright: (C)2016 nereo costacurta
+*/
 
 //control variables
 if (!isset($page,$video)){

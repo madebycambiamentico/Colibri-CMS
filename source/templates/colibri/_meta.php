@@ -1,15 +1,12 @@
 <?php
 
 /*
- * @template Colibrì 2016 v.1.0
- * meta tags -- this is not a required file for standard templates.
- * @author Nereo Costacurta
- *
- * @require: /index.php (this is not a standalone page!)
- *
- * @license GPLv3
- * @copyright: (C)2016 nereo costacurta
-**/
+* add META TAGS section in <head> on the standard template Colibrì 2016.
+*
+* @author Nereo Costacurta
+* @license GPLv3
+* @copyright: (C)2016 nereo costacurta
+*/
 
 if (!isset($page,$web)){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");

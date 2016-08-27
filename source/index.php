@@ -69,7 +69,6 @@ function get_manager_page($page){
 
 
 //global variables
-$pageid			= null;		//article id
 $page				= null;		//article, complete database result
 $web				= null;		//content of `sito` database table
 $Language		= null;		//contains preferred language (not null if site flagged multilanguage)
@@ -107,6 +106,8 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		$requestedURL = str_ireplace($Config->script_path,"",$_SERVER['SCRIPT_URL']);
 	$pathPieces = explode("/",rtrim($requestedURL, '/'));
 	
+	if ($pathPieces[0] == '' && isset($_GET['date']))
+		goto anchor_daterange;
 	
 	//STOPFORDEBUG();
 	
@@ -181,24 +182,29 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			//---------------------------------------------
 			//strict map + creation date + edit date + full image
 			$map = $fixPathPieces[3] . (isset($fixPathPieces[4]) ? '/'.$fixPathPieces[4] : '');
-			$pdostat = \WebSpace\Query::query('byMap', [true, true, CMS_LANGUAGE], [$map, $artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query(
+				'byMap',
+				[ 'fullimage' => true, 'datecostrain' => true, 'lang' => CMS_LANGUAGE ],
+				[ $map, $artDate.'%', $artDate.'%' ]
+			);
 			if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 003]');
 			$pdostat->closeCursor();
-			$pageid = $page['id'];
 			
 			//open single page template.
-			require \WebSpace\Template::single($pageid, $page['idtype'], $web['template']);
-			exit;
+			require \WebSpace\Template::single($page['id'], $page['idtype'], $web['template']); exit;
 		}
 		else{
 			//---------------------------------------------
 			//all articles by creation date + edit date
-			$pdostat = \WebSpace\Query::query('byDate', [false, CMS_LANGUAGE], [$artDate.'%', $artDate.'%']);
+			$pdostat = \WebSpace\Query::query(
+				'byDate',
+				[ 'lang' => CMS_LANGUAGE ],
+				[ $artDate.'%', $artDate.'%' ]
+			);
 			if (!$page = $pdostat->fetchAll(PDO::FETCH_ASSOC))
 				noPageFound('Nessuna pagina trovata [cod 004]');
 			$pdostat->closeCursor();
-			$pageid = $page['id'];
 			
 			//open multiple page template.
 			require \WebSpace\Template::multi();
@@ -210,17 +216,34 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		//strict map + full image
 		$map = $fixPathPieces[0] . (isset($fixPathPieces[1]) ? '/'.$fixPathPieces[1] : '');
 		
-		$pdostat = \WebSpace\Query::query('byMap', [false, true, CMS_LANGUAGE], [$map]);
+		$pdostat = \WebSpace\Query::query(
+			'byMap',
+			[ 'fullimage' => true, 'datecostrain' => false, 'lang' => CMS_LANGUAGE ],
+			[ $map ]
+		);
 		if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))
 			noPageFound('Nessuna pagina trovata [cod 005] ('.$map.')/'.CMS_LANGUAGE);
 		$pdostat->closeCursor();
-		$pageid = $page['id'];
 		
 		//open single page template.
-		require \WebSpace\Template::single($pageid, $page['idtype'], $web['template']);
-		exit;
+		require \WebSpace\Template::single($page['id'], $page['idtype'], $web['template']); exit;
 	}
 }
+else{
+	if ( isset($_GET['date']) ) goto anchor_daterange;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //***************************************
@@ -264,10 +287,13 @@ if (CMS_LANGUAGE && isset($_GET['translate'])){
 
 //search for index page
 //(?)else fill with dummy empty array(?)
-$pdostat = \WebSpace\Query::query('index',[true, CMS_LANGUAGE]);
+$pdostat = \WebSpace\Query::query(
+	'index',
+	[ 'fullimage' => true, 'lang' => CMS_LANGUAGE ]
+);
 if ($page = $pdostat->fetch()){
 	$pdostat->closeCursor();
-	$pageid = $page['id'];
+	$page['id'] = $page['id'];
 }
 elseif (!is_null(CMS_LANGUAGE)){
 	noPageFound('Pagina index mancante per il tuo linguaggio!<br>Il webmaster deve ancora impostare il primo articolo con spunta "index". [cod 007/lang]');
@@ -281,6 +307,70 @@ $pdostat->closeCursor();
 //STOPFORDEBUG(true);
 
 
-require \WebSpace\Template::main( $web['template'] );
+require \WebSpace\Template::main( $web['template'] ); exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//***************************************
+//					date range...
+//***************************************
+//open multi template if GET date is set:
+exit;
+anchor_daterange:
+
+/*****************************************************************
+ Here is defined the constant CMS_LANGUAGE, which is a shortcut to
+ $Language->lang in case of multilanguage site (otherwise is null)
+******************************************************************/
+define('CMS_LANGUAGE', ($Language ? $Language->lang : null) );
+
+if (!$_GET['date'] || !preg_match('#^\d{4}(-\d{2})*#',$_GET['date']))
+	noPageFound('Richiesta non valida.');
+
+
+
+//search for index page
+//(?)else fill with dummy empty array(?)
+$pdostat = \WebSpace\Query::query(
+	'index',
+	[ 'fullimage' => true, 'lang' => CMS_LANGUAGE ]
+);
+if ($page = $pdostat->fetch()){
+	$pdostat->closeCursor();
+	$page['id'] = $page['id'];
+}
+elseif (!is_null(CMS_LANGUAGE)){
+	noPageFound('Pagina index mancante per il tuo linguaggio!<br>Il webmaster deve ancora impostare il primo articolo con spunta "index". [cod 007/lang/daterange]');
+}
+else{
+	noPageFound('Pagina index mancante! [cod 007/no-lang/daterange]');
+}
+$pdostat->closeCursor();
+
+
+
+//---------------------------------------------
+//all articles by creation date + edit date
+$pdostatPAGES = \WebSpace\Query::query(
+	'byDate',
+	[ 'type' => 1, 'dates' => 'edit', 'lang' => CMS_LANGUAGE ],
+	[  $_GET['date'].'%' ]
+);
+$page_n = $pdostatPAGES->fetch(PDO::FETCH_ASSOC);
+
+
+//open multiple page template.
+require \WebSpace\Template::multi(); exit;
 
 ?>

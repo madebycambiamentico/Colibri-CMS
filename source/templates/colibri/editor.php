@@ -1,14 +1,13 @@
 <?php
 
 /*
- * @template Colibrì 2016 v.1.0 -- template editor
- * @author Nereo Costacurta
- *
- * @require: this is a standalone page!
- *
- * @license GPLv3
- * @copyright: (C)2016 nereo costacurta
-**/
+* custom EDITOR for standard template Colibrì 2016.
+* Here you can manage youtube videos, logo, bottom map and map position
+*
+* @author Nereo Costacurta
+* @license GPLv3
+* @copyright: (C)2016 nereo costacurta
+*/
 
 //-------------------------------------------------------------------------
 // !!! WARNING !!!

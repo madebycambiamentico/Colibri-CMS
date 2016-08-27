@@ -1,20 +1,19 @@
 --
--- File generated with SQLiteStudio v3.1.0 on dom ago 21 16:30:25 2016
+-- File generated with SQLiteStudio v3.1.0 on sab ago 27 19:38:21 2016
 --
 -- Text encoding used: System
 --
 PRAGMA foreign_keys = off;
 BEGIN TRANSACTION;
 
--- Table: languages
-DROP TABLE IF EXISTS languages;
+-- Table: immagini_albums
+CREATE TABLE immagini_albums (id INTEGER PRIMARY KEY AUTOINCREMENT, titolo VARCHAR (100), idimage INTEGER REFERENCES immagini (id) ON DELETE SET NULL ON UPDATE CASCADE);
 
-CREATE TABLE languages (
-    code      VARCHAR (5) PRIMARY KEY
-                          UNIQUE ON CONFLICT REPLACE,
-    name      TEXT,
-    supported BOOLEAN     DEFAULT (0) 
-);
+-- Table: immagini
+CREATE TABLE immagini (id INTEGER PRIMARY KEY AUTOINCREMENT, src TEXT, descr VARCHAR (200), data DATETIME DEFAULT (CURRENT_TIMESTAMP), width INTEGER, height INTEGER);
+
+-- Table: languages
+CREATE TABLE languages (code VARCHAR (5) PRIMARY KEY UNIQUE ON CONFLICT REPLACE, name TEXT, supported BOOLEAN DEFAULT (0));
 
 INSERT INTO languages (
                           code,
@@ -1871,7 +1870,7 @@ INSERT INTO languages (
                       )
                       VALUES (
                           'ru-md',
-                          '??????? (???????)',
+                          'Russian (Moldavia)',
                           0
                       );
 
@@ -1882,347 +1881,282 @@ INSERT INTO languages (
                       )
                       VALUES (
                           'ru',
-                          '???????',
+                          'Russian',
                           0
                       );
 
-
--- Table: link_album_immagini
-DROP TABLE IF EXISTS link_album_immagini;
-
-CREATE TABLE link_album_immagini (
-    idalbum INTEGER REFERENCES immagini (id) ON DELETE CASCADE
-                                             ON UPDATE SET NULL,
-    idimage INTEGER REFERENCES immagini (id) ON DELETE CASCADE
-                                             ON UPDATE CASCADE
+-- Table: utenti
+CREATE TABLE utenti (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	classe INT DEFAULT (-1) NOT NULL,
+	nome VARCHAR (100),
+	email TEXT,
+	datacreaz DATETIME DEFAULT (CURRENT_TIMESTAMP),
+	hasimage BOOLEAN DEFAULT (0),
+	salt CHAR (128),
+	pass CHAR (128),
+	passhint TEXT,
+	about TEXT COLLATE NOCASE,
+	flags INT DEFAULT (0)
 );
-
 
 -- Table: youtube
-DROP TABLE IF EXISTS youtube;
+CREATE TABLE youtube (id INTEGER PRIMARY KEY AUTOINCREMENT, videoid TEXT, videostart DECIMAL DEFAULT (0), videoend DECIMAL, videow INT DEFAULT (560), videoh INT DEFAULT (315), idarticolo INTEGER REFERENCES articoli (id) ON DELETE CASCADE ON UPDATE CASCADE);
 
-CREATE TABLE youtube (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    videoid    TEXT,
-    videostart DECIMAL DEFAULT (0),
-    videoend   DECIMAL,
-    videow     INT     DEFAULT (560),
-    videoh     INT     DEFAULT (315),
-    idarticolo INTEGER REFERENCES articoli (id) ON DELETE CASCADE
-                                                ON UPDATE CASCADE
-);
-
-
--- Table: utenti
-DROP TABLE IF EXISTS utenti;
-
-CREATE TABLE utenti (
-    id        INTEGER       PRIMARY KEY AUTOINCREMENT,
-    classe    INT           DEFAULT (-1) 
-                            NOT NULL,
-    nome      VARCHAR (100),
-    email     TEXT,
-    datacreaz DATETIME      DEFAULT (CURRENT_TIMESTAMP),
-    hasimage  BOOLEAN       DEFAULT (0),
-    salt      CHAR (128),
-    pass      CHAR (128),
-    passhint  TEXT,
-    about     TEXT          COLLATE NOCASE,
-    flags     INT           DEFAULT (0) 
-);
-
-INSERT INTO utenti (
-                       id,
-                       classe,
-                       nome,
-                       email,
-                       datacreaz,
-                       hasimage,
-                       salt,
-                       pass,
-                       passhint,
-                       about,
-                       flags
-                   )
-                   VALUES (
-                       1,
-                       2,
-                       'admin',
-                       NULL,
-                       '2016-07-16 16:30:20',
-                       1,
-                       '0c1c34d1ec3ca8aa3d41597cfc417200612d1f1b98f0a26eb8fd3b65fcba0814dcdd7fc129f2c2817da2dadaef4fc77cec551203b4192614bead3fcb3c119448',
-                       '63b069e3cc4cac9bffd076397827ce810b4aca778a816dddf449106eedaf8e8799133ccdc88e0f5b3293d4cde8b63d65be525b2e5f8574674132117aecbefa39',
-                       'default password:
-colibrì cms',
-                       NULL,
-                       0
-                   );
-
+-- Table: link_album_immagini
+CREATE TABLE link_album_immagini (idalbum INTEGER REFERENCES immagini (id) ON DELETE CASCADE ON UPDATE SET NULL, idimage INTEGER REFERENCES immagini (id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 -- Table: sito
-DROP TABLE IF EXISTS sito;
-
-CREATE TABLE sito (
-    id                INTEGER     PRIMARY KEY AUTOINCREMENT,
-    autore            TEXT        DEFAULT ('Colibrì System'),
-    titolo            TEXT        DEFAULT ('Il Colibrì'),
-    descr             TEXT        DEFAULT ('Fast and Reliable CMS ever MadeByCambiamentico'),
-    motto             TEXT        DEFAULT ('More than nothing, nothing More'),
-    template          TEXT        DEFAULT ('colibri'),
-    email             TEXT,
-    dataedit          DATETIME    DEFAULT (CURRENT_TIMESTAMP),
-    info              TEXT,
-    default_lang      VARCHAR (5) DEFAULT ('en') 
-                                  REFERENCES languages (code) ON DELETE SET DEFAULT
-                                                              ON UPDATE CASCADE,
-    multilanguage     BOOLEAN     DEFAULT (0),
-    user_subscription BOOLEAN     DEFAULT (1),
-    recaptcha_key     TEXT,
-    recaptcha_secret  TEXT,
-    delivery_quantity INT         DEFAULT (3),
-    delivery_delay    INT         DEFAULT (2) 
-);
-
-INSERT INTO sito (
-                     id,
-                     autore,
-                     titolo,
-                     descr,
-                     motto,
-                     template,
-                     email,
-                     dataedit,
-                     info,
-                     default_lang,
-                     multilanguage,
-                     user_subscription,
-                     recaptcha_key,
-                     recaptcha_secret,
-                     delivery_quantity,
-                     delivery_delay
-                 )
-                 VALUES (
-                     1,
-                     'M.B.C. (Nereo Costacurta)',
-                     'Il Colibrì',
-                     'Fast and Reliable CMS ever MadeByCambiamentico',
-                     'More than nothing, nothing More',
-                     'colibri',
-                     '',
-                     '2016-02-20 14:30:56',
-                     'Released under GPL v.3 license.
-
-
-
-Colibrì CMS by Nereo Costacurta
-
-
-
-MadeByCambiamentico!
-
-
-
-
-
-
-
-
-
-(BANG!)',
-                     'it',
-                     '',
-                     1,
-                     '',
-                     '',
-                     2,
-                     3
-                 );
-
-
--- Table: immagini_albums
-DROP TABLE IF EXISTS immagini_albums;
-
-CREATE TABLE immagini_albums (
-    id      INTEGER       PRIMARY KEY AUTOINCREMENT,
-    titolo  VARCHAR (100),
-    idimage INTEGER       REFERENCES immagini (id) ON DELETE SET NULL
-                                                   ON UPDATE CASCADE
-);
-
-
--- Table: articoli_types
-DROP TABLE IF EXISTS articoli_types;
-
-CREATE TABLE articoli_types (
-    id          INTEGER      PRIMARY KEY AUTOINCREMENT,
-    protected   BOOLEAN      DEFAULT (0),
-    nome        TEXT         COLLATE NOCASE,
-    remapprefix VARCHAR (30) COLLATE NOCASE
-);
-
-INSERT INTO articoli_types (
-                               id,
-                               protected,
-                               nome,
-                               remapprefix
-                           )
-                           VALUES (
-                               1,
-                               1,
-                               'pagine principali',
-                               ''
-                           );
-
-INSERT INTO articoli_types (
-                               id,
-                               protected,
-                               nome,
-                               remapprefix
-                           )
-                           VALUES (
-                               2,
-                               1,
-                               'news',
-                               'news'
-                           );
-
-INSERT INTO articoli_types (
-                               id,
-                               protected,
-                               nome,
-                               remapprefix
-                           )
-                           VALUES (
-                               3,
-                               1,
-                               'links',
-                               'links'
-                           );
-
+CREATE TABLE sito (id INTEGER PRIMARY KEY AUTOINCREMENT, autore TEXT DEFAULT ('Colibrì System'), titolo TEXT DEFAULT ('Il Colibrì'), descr TEXT DEFAULT ('Fast and Reliable CMS ever MadeByCambiamentico'), motto TEXT DEFAULT ('More than nothing, nothing More'), template TEXT DEFAULT ('colibri'), email TEXT, dataedit DATETIME DEFAULT (CURRENT_TIMESTAMP), info TEXT, default_lang VARCHAR (5) DEFAULT ('en') REFERENCES languages (code) ON DELETE SET DEFAULT ON UPDATE CASCADE, multilanguage BOOLEAN DEFAULT (0), user_subscription BOOLEAN DEFAULT (1), recaptcha_key TEXT, recaptcha_secret TEXT, delivery_quantity INT DEFAULT (3), delivery_delay INT DEFAULT (2));
 
 -- Table: articoli
-DROP TABLE IF EXISTS articoli;
+CREATE TABLE articoli (id INTEGER PRIMARY KEY AUTOINCREMENT, datacreaz DATETIME DEFAULT (CURRENT_TIMESTAMP), dataedit DATETIME DEFAULT (CURRENT_TIMESTAMP), titolo VARCHAR (50), remaplink TEXT COLLATE NOCASE, corpo TEXT COLLATE NOCASE, inbreve TEXT, isindex BOOLEAN DEFAULT (0), isinmenu BOOLEAN DEFAULT (0), idarticolo INTEGER REFERENCES articoli (id) ON DELETE SET NULL ON UPDATE CASCADE, idalbum INTEGER REFERENCES immagini (id) ON DELETE SET NULL ON UPDATE CASCADE, idimage INTEGER REFERENCES immagini (id) ON DELETE SET NULL ON UPDATE CASCADE, idtype INTEGER DEFAULT (1) REFERENCES articoli_types (id) ON DELETE SET NULL ON UPDATE CASCADE, isgarbage BOOLEAN DEFAULT (0), idowner INTEGER REFERENCES "utenti" (id) ON DELETE SET NULL ON UPDATE CASCADE, ideditor INTEGER REFERENCES "utenti" (id) ON DELETE SET NULL ON UPDATE CASCADE, lang VARCHAR (5) DEFAULT ('it'), isindexlang BOOLEAN DEFAULT (0), idarticololang INTEGER REFERENCES articoli (id) ON DELETE SET NULL ON UPDATE CASCADE);
 
-CREATE TABLE articoli (
-    id             INTEGER      PRIMARY KEY AUTOINCREMENT,
-    datacreaz      DATETIME     DEFAULT (CURRENT_TIMESTAMP),
-    dataedit       DATETIME     DEFAULT (CURRENT_TIMESTAMP),
-    titolo         VARCHAR (50),
-    remaplink      TEXT         COLLATE NOCASE,
-    corpo          TEXT         COLLATE NOCASE,
-    inbreve        TEXT,
-    isindex        BOOLEAN      DEFAULT (0),
-    isinmenu       BOOLEAN      DEFAULT (0),
-    idarticolo     INTEGER      REFERENCES articoli (id) ON DELETE SET NULL
-                                                         ON UPDATE CASCADE,
-    idalbum        INTEGER      REFERENCES immagini (id) ON DELETE SET NULL
-                                                         ON UPDATE CASCADE,
-    idimage        INTEGER      REFERENCES immagini (id) ON DELETE SET NULL
-                                                         ON UPDATE CASCADE,
-    idtype         INTEGER      DEFAULT (1) 
-                                REFERENCES articoli_types (id) ON DELETE SET NULL
-                                                               ON UPDATE CASCADE,
-    isgarbage      BOOLEAN      DEFAULT (0),
-    idowner        INTEGER      REFERENCES utenti (id) ON DELETE SET NULL
-                                                       ON UPDATE CASCADE,
-    ideditor       INTEGER      REFERENCES utenti (id) ON DELETE SET NULL
-                                                       ON UPDATE CASCADE,
-    lang           VARCHAR (5)  DEFAULT ('it'),
-    isindexlang    BOOLEAN      DEFAULT (0),
-    idarticololang INTEGER      REFERENCES articoli (id) ON DELETE SET NULL
-                                                         ON UPDATE CASCADE
+-- Table: articoli_treepath
+CREATE TABLE articoli_treepath (
+    ancestor   INTEGER REFERENCES articoli (id) ON DELETE CASCADE
+                                                ON UPDATE CASCADE,
+    descendant INTEGER REFERENCES articoli (id) ON DELETE CASCADE
+                                                ON UPDATE CASCADE,
+    depth      INTEGER DEFAULT (0),
+    PRIMARY KEY (
+        ancestor,
+        descendant
+    )
 );
-
 
 -- Table: emails
-DROP TABLE IF EXISTS emails;
+CREATE TABLE emails (id INTEGER PRIMARY KEY AUTOINCREMENT, type INT, datacreaz DATETIME DEFAULT (CURRENT_TIMESTAMP), content TEXT NOT NULL ON CONFLICT IGNORE, iduser INTEGER REFERENCES "utenti" (id) ON DELETE CASCADE ON UPDATE CASCADE);
 
-CREATE TABLE emails (
-    id        INTEGER  PRIMARY KEY AUTOINCREMENT,
-    type      INT,
-    datacreaz DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    content   TEXT     NOT NULL ON CONFLICT IGNORE,
-    iduser    INTEGER  REFERENCES utenti (id) ON DELETE CASCADE
-                                              ON UPDATE CASCADE
-);
-
-
--- Table: immagini
-DROP TABLE IF EXISTS immagini;
-
-CREATE TABLE immagini (
-    id     INTEGER       PRIMARY KEY AUTOINCREMENT,
-    src    TEXT,
-    descr  VARCHAR (200),
-    data   DATETIME      DEFAULT (CURRENT_TIMESTAMP),
-    width  INTEGER,
-    height INTEGER
-);
-
+-- Table: articoli_types
+CREATE TABLE articoli_types (id INTEGER PRIMARY KEY AUTOINCREMENT, protected BOOLEAN DEFAULT (0), nome TEXT COLLATE NOCASE, remapprefix VARCHAR (30) COLLATE NOCASE);
 
 -- Trigger: trigger_prevet_double
-DROP TRIGGER IF EXISTS trigger_prevet_double;
-CREATE TRIGGER trigger_prevet_double
-        BEFORE INSERT
-            ON link_album_immagini
+CREATE TRIGGER trigger_prevet_double BEFORE INSERT ON link_album_immagini BEGIN SELECT CASE WHEN EXISTS(SELECT idalbum FROM link_album_immagini WHERE idalbum = NEW.idalbum AND idimage = NEW.idimage) THEN RAISE (IGNORE) END; END;
+
+-- Trigger: article_update_parent_to_null
+CREATE TRIGGER article_update_parent_to_null
+         AFTER UPDATE
+            ON articoli
+          WHEN NEW.idarticolo IS NULL AND 
+               OLD.idarticolo
 BEGIN
-    SELECT CASE WHEN EXISTS (
-                   SELECT idalbum
-                     FROM link_album_immagini
-                    WHERE idalbum = NEW.idalbum AND 
-                          idimage = NEW.idimage
-               )
-           THEN RAISE(IGNORE) END;
+    DELETE FROM articoli_treepath
+          WHERE descendant IN (
+                    SELECT descendant
+                      FROM articoli_treepath
+                     WHERE ancestor = OLD.id
+                )
+AND 
+                ancestor IN (
+        SELECT ancestor
+          FROM articoli_treepath
+         WHERE descendant = OLD.id AND 
+               ancestor != descendant
+    );
 END;
 
+-- Trigger: article_check_exists
+CREATE TRIGGER article_check_exists INSERT ON articoli WHEN new.idarticolo IS NOT NULL      BEGIN SELECT RAISE (IGNORE) WHERE NOT EXISTS (SELECT id FROM articoli WHERE id = new.idarticolo); END;
+
+-- Trigger: article_insert_first_branch
+CREATE TRIGGER article_insert_first_branch INSERT ON articoli WHEN new.idarticolo IS NULL   BEGIN INSERT INTO articoli_treepath (ancestor, descendant) VALUES (new.id, new.id); END;
+
+-- Trigger: article_insert_tree_path
+CREATE TRIGGER article_insert_tree_path INSERT ON articoli WHEN new.idarticolo IS NOT NULL  BEGIN INSERT INTO articoli_treepath (ancestor, descendant, depth) SELECT t.ancestor, NEW.id, (t.depth + 1) FROM articoli_treepath t WHERE t.descendant = new.idarticolo UNION ALL SELECT NEW.id, NEW.id, 0; END;
+
+-- Trigger: article_check_update
+CREATE TRIGGER article_check_update BEFORE UPDATE ON articoli BEGIN SELECT RAISE(FAIL, 'Cannot move down this item to its own sub-tree!') 
+     WHERE NEW.idarticolo IN (
+               SELECT descendant
+                 FROM articoli_treepath
+                WHERE ancestor = OLD.id
+           ); END;
+
+-- Trigger: article_update_parent
+CREATE TRIGGER article_update_parent
+         AFTER UPDATE
+            ON articoli
+          WHEN NEW.idarticolo AND 
+               OLD.idarticolo AND 
+               NEW.idarticolo != OLD.idarticolo
+BEGIN
+    DELETE FROM articoli_treepath
+          WHERE descendant IN (
+                    SELECT descendant
+                      FROM articoli_treepath
+                     WHERE ancestor = OLD.id
+                )
+AND 
+                ancestor IN (
+        SELECT ancestor
+          FROM articoli_treepath
+         WHERE descendant = OLD.id AND 
+               ancestor != descendant
+    );
+    INSERT INTO articoli_treepath (
+                                      ancestor,
+                                      descendant,
+                                      depth
+                                  )
+                                  SELECT supertree.ancestor,
+                                         subtree.descendant,
+                                         (supertree.depth + subtree.depth + 1) 
+                                    FROM articoli_treepath AS supertree
+                                         CROSS JOIN
+                                        articoli_treepath AS subtree
+                                   WHERE supertree.descendant = NEW.idarticolo AND 
+                                         subtree.ancestor = OLD.id;
+END;
+
+-- Trigger: article_update_parent_from_null
+CREATE TRIGGER article_update_parent_from_null
+         AFTER UPDATE
+            ON articoli
+          WHEN NEW.idarticolo IS NOT NULL AND 
+               OLD.idarticolo IS NULL
+BEGIN
+    INSERT INTO articoli_treepath (
+                                      ancestor,
+                                      descendant,
+                                      depth
+                                  )
+                                  SELECT supertree.ancestor,
+                                         subtree.descendant,
+                                         (supertree.depth + subtree.depth + 1) 
+                                    FROM articoli_treepath AS supertree
+                                         CROSS JOIN
+                                         articoli_treepath AS subtree
+                                   WHERE supertree.descendant = NEW.idarticolo AND 
+                                         subtree.ancestor = OLD.id;
+END;
 
 -- View: view_menu
-DROP VIEW IF EXISTS view_menu;
-CREATE VIEW view_menu AS
-    SELECT a.id AS parentid,
-           b.id,
-           b.remaplink,
-           b.titolo
-      FROM articoli a
-           INNER JOIN
-           articoli b ON b.idarticolo = a.id OR 
-                         (b.idarticolo IS NULL AND 
-                          b.id = a.id) 
-     WHERE a.isinmenu AND 
-NOT        a.isgarbage AND 
-NOT        b.isgarbage AND 
-           a.idarticolo IS NULL
-     ORDER BY parentid DESC,
-              b.idarticolo ASC;
+CREATE VIEW view_menu AS SELECT
+    art.*,
+    tree.depth,
+    GROUP_CONCAT(crumbs.ancestor,'.') AS breadcrumbs
+FROM articoli AS art
+JOIN articoli_treepath AS tree ON art.id = tree.descendant
+JOIN articoli_treepath AS crumbs ON crumbs.descendant = tree.descendant
+WHERE tree.ancestor IN (
+    SELECT id FROM articoli WHERE
+    idarticolo IS NULL AND
+    isinmenu AND
+    NOT isgarbage
+)
+    AND art.isinmenu
+    AND NOT art.isgarbage
+GROUP BY art.id
+ORDER BY breadcrumbs;
 
+-- View: view_menu_1_levels
+CREATE VIEW view_menu_1_levels AS SELECT * from articles WHERE NOT isgarbage AND idarticolo IS NULL AND isinmenu;
+
+-- View: view_menu_2_levels
+CREATE VIEW view_menu_2_levels AS SELECT
+    art.*,
+    tree.depth,
+    GROUP_CONCAT(crumbs.ancestor,'.') AS breadcrumbs
+FROM articoli AS art
+JOIN articoli_treepath AS tree ON art.id = tree.descendant
+JOIN articoli_treepath AS crumbs ON crumbs.descendant = tree.descendant
+WHERE tree.ancestor IN (
+    SELECT id FROM articoli WHERE
+    idarticolo IS NULL AND
+    isinmenu AND
+    NOT isgarbage
+)
+    AND art.isinmenu
+    AND NOT art.isgarbage
+    AND tree.depth <= 1
+GROUP BY art.id
+ORDER BY breadcrumbs;
+
+-- View: view_available_maps
+CREATE VIEW view_available_maps AS select id, remapprefix as 'remap' from articoli_types;
+
+-- View: view_articles
+CREATE VIEW view_articles AS SELECT
+    art.*,
+    tree.depth,
+    GROUP_CONCAT(crumbs.ancestor,'.') AS breadcrumbs
+FROM articoli AS art
+JOIN articoli_treepath AS tree ON art.id = tree.descendant
+JOIN articoli_treepath AS crumbs ON crumbs.descendant = tree.descendant
+WHERE tree.ancestor IN (
+    SELECT id FROM articoli WHERE
+    idarticolo IS NULL AND
+    NOT isgarbage
+)
+AND NOT art.isgarbage
+GROUP BY art.id
+ORDER BY breadcrumbs;
 
 -- View: view_all_main_sub_art
-DROP VIEW IF EXISTS view_all_main_sub_art;
-CREATE VIEW view_all_main_sub_art AS
-    SELECT a.id AS parentid,
-           b.id,
-           b.remaplink,
-           b.titolo
-      FROM articoli a
-           INNER JOIN
-           articoli b ON b.idarticolo = a.id
-     WHERE a.idtype = 1 AND 
-NOT        a.isgarbage AND 
-NOT        b.isgarbage AND 
-           a.idarticolo IS NULL AND 
-           b.idtype = 1
-     ORDER BY a.id DESC,
-              b.id ASC;
+CREATE VIEW view_all_main_sub_art AS SELECT a.id as 'parentid', b.id,b.remaplink,b.titolo FROM articoli a
+INNER JOIN articoli b ON b.idarticolo = a.id
+WHERE a.idtype = 1 AND NOT a.isgarbage AND NOT b.isgarbage AND a.idarticolo IS NULL AND b.idtype = 1
+ORDER BY a.id DESC, b.id ASC;
 
+-- View: view_articles_3_levels
+CREATE VIEW view_articles_3_levels AS SELECT
+    art.*,
+    tree.depth,
+    GROUP_CONCAT(crumbs.ancestor,'.') AS breadcrumbs
+FROM articoli AS art
+JOIN articoli_treepath AS tree ON art.id = tree.descendant
+JOIN articoli_treepath AS crumbs ON crumbs.descendant = tree.descendant
+WHERE tree.ancestor IN (
+    SELECT id FROM articoli WHERE
+    idarticolo IS NULL AND
+    NOT isgarbage
+)
+    AND tree.depth <= 2
+    AND NOT art.isgarbage
+GROUP BY art.id
+ORDER BY breadcrumbs;
 
--- View: view_template_maps
-DROP VIEW IF EXISTS view_template_maps;
-CREATE VIEW view_template_maps AS
-    SELECT id,
-           remapprefix AS remap
-      FROM articoli_types;
+-- View: view_menu_3_levels
+CREATE VIEW view_menu_3_levels AS SELECT
+    art.*,
+    tree.depth,
+    GROUP_CONCAT(crumbs.ancestor,'.') AS breadcrumbs
+FROM articoli AS art
+JOIN articoli_treepath AS tree ON art.id = tree.descendant
+JOIN articoli_treepath AS crumbs ON crumbs.descendant = tree.descendant
+WHERE tree.ancestor IN (
+    SELECT id FROM articoli WHERE
+    idarticolo IS NULL AND
+    isinmenu AND
+    NOT isgarbage
+)
+    AND art.isinmenu
+    AND NOT art.isgarbage
+    AND tree.depth <= 2
+GROUP BY art.id
+ORDER BY breadcrumbs;
 
+-- View: view_articles_2_levels
+CREATE VIEW view_articles_2_levels AS SELECT
+    art.*,
+    tree.depth,
+    GROUP_CONCAT(crumbs.ancestor,'.') AS breadcrumbs
+FROM articoli AS art
+JOIN articoli_treepath AS tree ON art.id = tree.descendant
+JOIN articoli_treepath AS crumbs ON crumbs.descendant = tree.descendant
+WHERE tree.ancestor IN (
+    SELECT id FROM articoli WHERE
+    idarticolo IS NULL AND
+    NOT isgarbage
+)
+    AND tree.depth <= 1
+    AND NOT art.isgarbage
+GROUP BY art.id
+ORDER BY breadcrumbs;
+
+-- View: view_articles_1_levels
+CREATE VIEW view_articles_1_levels AS SELECT * from articles WHERE NOT isgarbage AND idarticolo IS NULL;
 
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;

@@ -13,8 +13,8 @@
 
 
 class Links{
-	//THIS CLASS RELY ON THE FACT THAT IT WILL BE USED WITH THE
-	//MAPPED ARTICLES, WITH ROOT SCRIPT >>>INDEX.PHP<<<
+	//THIS CLASS RELY ON THE FACT THAT IT WILL BE USED INSIDE THE
+	//MAPPED ARTICLES INCLUDED BY ROOT SCRIPT >>>INDEX.PHP<<<
 	
 	//when using mod_rewrite, relative path are not fitting well..
 	//so istead this function return the absolute path of the installed
@@ -50,7 +50,7 @@ class Links{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
 <![endif]-->
 <!--[if gt IE 8]><!-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <!--<![endif]-->
 <?php
 		else:
@@ -59,7 +59,7 @@ class Links{
 <script src="<?php echo Links::file('js/jquery/jquery-1.11.3.min.js') ?>"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
 <![endif]-->
-<!--[if gt IE 8]><!--><script src="<?php echo Links::file('js/jquery/jquery-2.1.4.min.js') ?>"></script><!--<![endif]-->
+<!--[if gt IE 8]><!--><script src="<?php echo Links::file('js/jquery/jquery-3.1.0.min.js') ?>"></script><!--<![endif]-->
 <?php
 		endif;
 	}

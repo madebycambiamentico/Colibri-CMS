@@ -16,6 +16,87 @@
 * @author Nereo Costacurta
 */
 
+
+
+
+
+/*
+--
+-- File generated with SQLiteStudio v3.1.0 on mer ago 24 21:05:31 2016
+--
+-- Text encoding used: System
+--
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Table: commenti
+CREATE TABLE commenti (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT COLLATE NOCASE, idutente INTEGER REFERENCES utenti (id) ON DELETE SET NULL ON UPDATE CASCADE, idcommento INTEGER REFERENCES commenti (id) ON DELETE CASCADE ON UPDATE CASCADE, idarticolo INTEGER REFERENCES articoli (id) ON DELETE CASCADE ON UPDATE CASCADE, datacreaz DATETIME DEFAULT (CURRENT_TIMESTAMP), popularity INT DEFAULT (0), name TEXT, email TEXT, website TEXT);
+
+-- Trigger: comments_insert_first_branch
+CREATE TRIGGER comments_insert_first_branch AFTER INSERT ON commenti WHEN new.idcommento IS NULL  BEGIN INSERT INTO commenti_treepath (ancestor, descendant) VALUES (new.id, new.id); END;
+
+-- Trigger: comments_insert_tree_path
+CREATE TRIGGER comments_insert_tree_path AFTER INSERT ON commenti WHEN new.idcommento IS NOT NULL   BEGIN INSERT INTO commenti_treepath (ancestor, descendant, depth) SELECT t.ancestor, NEW.id, (t.depth + 1) FROM commenti_treepath t WHERE t.descendant = new.idcommento UNION ALL SELECT NEW.id, NEW.id, 0; END;
+
+-- Trigger: comments_update_parent
+CREATE TRIGGER comments_update_parent AFTER UPDATE ON commenti WHEN NEW.idcommento
+AND
+OLD.idcommento
+and
+NEW.idcommento != OLD.idcommento   BEGIN 
+DELETE FROM commenti_treepath
+WHERE descendant IN (SELECT descendant
+                     FROM commenti_treepath
+                     WHERE ancestor = OLD.id)
+    AND ancestor IN (SELECT ancestor
+                     FROM commenti_treepath
+                     WHERE descendant = OLD.id
+                     AND ancestor != descendant);
+INSERT INTO commenti_treepath (ancestor, descendant, depth)
+SELECT supertree.ancestor, subtree.descendant, (supertree.depth + subtree.depth + 1)
+FROM commenti_treepath AS supertree
+CROSS JOIN commenti_treepath AS subtree
+WHERE supertree.descendant = NEW.idcommento
+AND subtree.ancestor = OLD.id; END;
+
+-- Trigger: comments_update_parent_to_null
+CREATE TRIGGER comments_update_parent_to_null AFTER UPDATE ON commenti WHEN NEW.idcommento IS NULL
+AND
+OLD.idcommento   BEGIN DELETE FROM commenti_treepath
+WHERE descendant IN (SELECT descendant
+                     FROM commenti_treepath
+                     WHERE ancestor = OLD.id)
+    AND ancestor IN (SELECT ancestor
+                     FROM commenti_treepath
+                     WHERE descendant = OLD.id
+                     AND ancestor != descendant); END;
+
+-- Trigger: comments_update_parent_from_null
+CREATE TRIGGER comments_update_parent_from_null AFTER UPDATE ON commenti WHEN NEW.idcommento IS NOT NULL
+AND
+OLD.idcommento IS NULL          BEGIN INSERT INTO commenti_treepath (ancestor, descendant, depth)
+SELECT supertree.ancestor, subtree.descendant, (supertree.depth + subtree.depth + 1)
+FROM commenti_treepath AS supertree
+CROSS JOIN commenti_treepath AS subtree
+WHERE supertree.descendant = NEW.idcommento
+AND subtree.ancestor = OLD.id; END;
+
+-- Trigger: comments_check_exists
+CREATE TRIGGER comments_check_exists BEFORE INSERT ON commenti WHEN new.idcommento IS NOT NULL   BEGIN SELECT RAISE (IGNORE) WHERE NOT EXISTS (SELECT id FROM commenti WHERE id = new.idarticolo); END;
+
+-- Trigger: comments_check_update
+CREATE TRIGGER comments_check_update BEFORE UPDATE ON commenti BEGIN select RAISE(FAIL,'Cannot move down this item to its own sub-tree!') WHERE NEW.idcommento IN (SELECT descendant FROM commenti_treepath WHERE ancestor = OLD.id); END;
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
+
+*/
+
+
+
+
+
+
 header('Content-Type: application/json');
 
 require '../../../config.php';
@@ -36,9 +117,57 @@ if (!isset($_POST['install']))
 
 
 
-//this plugin doesn't support uninstallation
+//this plugin doesn't support full uninstallation
 if (!$_POST['install'] || $_POST['install']=='false'){
-	jsonError("This plugin doesn't support uninstallation.");
+
+	/****************
+	* REMOVE FIELDS *
+	*****************/
+	//----------------------------------------------------------
+	//not supported. SQLite doesn't have a good support for table editing.
+	//only colum addition is easy enough to use.
+	//for stability sake (and fast re-installation) there will be left some dirt
+	//in tables: articoli, sito
+	
+	
+	/*******************
+	* UNINSTALL TABLES *
+	********************/
+
+	//----------------------------------------------------------
+	//try to delete "commenti" table (and triggers)
+	try {
+		$queries =
+			"PRAGMA foreign_keys = off;".
+			"DROP table commenti;".
+			"PRAGMA foreign_keys = on;";
+		$pdo->beginTransaction();
+		if ( false === $pdo->exec($queries) )
+			jsonError("Table <commenti> couldn't be dropped!");
+		$pdo->commit();
+		
+	} catch (Exception $e) {
+		jsonError("Table <commenti> not found!");
+	}
+
+
+	//----------------------------------------------------------
+	//try to delete "commenti_treepath" table
+	try {
+		$queries =
+			"PRAGMA foreign_keys = off;".
+			"DROP table commenti_treepath;".
+			"PRAGMA foreign_keys = on;";
+		$pdo->beginTransaction();
+		if ( false === $pdo->exec($queries) )
+			jsonError("Table <commenti> couldn't be dropped!");
+		$pdo->commit();
+		
+	} catch (Exception $e) {
+		jsonError("Table <commenti> not found!");
+	}
+	
+	jsonSuccess();
 }
 
 
@@ -92,21 +221,21 @@ $queries[] =
 //----------------- TRIGGERS --------------------
 // Trigger: insert_first_branch (3)
 $queries[] =
-"CREATE TRIGGER IF NOT EXISTS insert_first_branch AFTER INSERT ON commenti WHEN new.idcommento IS NULL
+"CREATE TRIGGER IF NOT EXISTS comments_insert_first_branch AFTER INSERT ON commenti WHEN new.idcommento IS NULL
 BEGIN
 	INSERT INTO commenti_treepath (ancestor, descendant) VALUES (new.id,new.id);
 END;";
 
 // Trigger: check_comment_exists (4)
 $queries[] =
-"CREATE TRIGGER IF NOT EXISTS check_comment_exists BEFORE INSERT ON commenti WHEN new.idcommento IS NOT NULL
+"CREATE TRIGGER IF NOT EXISTS comments_check_exists BEFORE INSERT ON commenti WHEN new.idcommento IS NOT NULL
 BEGIN
 	SELECT CASE WHEN NOT EXISTS (SELECT id FROM commenti WHERE id = new.idcommento) THEN RAISE (IGNORE) END;
 END;";
 
 // Trigger: insert_tree_path (5)
 $queries[] =
-"CREATE TRIGGER IF NOT EXISTS insert_tree_path AFTER INSERT ON commenti WHEN new.idcommento IS NOT NULL
+"CREATE TRIGGER IF NOT EXISTS comments_insert_tree_path AFTER INSERT ON commenti WHEN new.idcommento IS NOT NULL
 BEGIN
 	INSERT INTO commenti_treepath (ancestor, descendant, depth)
 		SELECT t.ancestor, NEW.id, (t.depth+1) FROM commenti_treepath t WHERE t.descendant = new.idcommento
@@ -114,6 +243,53 @@ BEGIN
 		SELECT NEW.id, NEW.id, 0;
 END;";
 
+// Trigger: comments_update_parent (6)
+$queries[] =
+"CREATE TRIGGER comments_update_parent AFTER UPDATE ON commenti WHEN
+NEW.idcommento AND OLD.idcommento and NEW.idcommento != OLD.idcommento
+BEGIN 
+DELETE FROM commenti_treepath
+WHERE descendant IN (SELECT descendant
+                     FROM commenti_treepath
+                     WHERE ancestor = OLD.id)
+    AND ancestor IN (SELECT ancestor
+                     FROM commenti_treepath
+                     WHERE descendant = OLD.id
+                     AND ancestor != descendant);
+INSERT INTO commenti_treepath (ancestor, descendant, depth)
+SELECT supertree.ancestor, subtree.descendant, (supertree.depth + subtree.depth + 1)
+FROM commenti_treepath AS supertree
+CROSS JOIN commenti_treepath AS subtree
+WHERE supertree.descendant = NEW.idcommento
+AND subtree.ancestor = OLD.id;
+END;";
+
+// Trigger: comments_update_parent_to_null (7)
+$queries[] =
+"CREATE TRIGGER comments_update_parent_to_null AFTER UPDATE ON commenti WHEN
+NEW.idcommento IS NULL AND OLD.idcommento
+BEGIN DELETE FROM commenti_treepath
+WHERE descendant IN (SELECT descendant
+                     FROM commenti_treepath
+                     WHERE ancestor = OLD.id)
+    AND ancestor IN (SELECT ancestor
+                     FROM commenti_treepath
+                     WHERE descendant = OLD.id
+                     AND ancestor != descendant);
+END;";
+
+//  Trigger: comments_update_parent_from_null (7)
+$queries[] =
+"CREATE TRIGGER comments_update_parent_from_null AFTER UPDATE ON commenti WHEN
+NEW.idcommento IS NOT NULL AND OLD.idcommento IS NULL
+BEGIN
+INSERT INTO commenti_treepath (ancestor, descendant, depth)
+SELECT supertree.ancestor, subtree.descendant, (supertree.depth + subtree.depth + 1)
+FROM commenti_treepath AS supertree
+CROSS JOIN commenti_treepath AS subtree
+WHERE supertree.descendant = NEW.idcommento
+AND subtree.ancestor = OLD.id;
+END;"
 
 $queries[] = "PRAGMA foreign_keys = on;";
 

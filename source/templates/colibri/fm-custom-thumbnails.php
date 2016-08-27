@@ -2,9 +2,13 @@
 
 /**
 * Set custom thumbnail sizes.
-*
 * Will add different sizes to uploaded images.
-* how to use? search for "php image magician" and study "mbc-filemanager/config.php"
+*
+* ----------
+* how to use
+* ----------
+* search for "php image magician" in google or bing,
+* and study "mbc-filemanager/config.php" documentation.
 *
 * @see /php/mbc-filemanager/config.php
 */

@@ -1,15 +1,13 @@
 <?php
 
 /*
- * @template Colibrì 2016 v.1.0
- * contact form -- this is not a required file for standard templates.
- * @author Nereo Costacurta
- *
- * @require: /index.php (this is not a standalone page!)
- *
- * @license GPLv3
- * @copyright: (C)2016 nereo costacurta
-**/
+* add CONTACT FORM section on the standard template Colibrì 2016.
+* @see /php/Colibri-ReCaptcha/ReCaptcha
+*
+* @author Nereo Costacurta
+* @license GPLv3
+* @copyright: (C)2016 nereo costacurta
+*/
 
 if (!isset($web)){
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");

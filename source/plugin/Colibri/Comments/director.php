@@ -26,7 +26,7 @@ $director = [
 	'title'		=> 'Comments',
 	
 	//plugin version
-	'version'		=> '1.0.0',
+	'version'		=> '1.1.0',
 	
 	//tell manager if you have custom options on this plugin.
 	//keep in mind that the option "enable/disable plugin" is already covered in manager.
