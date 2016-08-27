@@ -5,6 +5,10 @@ if (!isset($Config)){
 	trigger_error('functions.inc.php need to be included by config.php!', E_USER_ERROR);
 }
 
+if (!file_exists($Config->database['src'])){
+	trigger_error('You must run setup.php before all!'.$Config->database['src'], E_USER_ERROR);
+}
+
 
 
 //open database connection

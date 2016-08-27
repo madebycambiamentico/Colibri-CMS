@@ -69,7 +69,6 @@ function get_manager_page($page){
 
 
 //global variables
-$page['id']			= null;		//article id
 $page				= null;		//article, complete database result
 $web				= null;		//content of `sito` database table
 $Language		= null;		//contains preferred language (not null if site flagged multilanguage)
