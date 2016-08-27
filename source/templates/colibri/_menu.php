@@ -30,19 +30,20 @@ if (!isset($web)){
 		for ($i=0; $i<count($articles); $i++){
 			$sp = $articles[$i];
 			$link = Links::file( htmlentities($sp['remaplink'],ENT_QUOTES) );
-			$hassubmenu = isset($articles[$i]) && strlen($articles[$i]['breadcrumbs']) > strlen($articles[$j]['breadcrumbs']);
+			$hassubmenu = isset($articles[$i+1]) && strlen($articles[$i+1]['breadcrumbs']) > strlen($articles[$i]['breadcrumbs']);
 			
 			if ($hassubmenu){
 				echo
-				'<li class="single">'.
-					'<a href="'.$link.'">'.htmlentities($li['titolo']).'</a>'.
+				'<li>'.
+					'<a href="'.$link.'">'.htmlentities($sp['titolo']).'</a>'.
 					'<ul class="sub">';
 					//add all sub-articles
 					$j = $i;
 					while (++$i && isset($articles[$i])){
-						if (strlen($articles[$i]['breadcrumbs']) > strlen($sp['breadcrumbs']))
+						if (strlen($articles[$i]['breadcrumbs']) > strlen($sp['breadcrumbs'])){
 							$link = Links::file( htmlentities($sp['remaplink'],ENT_QUOTES) );
 							echo '<li><a href="'.$link.'">'.htmlentities($articles[$i]['titolo']).'</a></li>';
+						}
 						else{
 							--$i;
 							break;

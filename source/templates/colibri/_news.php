@@ -20,7 +20,7 @@ if (!isset($web)){
 	//search all links (idtype=3), no limit, no full image (false)
 	$pdostat = \WebSpace\Query::query(
 		'byType',
-		[ 'type' => 2 ]
+		[ 'type' => 2, 'lang' => CMS_LANGUAGE ]
 	);
 	
 	$doonce = true;

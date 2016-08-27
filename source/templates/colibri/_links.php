@@ -33,9 +33,9 @@ if (!isset($web)){
 		}
 		
 		$img = htmlentities($sp['src'],ENT_QUOTES);
-		$link = Links::FILE( htmlentities($sp['inbreve'],ENT_QUOTES) );
+		$link = htmlentities($sp['inbreve'],ENT_QUOTES);
 		echo '<div class="article"><div class="sub-art-cont">'.
-			'<div class="image"><a '.$link.($img ? ' style="background-image:url(\''.Links::thumb('320x200/'.$img).'\')"' : '').'></a></div>'.
+			'<div class="image"><a href="'.$link.'" target="_blank"'.($img ? ' style="background-image:url(\''.Links::thumb('320x200/'.$img).'\')"' : '').'></a></div>'.
 			'<div class="desc imgfix">'.
 				'<h3>'.htmlentities($sp['titolo']).'</h3>'.
 				'<p>'.$sp['corpo'].'</p>'.

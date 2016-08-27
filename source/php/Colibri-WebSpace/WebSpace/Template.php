@@ -42,7 +42,7 @@ class Template{
 		//get remapprefix to be used when searching a template page...
 		global $Config, $pdo;
 		if (empty(self::$maps) && isset($Config) && isset($pdo)){
-			if ($pdores = $pdo->query("SELECT * FROM view_template_maps", \PDO::FETCH_ASSOC)){
+			if ($pdores = $pdo->query("SELECT * FROM view_available_maps", \PDO::FETCH_ASSOC)){
 				$maps = [];
 				while ($r = $pdores->fetch()){
 					$maps[$r['id']] = $r['remap'];

@@ -137,9 +137,12 @@ require_once __DIR__ . '/php/link.class.php';
 		<?php
 			//GALLERY
 			if ($page['idalbum']){
-				$pdostat = \WebSpace\Query::query('getAlbum', [$page['idalbum'],true], 'ricerca', 'album');
+				$pdostat = \WebSpace\Query::query(
+					'album',
+					[ 'id' => $page['idalbum'] ]
+				);
 				$hasrows = false;
-				while ($image = $pdostat->fetch(PDO::FETCH_ASSOC)){
+				while ($image = $pdostat->fetch()){
 					if (!$hasrows){
 						echo '<h3 class="inside">Galleria</h3>'.
 							'<a name="gallery"></a>'.//anchor for #gallery
@@ -162,16 +165,40 @@ require_once __DIR__ . '/php/link.class.php';
 		<!-- sub-articles -->
 		<div id="sub-articles" class="article-cont">
 			<?php
-				//search all sub-pages with class "main page" (1), no limit (0), no full image (false)
-				$pdostat = \WebSpace\Query::query('subArt', [$pageid, 1, 0]);
-				while ($sp = $pdostat->fetch()){
-					$link = Links::file(htmlentities($sp['remaplink'],ENT_QUOTES));
+			
+				//search all sub-pages
+				$pdostat = \WebSpace\Query::query(
+					'arts',
+					[ 'parentid' => $page['id'], 'type' => 1, 'depth' => 2, 'lang' => CMS_LANGUAGE ]
+				);
+				$articles = $pdostat->fetchAll();
+				for ($i=0; $i<count($articles); $i++){
+					$sp = $articles[$i];
+					$link = Links::file( htmlentities($sp['remaplink'],ENT_QUOTES) );
+					$img = htmlentities($sp['src'],ENT_QUOTES);
 					echo '<div class="article"><div class="sub-art-cont">'.
-						'<div class="image"><a href="'.$link.'"'.($sp['src'] ? ' style="background-image:url(\''.Links::thumb('320x320/'.htmlentities($sp['src'],ENT_QUOTES)).'\')"' : '').'></a></div>'.
+						'<div class="image"><a href="'.$link.'"'.
+							($sp['src'] ? ' style="background-image:url(\''. Links::thumb( '320x200/'.$img ) .'\')"' : '').
+						'></a></div>'.
 						'<div class="desc">'.
 							'<h2>'.htmlentities($sp['titolo']).'</h2>'.
 							'<p>'.$sp['inbreve'].'</p>'.
-							'<div class="sub-art-goto"><a href="'.$link.'">'.htmlentities($sp['titolo']).'</a></div>'.
+							'<div class="sub-art-goto"><a href="'.$link.'">'.htmlentities($sp['titolo']).'</a></div>';
+							
+							//add all sub-articles
+							$j = $i;
+							while (++$i && isset($articles[$i])){
+								if (strlen($articles[$i]['breadcrumbs']) > strlen($articles[$j]['breadcrumbs']))
+									echo '<div class="subs-art-goto">'.
+										'<a href="'.htmlentities($articles[$i]['remaplink'],ENT_QUOTES).'">'.
+											htmlentities($articles[$i]['titolo']).
+										'</a></div>';
+								else{
+									--$i;
+									break;
+								}
+							}
+					echo
 						'</div>'.
 					'</div></div>';
 				}

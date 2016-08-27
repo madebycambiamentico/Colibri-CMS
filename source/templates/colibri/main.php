@@ -132,7 +132,7 @@ require_once __DIR__ . '/php/link.class.php';
 				//search all main-pages
 				$pdostat = \WebSpace\Query::query(
 					'arts',
-					[ 'type' => 1, 'depth' => 2, 'lang' => CMS_LANGUAGE ]
+					[ 'skipids' => $page['id'], 'type' => 1, 'depth' => 2, 'lang' => CMS_LANGUAGE ]
 				);
 				$articles = $pdostat->fetchAll();
 				for ($i=0; $i<count($articles); $i++){
