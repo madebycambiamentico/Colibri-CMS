@@ -2,7 +2,7 @@
 
 class ColibriConfig{
 	//constants - static
-	const VERSION				= "0.6.1";		//current Colibry System Version
+	const VERSION				= "0.7";		//current Colibry System Version
 	const RELEASE				= "&gamma;";	//release (alpha, beta, multilang, release candidate...)
 	//variables
 	public $domain				= "";				//site domain. will be detected automatically
@@ -122,7 +122,7 @@ class ColibriConfig{
 	private function register_autoloaders(){
 		require_once( CMS_INSTALL_DIR . '/php/Colibri-Manager/autoloader.php' );	// for Colibrì manager classes (menu, popups etc.)
 		require_once( CMS_INSTALL_DIR . '/php/Colibri-ReCaptcha/autoloader.php' );	// reCaptcha v2 wrapper
-		require_once( CMS_INSTALL_DIR . '/php/Colibri-Website/autoloader.php' );	// base queries for website
+		require_once( CMS_INSTALL_DIR . '/php/Colibri-WebSpace/autoloader.php' );	// base queries for website
 		require_once( CMS_INSTALL_DIR . '/php/RandomLib/autoloader.php' );			// generate casual secure strings
 		//NB - phpMailer must be loaded manually, since it is not a common used class here in Colibrì
 	}

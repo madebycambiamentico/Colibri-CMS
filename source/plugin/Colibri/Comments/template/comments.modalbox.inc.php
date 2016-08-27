@@ -108,7 +108,7 @@ ob_end_clean();
 
 //generate popup
 $Pop->generic(
-	'colibri-comment-info-popup', ['cmt-form'], "Colbrì Comment &copy; INFO",
+	'colibri-comment-info-popup', ['cmt-form'], "Colibrì Comments &copy;2016 INFO",
 	'', [],
 	$form_content
 );
