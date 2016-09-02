@@ -146,22 +146,25 @@ allow_user_from_class(2,true); // only webmasters are meant to edit database.
 
 <table>
 <tr>
-<td>Use <b>local files</b>:</td>
+<td>Use <b>Local files</b>:</td>
 <td>
 <?php
 	$json = json_decode( file_get_contents(__DIR__ . "/../director.json"), true );
-	$iscdn = ($json['template']['js']['auto'][0] === 'highlight.min.js');
+	$iscdn = !($json['template']['js']['auto'][0] === 'js/highlight.min.js');
 ?>
 	<div class="switch">
 		<div class="on"></div> <div class="off"></div> <div class="ball"></div>
-		<label class="left" title="CDN"><input class="left" type="radio" value="0" name="localfiles" <?php echo $iscdn ? 'checked' : '' ?>></label>
-		<label class="right" title="local"><input class="right" type="radio" value="1" name="localfiles" <?php echo $iscdn ? '' : 'checked' ?>></label>
+		<label class="left" title="switch to CDN"><input class="right" type="radio" value="1" name="localfiles" <?php echo $iscdn ? 'checked' : '' ?>></label>
+		<label class="right" title="switch to local"><input class="left" type="radio" value="0" name="localfiles" <?php echo $iscdn ? '' : 'checked' ?>></label>
 	</div>
 </td>
 </tr>
 </table>
 <p>Choose between loading local files or (faster and probably optimized) load from CDN.</p>
-<p>Cdnjs Cloudflare serves this files: <code>//cdnjs.cloudflare.com/ajax/libs/highlight.js/x.x.x/styles/default.min.css</code> and <code>//cdnjs.cloudflare.com/ajax/libs/highlight.js/x.x.x/highlight.min.js</code> which contains the top 20 used languages.</p>
+<p>Cdnjs Cloudflare serves this files:
+	<br><code>//cdnjs.cloudflare.com/ajax/libs/highlight.js/x.x.x/styles/default.min.css</code>
+	<br><code>//cdnjs.cloudflare.com/ajax/libs/highlight.js/x.x.x/highlight.min.js</code> which contains the top 20 used languages.
+</p>
 <p>Local files are stored in <code>css/default.min.css</code> and <code>js/highlight.min.js</code> (from the plugin directory)</p>
 <br>
 <p style="font-size:smaller;text-align:center;">- thank you for using Colibri HighlightJS Plugin! -</p>

@@ -303,6 +303,8 @@ $(function(){
 	//set page id
 	PAGE_ID = $('#CC_PAGE_ID').val();
 	
+	if (!PAGE_ID || PAGE_ID=='0') return false;
+	
 	//set modalbox
 	var $modalbox = $('#colibri-comment-popup');
 	var $modalinfo = $('#colibri-comment-info-popup');

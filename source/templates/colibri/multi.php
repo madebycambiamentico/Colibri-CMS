@@ -43,30 +43,6 @@ require_once __DIR__ . '/php/link.class.php';
 	
 	<!-- custom stylesheet browser-sensitive or article-sensitive :) -->
 	<!--[if lte IE 9]><style type="text/css">#contactform label{display:block}</style><![endif]-->
-	<?php
-		if ($page['src']):
-			$cssurl = addslashes(str_replace(['(',')'],['\\(','\\)'], $page['src']));
-			//you should add @media for multiple sizes (mobile-friendly)
-	?>
-	<style type="text/css">
-		/* customized main image from database */
-		.image-main{
-			background-image:url('<?php echo Links::thumb('L1024/'.$cssurl) ?>');
-		}
-		@media only screen and (max-width:768px){
-			.image-main{
-				background-image:url('<?php echo Links::thumb('L768/'.$cssurl) ?>');
-			}
-		}
-		@media only screen and (max-width:520px){
-			.image-main{
-				background-image:url('<?php echo Links::thumb('L520/'.$cssurl) ?>');
-			}
-		}
-	</style>
-	<?php
-		endif;
-	?>
 	
 	<!-- plugins -->
 	<?php
@@ -134,7 +110,7 @@ require_once __DIR__ . '/php/link.class.php';
 					$img = htmlentities($page_n['src'],ENT_QUOTES);
 					echo '<div class="article"><div class="sub-art-cont">'.
 						'<div class="image"><a href="'.$link.'"'.
-							($page_n['src'] ? ' style="background-image:url(\''. Links::thumb( '320x200/'.$img ) .'\')"' : '').
+							($page_n['src'] ? ' style="background-image:url(\''. Links::thumb( '320x320/'.$img ) .'\')"' : '').
 						'></a></div>'.
 						'<div class="desc">'.
 							'<p style="font-size:smaller">Created on '.$page_n['datacreaz'].'<br>Edited on '.$page_n['dataedit'].'</p>'.

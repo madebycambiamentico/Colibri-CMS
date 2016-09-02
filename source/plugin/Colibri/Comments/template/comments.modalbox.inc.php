@@ -6,6 +6,9 @@
 */
 
 global $web, $page, $Config, $Pop;
+
+if ($page['id']):
+
 if (!isset($Pop)){
 	$Pop = new \Colibri\Popups;
 }
@@ -113,6 +116,7 @@ $Pop->generic(
 	$form_content
 );
 
+endif;
 
 ?>
 <!-- END COMMENT PLUGIN POPUP -->

@@ -199,7 +199,7 @@ if (isset($_SERVER['REDIRECT_URL'])){
 			//all articles by creation date + edit date
 			$pdostat = \WebSpace\Query::query(
 				'byDate',
-				[ 'lang' => CMS_LANGUAGE ],
+				[ 'lang' => CMS_LANGUAGE, 'dates' => 'both' ],
 				[ $artDate.'%', $artDate.'%' ]
 			);
 			if (!$page = $pdostat->fetchAll(PDO::FETCH_ASSOC))
@@ -218,7 +218,7 @@ if (isset($_SERVER['REDIRECT_URL'])){
 		
 		$pdostat = \WebSpace\Query::query(
 			'byMap',
-			[ 'fullimage' => true, 'datecostrain' => false, 'lang' => CMS_LANGUAGE ],
+			[ 'datecostrain' => false, 'fullimage' => true, 'lang' => CMS_LANGUAGE ],
 			[ $map ]
 		);
 		if (!$page = $pdostat->fetch(PDO::FETCH_ASSOC))

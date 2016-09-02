@@ -62,7 +62,7 @@ class Query{
 	*/
 	static function byMap($options = []){
 		//extend option array
-		$o = array_merge(['datecostrain' => true, 'fullimage' => false, 'lang' => null], $options);
+		$o = array_merge(['datecostrain' => false, 'fullimage' => false, 'lang' => null], $options);
 		//control options...
 		//*no controls*
 		//create query...
@@ -164,28 +164,28 @@ class Query{
 		//control options...
 		//*no controls*
 		//create query...
+		$type_filter = $o['type'] ? "AND A.idtype = {$o['type']}" : '';
 		$skip_types = empty($o['skiptypes']) ? '' : (
 			count($o['skiptypes'])===1 ?
 				"AND A.idtype != {$o['skiptypes'][0]}" :
 				"AND A.idtype NOT IN (".implode(',',$o['skiptypes']).")"
 		);
-		$type_filter = $o['type'] ? "AND A.idtype = '{$o['type']}'" : '';
 		$imageselect = $o['fullimage'] ?
 			"B.width, B.height, B.src, B.descr" :
 			"B.src";
-		$lang_filter = $o['lang'] ? " AND A.lang = '{$o['lang']}'" : '';
-		$data_filter = $o['dates'] === 'both' ?
+		$data_filter = ($o['dates'] === 'both' ?
 			'(A.datacreaz LIKE ? OR A.dataedit LIKE ?)' :
-			$o['dates'] === 'edit' ?
-			'A.dataedit LIKE ?' :
-			'A.datacreaz LIKE ?';
+			($o['dates'] === 'edit' ?
+				'A.dataedit LIKE ?' :
+					'A.datacreaz LIKE ?'));
+		$lang_filter = $o['lang'] ? "AND A.lang = '{$o['lang']}'" : '';
 		return [
 			'query' => "
 SELECT
 	A.*,
 	{$imageselect}
-FROM articoli A
-LEFT JOIN immagini B ON A.idimage = B.id
+FROM articoli AS A
+LEFT JOIN immagini AS B ON A.idimage = B.id
 WHERE
 	{$data_filter}
 	AND NOT A.isgarbage
@@ -433,7 +433,7 @@ ORDER BY breadcrumbs",
 		//extend option array
 		$o = array_merge(['id' => 0, 'fullimage' => true], $options);
 		//control options...
-		if (!$o['parentid']) return [];
+		if (!$o['id']) return [];
 		//create query...
 		$imageselect = $o['fullimage'] ?
 			"B.width, B.height, B.src, B.descr" :

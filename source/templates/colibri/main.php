@@ -142,7 +142,7 @@ require_once __DIR__ . '/php/link.class.php';
 					$img = htmlentities($sp['src'],ENT_QUOTES);
 					echo '<div class="article"><div class="sub-art-cont">'.
 						'<div class="image"><a href="'.$link.'"'.
-							($sp['src'] ? ' style="background-image:url(\''. Links::thumb( '320x200/'.$img ) .'\')"' : '').
+							($sp['src'] ? ' style="background-image:url(\''. Links::thumb( '320x320/'.$img ) .'\')"' : '').
 						'></a></div>'.
 						'<div class="desc">'.
 							'<h2>'.htmlentities($sp['titolo']).'</h2>'.

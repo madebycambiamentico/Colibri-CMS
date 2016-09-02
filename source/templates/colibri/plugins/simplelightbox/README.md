@@ -16,7 +16,7 @@ Simple include simplelightbox.css and simple-lightbox.js to your page
 var lightbox = $('.gallery a').simpleLightbox(options);
 ```
 
-###Options
+### Options
 | Property | Default | Type | Description |
 | -------- | ------- | ---- | ----------- |
 | overlay | true | bool | show an overlay or not |
@@ -31,6 +31,7 @@ var lightbox = $('.gallery a').simpleLightbox(options);
 | captionDelay | 0 | int | adds a delay before the caption shows (in ms) |
 | close | true | bool | show the close button or not |
 | closeText | '×' | string | text or html for the close button |
+| swipeClose | true | bool | swipe up or down to close gallery |
 | showCounter | true | bool | show current image index or not |
 | fileExt | 'png&#124;jpg&#124;jpeg&#124;gif' | regexp or false | list of fileextensions the plugin works with or false for disable the check | 
 | animationSpeed | 250 | int | how long takes the slide animation |
@@ -38,6 +39,7 @@ var lightbox = $('.gallery a').simpleLightbox(options);
 | preloading | true | bool | allows preloading next und previous images |
 | enableKeyboard | true | bool | allow keyboard arrow navigation and close with ESC key |
 | loop | true | bool | enables looping through images |
+| rel | false | mixed | group images by rel attribute of link with same selector. 
 | docClose | true | bool | closes the lightbox when clicking outside |
 | swipeTolerance | 50 | int | how much pixel you have to swipe, until next or previous image |
 | className: | 'simple-lightbox' | string | adds a class to the wrapper of the lightbox |
@@ -45,24 +47,39 @@ var lightbox = $('.gallery a').simpleLightbox(options);
 | heightRatio: | 0.9 | float | Ratio of image height to screen height |
 | disableRightClick | false | bool | disable rightclick on image or not |
 | disableScroll | true | bool | stop scrolling page if lightbox is opened |
-| alertError | true | bool | show an alert, if image was not found |
+| alertError | true | bool | show an alert, if image was not found. If false error will be ignored |
+| alertErrorMessage | 'Image not found, next image will be loaded' | string | the message displayed if image was not found |
+| additionalHtml | false | string | Additional HTML showing inside every image. Usefull for watermark etc. If false nothing is added |
 
-###Events
+### Events
 | Name | Description |
 | ---- | ----------- |
-| open.simplelightbox | this event fires before the lightbox opens |
-| opened.simplelightbox | this event fires after the lightbox was opened |
+| show.simplelightbox | this event fires before the lightbox opens |
+| shown.simplelightbox | this event fires after the lightbox was opened |
 | close.simplelightbox | this event fires before the lightbox closes |
 | closed.simplelightbox | this event fires after the lightbox was closed |
+| change.simplelightbox | this event fires before image changes |
+| changed.simplelightbox | this event fires after image was changed |
+| next.simplelightbox | this event fires before next image arrives |
+| nextDone.simplelightbox | this event fires after next image was arrived |
+| prev.simplelightbox | this event fires before previous image arrives |
+| prevDone.simplelightbox | this event fires after previous image was arrived |
+| nextImageLoaded.simplelightbox | this event fires after next image was loaded (if preload activated) |
+| prevImageLoaded.simplelightbox | this event fires after previous image was loaded (if preload activated) |
+| error.simplelightbox | this event fires on image load error |
 
-**Example**
+**Example**  
 ```javascript
 $('.gallery a').on('open.simplelightbox', function () {
   // do something…
 });
+
+$('.gallery a').on('error.simplelightbox', function (e) {
+  console.log(e); // some usefull information
+});
 ```
 
-###Public Methods
+### Public Methods
 | Name | Description |
 | ---- | ----------- |
 | open | Opens the lightbox with an given jQuery Element |
@@ -70,15 +87,16 @@ $('.gallery a').on('open.simplelightbox', function () {
 | next | Go to next image |
 | prev | Go to previous image |
 | destroy | Destroys the instance of  the lightbox |
+| refresh | Destroys and reinitilized the lightbox, needed for eg. Ajax Calls, or after dom manipulations |
 
-**Example**
+**Example**  
 ```javascript
 var gallery = $('.gallery a').simpleLightbox();
 
 gallery.next(); // Next Image
 ```
 
-###Multiple Lightboxes on one page
+### Multiple Lightboxes on one page
 You can have multiple lightboxes on one page, if you give them different selectors. Here is a small example:
 ```javascript
 var lightbox1 = $('.lighbox-1 a').simpleLightbox();
@@ -86,6 +104,14 @@ var lightbox2 = $('.lighbox-2 a').simpleLightbox();
 ```
 
 ### Changelog
+**1.9.0 - Implemented feature-request #16, added rel option for grouping images**  
+**1.8.6 - Implemented feature-request #46, added refresh method**  
+**1.8.5 - Implemented feature-request #44**  
+**1.8.4 - Bugfix for #41 and added option for additional html inside images #40**  
+**1.8.3 - Bugfix for #38 and small other fix for loop false option**  
+**1.8.2 - Better bugfix for #33, finally fixing multiple lightbox on one page slowness issues!**  
+**1.8.1 - Bugfix for #31, #32 and #33**  
+**1.8.0 - New API Events (changed open to show) and little fix in function open() brought by Geoffrey Crofte and some other small bugfixes**  
 **1.7.2 - Bugfix von #25 and #27**  
 **1.7.1 - Bugfix von #22 with new option alertError and merged pull request #23**  
 **1.7.0 - Add support for fading between photos, Bugfix for single image navigation, option for caption delay**  
@@ -106,3 +132,12 @@ var lightbox2 = $('.lighbox-2 a').simpleLightbox();
 **1.1.1 - Bugfix for loading indicator and removed a log-event**  
 **1.1.0 - Added classname for lightbox wrapper and width/height ratio**  
 **1.0.0 - Initial Release**
+
+### Author
+[Andre Rinas](http://andreknieriem.de/) - [Github](https://github.com/andreknieriem/)
+
+### Contributors
+[nicekiwi](https://github.com/nicekiwi)  
+[helloilya](https://github.com/helloilya)  
+[bitstarr](https://github.com/bitstarr)  
+[Geoffrey Crofte](http://geoffrey.crofte.fr/) - [Github](https://github.com/creativejuiz/)  

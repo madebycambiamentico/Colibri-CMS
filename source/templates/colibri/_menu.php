@@ -35,13 +35,13 @@ if (!isset($web)){
 			if ($hassubmenu){
 				echo
 				'<li>'.
-					'<a href="'.$link.'">'.htmlentities($sp['titolo']).'</a>'.
+					'<a href="'.$link.'">'.htmlentities($sp['titolo']).'</a><i></i>'.
 					'<ul class="sub">';
 					//add all sub-articles
 					$j = $i;
 					while (++$i && isset($articles[$i])){
 						if (strlen($articles[$i]['breadcrumbs']) > strlen($sp['breadcrumbs'])){
-							$link = Links::file( htmlentities($sp['remaplink'],ENT_QUOTES) );
+							$link = Links::file( htmlentities($articles[$i]['remaplink'],ENT_QUOTES) );
 							echo '<li><a href="'.$link.'">'.htmlentities($articles[$i]['titolo']).'</a></li>';
 						}
 						else{

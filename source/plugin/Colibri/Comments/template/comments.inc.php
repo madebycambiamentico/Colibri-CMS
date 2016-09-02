@@ -6,7 +6,7 @@
 
 global $web, $page;
 
-
+if ($page['id']):
 
 ?>
 <!-- START COMMENT PLUGIN -->
@@ -86,3 +86,5 @@ anchor_comments:
 
 </div>
 <!-- END COMMENT PLUGIN -->
+
+<?php endif; ?>

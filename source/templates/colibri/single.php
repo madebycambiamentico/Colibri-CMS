@@ -178,7 +178,7 @@ require_once __DIR__ . '/php/link.class.php';
 					$img = htmlentities($sp['src'],ENT_QUOTES);
 					echo '<div class="article"><div class="sub-art-cont">'.
 						'<div class="image"><a href="'.$link.'"'.
-							($sp['src'] ? ' style="background-image:url(\''. Links::thumb( '320x200/'.$img ) .'\')"' : '').
+							($sp['src'] ? ' style="background-image:url(\''. Links::thumb( '320x320/'.$img ) .'\')"' : '').
 						'></a></div>'.
 						'<div class="desc">'.
 							'<h2>'.htmlentities($sp['titolo']).'</h2>'.
@@ -234,7 +234,7 @@ require_once __DIR__ . '/php/link.class.php';
 <!-- plugins -->
 <?php
 	Links::script('plugins/autoadapt-mosaic-grid/autoadapt-2.3.min.js');
-	Links::script('plugins/simplelightbox/simplelightbox.min.js');
+	Links::script('plugins/simplelightbox/simple-lightbox.min.js');
 	Links::script('js/main.min.js');
 	
 	if (isset($YTIframeJsParams)){
