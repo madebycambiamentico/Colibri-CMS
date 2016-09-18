@@ -213,9 +213,9 @@ else
 *********************************/
 
 $TA = $InstallHelp->create_transaction();
-$TA->add_column('sito', 'comment_allow BOOLEAN DEFAULT (1)');
-$TA->add_column('sito', 'comment_class INT DEFAULT (-1)');
-$TA->add_column('articoli', 'comment_allow BOOLEAN DEFAULT (1)');
+$TA->add_column('sito', 'comment_allow', 'BOOLEAN DEFAULT (1)');
+$TA->add_column('sito', 'comment_class', 'INT DEFAULT (-1)');
+$TA->add_column('articoli', 'comment_allow', 'BOOLEAN DEFAULT (1)');
 
 
 if (!$TA->run_queries() && !empty($TA->queries())){

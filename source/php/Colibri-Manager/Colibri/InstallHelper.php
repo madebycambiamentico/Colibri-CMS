@@ -6,6 +6,36 @@
 
 
 /**
+* USAGE EXAMPLE:
+*     $myTrns = new Transaction;
+*     // add a custom query:
+*     $myTrns->add_query( <full query> );
+*     // add a new column into some table
+*     $myTrns->add_column( <table>, <column>, <column properties> );
+*     //run queries in 1 transaction and check errors
+*     if ( $myTrns->run_queries() ){
+*         //succesfull operaition...
+*     else{
+*         //some errors occurred
+*         echo implode( "; ", $myTrns->errors );
+*     }
+*
+* USAGE EXAMPLE 2:
+*     $myTrns = (new Transaction)
+*         ->add_query( <full query> )
+*         ->add_column( <table>, <column>, <column properties> );
+*     //run queries in 1 transaction and check errors
+*     if ( $myTrns->run_queries() ){
+*         //succesfull operaition...
+*     else{
+*         //some errors occurred
+*         echo implode( "; ", $myTrns->errors );
+*     }
+*/
+
+
+
+/**
 * Run a set of queries in unique transaction.
 * If something goes wrong the database will be restored as before the attempted queries.
 * With this function you can easily install template/plugin dependencies or update the database.
@@ -17,8 +47,8 @@
 */
 class Transaction{
 	
-	public $queries = [];
-	public $errors = [];
+	public $queries = [];	//will store all subsequent queries
+	public $errors = [];		//will store errors
 	
 	/**
 	* store a query to be executed when run_queries() is called
@@ -57,18 +87,49 @@ class Transaction{
 	/**
 	* Store a query to be executed when run_queries() is called, this method is a shorthand for adding a column.
 	* PLUS - it checks if the column is already present: in this case the query is skipped.
+	* Example: in "ALTER TABLE articoli ADD COLUMN comment_allow BOOLEAN DEFAULT (1);" the parameters will be:
+	* ('articoli', 'comment_allow', 'BOOLEAN DEFAULT (1)')
 	* 
 	* @param string $table The database table name
-	* @param string $column The SQL query part from the column name to all its properties.
-	*                       Example: in "ALTER TABLE articoli ADD COLUMN comment_allow BOOLEAN DEFAULT (1);"
-	*                       the $column is "comment_allow BOOLEAN DEFAULT (1)"
+	* @param string $column The column name to be added to the table.
+	*                       the $column is "comment_allow"
+	* @param string $properties The column propeties (e.g. "BOOLEAN DEFAULT (1)")
 	*
 	* @return Transaction
 	*/
-	public function add_column($table, $column){
+	public function add_column($table, $column, $properties){
 		//skip query if column already exists!
 		if (! $this->column_exists($table, $column))
-			$this->queries[] = "ALTER TABLE {$table} ADD COLUMN {$column};";
+			$this->queries[] = "ALTER TABLE {$table} ADD COLUMN {$column} {$properties};";
+		return $this;
+	}
+	
+	
+	/**
+	* Add article type. New article types are not "protected" (from being erased later)
+	*
+	* @param string $article The article extended name
+	* @param string $map The mapping prefix for the article type: avoid spaces.
+	*
+	* @return Transaction
+	*/
+	public function add_articletype($article, $map){
+		global $pdo;
+		try {
+			$res = $pdo->query("SELECT COUNT(*) FROM articoli_types WHERE remapprefix = '{$map}'");
+			if ($res->fetch()){
+				//skip query
+				//$this->errors[] = "Article map type '{$map}' already exists.";
+			}
+			else{
+				$this->queries[] = "INSERT INTO articoli_types (nome, remapprefix) VALUES ('{$article}', '{$map}');";
+			}
+		}
+		catch (Exception $e){
+			//boh... error...
+			$this->errors[] = "Couldn't add article type '{$article}'";
+		}
+		$pdo->closeCursor(); //necessary?
 		return $this;
 	}
 	
@@ -83,12 +144,14 @@ class Transaction{
 			$this->errors[] = "No queries to be run.";
 			return false;
 		}
+		//reset errors :)
+		$this->errors = [];
 		
 		global $pdo;
 		//begin transaction...
 		if (! $pdo->beginTransaction()){
 			$this->errors[] = "Couldn't begin transaction...";
-			return false;
+			return false;///>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  HOW DO I ABORT TRANSACTION?
 		}
 		//prevent foreign keys changes to be evaluated
 		if ( false === $pdo->exec("PRAGMA foreign_keys = off;") ){
@@ -99,7 +162,7 @@ class Transaction{
 		foreach ($this->queries as $k => $query){
 			if ( false === $pdo->exec($query) ){
 				$this->errors[] = "Couldn't execute the query n.{$k}: \"{$query}\"";
-				return false;
+				break;
 			}
 		}
 		//set foreign keys changes to be evaluated again
@@ -109,10 +172,15 @@ class Transaction{
 		}
 		//commit transaction
 		$pdo->commit();
-		//reset :)
-		$this->queries = [];
 		
-		return true;
+		if (count( $this->errors )){
+			return false;
+		}
+		else{
+			//reset queries :)
+			$this->queries = [];
+			return true;
+		}
 	}
 }
 
